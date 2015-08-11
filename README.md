@@ -232,7 +232,7 @@ This specification defines two formats:
 #### "minimal" representation
 
 ```
-'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz'
+"TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"
 ```
 
 * the minimal representation is a string representing the binary representation of one or more sensor objects.
@@ -243,6 +243,19 @@ This specification defines two formats:
 
 ```
 {
-   ""
+   "MAC":       "00-17-0d-00-00-12-34-56",
+   "timestamp": 12345678890,
+   "type":      12,
+   "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz",
+   
 }
 ```
+
+* "MAC"
+    * represented exactly like in the example above, lowercase hex bytes (exactly 2 characters per byte), separated by `-`.
+* "timestamp"
+    * an integer representing the epoch
+* "type"
+    * an integer, per the registry above
+* "value"
+    * a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary value
