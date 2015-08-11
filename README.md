@@ -115,13 +115,13 @@ This header appears in front on each object, or in a front of a chain of objects
     * `1` length  field present in each of the sensor objects following. Same format as in the "start" header.
 * `N`: number of objects following
     * `b00`: 2 objects following
-    * `b01`: 4 objects following
-    * `b10`: 8 objects following
-    * `b11`: 16 objects following
+    * `b01`: 8 objects following
+    * `b10`: 16 objects following
+    * `b11`: explicit 1-byte length field immediately following the "more" header
 
 ### example transmission use cases
 
-Transmitting a single 2-byte temperature sensor reading, taken in the past:
+**Example 1**: transmitting a single 2-byte temperature sensor reading, taken in the past:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -136,7 +136,8 @@ Transmitting a single 2-byte temperature sensor reading, taken in the past:
 * `[0B]` length: _elided_
 * `[2B]` value: `0x....`
 
-Transmitting a single 2-byte temperature sensor reading, taken just now:
+
+**Example 2**: transmitting a single 2-byte temperature sensor reading, taken just now:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -145,14 +146,17 @@ Transmitting a single 2-byte temperature sensor reading, taken just now:
    * `S`=`1` (elided)
    * `Y`=`0` (1-byte type)
    * `L`=`b00` (well-known value, no length field)
-* sensor reading 1
-   * `[0B]` MAC: _elided_
-   * `[0B]` Timestamp: _elided_
+* `[3B]` sensor reading 1
+   * `[--]` MAC: _elided_
+   * `[--]` Timestamp: _elided_
    * `[1B]` type=`b..` (temperature)
-   * `[0B]` length: _elided_
+   * `[--]` length: _elided_
    * `[2B]` value: `0x....`
 
-Transmitting 3 sensor readings from 3 different sensors with well-known length, taken at the same time in the past:
+Total: 4 bytes.
+
+
+**Example 3**: Transmitting 3 sensor readings from 3 different sensors with well-known length, taken at the same time in the past:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -161,7 +165,7 @@ Transmitting 3 sensor readings from 3 different sensors with well-known length, 
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
    * `L`=`b00` (well-known value, no length field)
-* sensor reading 1
+* `[7B]` sensor reading 1
    * `[--]` MAC: _elided_
    * `[4B]` Timestamp: `0x........`
    * `[1B]` type=`b..` (temperature)
@@ -171,18 +175,21 @@ Transmitting 3 sensor readings from 3 different sensors with well-known length, 
    * `S`=`0` (inherit)
    * `Y`=`1` (1-byte type)
    * `L`=`0` (inherit)
-* sensor reading 2
+   * `N`=`b00` (2 objects)
+* `[3B]` sensor reading 2
    * `[--]` MAC: _elided_
    * `[--]` Timestamp: _elided_
    * `[1B]` type=`b..` (RH)
    * `[--]` length: _elided_
    * `[2B]` value: `0x....`
-* sensor reading 3
+* `[3B]` sensor reading 3
    * `[--]` MAC: _elided_
    * `[--]` Timestamp: _elided_
    * `[1B]` type=`b..` (solar)
    * `[--]` length: _elided_
    * `[2B]` value: `0x....`
+
+Total: 15 bytes.
 
 ### rules for saving to a binary file
 
@@ -197,4 +204,45 @@ The following rules hence apply when saving to a binary file:
 
 ## JSON representation
 
-TODO
+A [JSON](http://json.org/) representation is used to communicate sensors objects across a network, typically using HTTP.
+
+We use clean indentation for easier readability in these examples. An efficient implementation SHOULD represent the entire JSON string on a single line.
+
+The following is the general format of a JSON representation of sensor objects:
+
+```
+{
+   "v": 0,
+   "o": [
+       <minimal or verbose representation>,
+       <minimal or verbose representation>,
+       ...
+       <minimal or verbose representation>,
+   ]
+}
+```
+
+* `v`: the version of the representation. Only version `0` is defined in this specification. Other values SHOULD NOT be used. Future revisions of this document MIGHT define further versions.
+* `o`: an array of representations. Each representation can be either a JSON string (for the "minimal" representation) or a JSON object (for the "verbose" representation). A single JSON string CAN contain both "minimal" and "verbose" representations.
+
+This specification defines two formats:
+* a "compact" representation for minimal communication overhead.
+* a "verbose" representation for readability.
+
+#### "minimal" representation
+
+```
+'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz'
+```
+
+* the minimal representation is a string representing the binary representation of one or more sensor objects.
+* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of one or more sensor objects.
+* when multiple strings are used, a binary sensor object cannot span multiple strings.
+
+#### "verbose" representation
+
+```
+{
+   ""
+}
+```
