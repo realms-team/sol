@@ -1,5 +1,8 @@
 
-class sol(object):
+class Sol(object):
+    '''
+    Sensor Object Library.
+    '''
     
     #======================== public ==========================================
     
@@ -30,3 +33,7 @@ class sol(object):
     
     #======================== private =========================================
     
+if __name__=="__main__":
+    import os
+    os.system("py.test tests/")
+    raw_input("Press Enter to close.")
