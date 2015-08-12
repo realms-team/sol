@@ -10,4 +10,4 @@
 def test_import():
     import sys
     print sys.path
-    import sol
+    import Sol
