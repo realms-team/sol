@@ -1,3 +1,6 @@
+import os
+
+import pytest
 
 #============================ defines ===============================
 
@@ -6,11 +9,23 @@ EXAMPLE_MAC = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]
 
 #============================ fixtures ==============================
 
+def removeFileFunc():
+    os.remove(FILENAME)
+
+@pytest.fixture(scope='function')
+def removeFile(request):
+    #request.addfinalizer(removeFileFunc)
+    try:
+        os.remove(FILENAME)
+    except WindowsError:
+        # if file does not exist. NOT an error.
+        pass
+
 #============================ helpers ===============================
 
 #============================ tests =================================
 
-def test_dump_load():
+def test_dump_load(removeFile):
     import Sol
     sol = Sol.Sol()
     

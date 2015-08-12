@@ -4,6 +4,7 @@ import threading
 
 import SolDefines as d
 import SolVersion as ver
+import OpenHdlc
 
 class Sol(object):
     '''
@@ -12,6 +13,7 @@ class Sol(object):
     
     def __init__(self):
         self.fileLock = threading.RLock()
+        self.hdlc     = OpenHdlc.OpenHdlc()
     
     #======================== public ==========================================
     
@@ -131,7 +133,7 @@ class Sol(object):
             with open(fileName,'ab') as f:
                 for d in dicts:
                     bin = self.dict_to_bin(d)
-                    # TODO: HDLC
+                    bin = self.hdlc.hdlcify(bin)
                     bin = ''.join([chr(b) for b in bin])
                     f.write(bin)
     
