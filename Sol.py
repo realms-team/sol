@@ -174,7 +174,11 @@ class Sol(object):
                     #=== get boundaries
                     
                     left_offset_start = 0
-                    (left_timestamp,left_offset_stop) = oneTimestamp(left_offset_start)
+                    try:
+                        (left_timestamp,left_offset_stop) = oneTimestamp(left_offset_start)
+                    except IndexError:
+                        # complete file is corrupted
+                        return []
                     with open(fileName,'rb') as f:
                         f.seek(0,os.SEEK_END)
                         right_offset_start = f.tell()

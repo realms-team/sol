@@ -47,6 +47,18 @@ EXPECTEDRANGE = [
            0, # idxMin
         1000, # idxMax
     ),
+    (
+        -500, # startTimestamp
+        -100, # endTimestamp
+           0, # idxMin
+           0, # idxMax
+    ),
+    (
+        1100, # startTimestamp
+        1500, # endTimestamp
+           0, # idxMin
+           0, # idxMax
+    ),
 ]
 
 @pytest.fixture(params=EXPECTEDRANGE)
@@ -206,3 +218,23 @@ def test_retrieve_range_corrupt_end(removeFile):
     
     # compare
     assert dictsLoaded==dictsToDump[100:801]
+
+def test_retrieve_range_corrupt_all(removeFile):
+    
+    import Sol
+    sol = Sol.Sol()
+    
+    # dump
+    with open(FILENAME,'ab') as f:
+        for _ in range(100):
+            f.write("garbage")
+    
+    # load
+    dictsLoaded = sol.loadFromFile(
+        FILENAME,
+        startTimestamp=100,
+        endTimestamp=800
+    )
+    
+    # compare
+    assert dictsLoaded==[]
