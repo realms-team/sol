@@ -46,7 +46,7 @@ This representation is used for:
 Each object consists of the following fields:
 
 ```
-| header | MAC | Timestamp | type | Length | Value |
+| header | mac | timestamp | type | length | Value |
 ```
 
 Some rules:
@@ -255,7 +255,7 @@ This specification defines two formats:
 
 ```
 {
-   "MAC":       "00-17-0d-00-00-12-34-56",
+   "mac":       "00-17-0d-00-00-12-34-56",
    "timestamp": 12345678890,
    "type":      12,
    "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz",
@@ -263,7 +263,7 @@ This specification defines two formats:
 }
 ```
 
-* "MAC"
+* "mac"
     * represented exactly like in the example above, lowercase hex bytes (exactly 2 characters per byte), separated by `-`.
 * "timestamp"
     * an integer representing the epoch
