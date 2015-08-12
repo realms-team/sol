@@ -15,11 +15,14 @@ It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 When a sensor is associated a well-known length, the `L` (length) field MAY be omitted from its binary representation.
 When the well-known length is the table below is "None", the `L` (length) MUST be present in the object's binary representation.
 
-| value    | well-known length | description |
-|---------:|------------------:|-------------|
-| `0x00`   |              N.A. | _reserved_  |
-| `0xff`   |              N.A. | _reserved_  |
-| `0xffff` |              N.A. | _reserved_  |
+| value    |     name                           | well-known length | description |
+|---------:|------------------------------------|------------------:|-------------|
+|   `0x00` |                                    |              N.A. | _reserved_  |
+|   `0x01` | `DISTANCE_JUDD_RS232_RAW`          |               7 B | airtemp (`2B`), travel time (`2B`), distance (`2B`), retries (`1B`)  |
+|   `0x02` | `DISTANCE_JUDD_RS232_STATS`        |               9 B |             |
+|   `0x03` | `SNOW_MAXBOTIX_MB7554_RS232_STATS` |               7 B |             |
+|   `0xff` |                                    |              N.A. | _reserved_  |
+| `0xffff` |                                    |              N.A. | _reserved_  |
 
 # Representations
 
