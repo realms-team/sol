@@ -22,6 +22,37 @@ def removeFile(request):
         # if file does not exist. NOT an error.
         pass
 
+EXPECTEDRANGE = [
+    (
+         100, # startTimestamp
+         300, # endTimestamp
+         100, # idxMin
+         301, # idxMax
+    ),
+    (
+          -5, # startTimestamp
+         300, # endTimestamp
+           0, # idxMin
+         301, # idxMax
+    ),
+    (
+         100, # startTimestamp
+        1100, # endTimestamp
+         100, # idxMin
+        1000, # idxMax
+    ),
+    (
+          -5, # startTimestamp
+        1100, # endTimestamp
+           0, # idxMin
+        1000, # idxMax
+    ),
+]
+
+@pytest.fixture(params=EXPECTEDRANGE)
+def expectedRange(request):
+    return request.param
+
 #============================ helpers ===============================
 
 def getRandomObjects(num):
@@ -82,7 +113,10 @@ def test_dump_corrupt_load(removeFile):
     # compare
     assert dictsLoaded==dictsToDump1+dictsToDump2
 
-def test_retrieve_range(removeFile):
+def test_retrieve_range(removeFile,expectedRange):
+    
+    (startTimestamp,endTimestamp,idxMin,idxMax) = expectedRange
+    
     import Sol
     sol = Sol.Sol()
     
@@ -95,9 +129,9 @@ def test_retrieve_range(removeFile):
     # load
     dictsLoaded = sol.loadFromFile(
         FILENAME,
-        startTimestamp=200,
-        endTimestamp=300
+        startTimestamp=100,
+        endTimestamp=1900
     )
     
     # compare
-    assert dictsLoaded==dictsToDump[200:301]
+    assert dictsLoaded==dictsToDump[100:]

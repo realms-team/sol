@@ -190,13 +190,7 @@ class Sol(object):
                     
                     #=== binary search
                     
-                    iter = 0
-                    
                     while left_offset_stop<right_offset_start-1:
-                        
-                        iter+=1
-                        if iter==100:
-                            raise NotImplementedError()
                         
                         cur_offset_start = int((right_offset_start-left_offset_start)/2+left_offset_start)
                         (cur_timestamp,cur_offset_stop) = oneTimestamp(cur_offset_start)
@@ -224,7 +218,11 @@ class Sol(object):
                 
                 curOffset = startOffset
                 while True:
-                    (o,curOffset) = oneObject(curOffset)
+                    try:
+                        (o,curOffset) = oneObject(curOffset)
+                    except IndexError:
+                        # we have passed the end of the file
+                        break
                     if o['timestamp']>endTimestamp:
                         break
                     dicts += [o]
