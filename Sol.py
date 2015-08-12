@@ -139,11 +139,14 @@ class Sol(object):
     
     def loadFromFile(self,fileName):
         
-        returVal = []
-        
         with self.fileLock:
-            with open(fileName,'rb') as f:
-                raise NotImplementedError()
+            bins = self.hdlc.dehdlcify(fileName)
+        
+        print bins
+        
+        dicts = [self.bin_to_dict(b) for b in bins]
+        
+        return dicts
     
     #======================== private =========================================
     

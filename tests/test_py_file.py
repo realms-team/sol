@@ -1,4 +1,5 @@
 import os
+import random
 
 import pytest
 
@@ -23,6 +24,19 @@ def removeFile(request):
 
 #============================ helpers ===============================
 
+def getRandomObjects(num):
+    returnVal = []
+    for i in range(num):
+        returnVal += [
+            {
+                'mac':       EXAMPLE_MAC,
+                'timestamp': i,
+                'type':      random.randint(0x00,0xff),
+                'value':     [random.randint(0x00,0xff) for _ in range(random.randint(0,25))],
+            }
+        ]
+    return returnVal
+
 #============================ tests =================================
 
 def test_dump_load(removeFile):
@@ -30,16 +44,7 @@ def test_dump_load(removeFile):
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump = []
-    for i in range(10):
-        dictsToDump += [
-            {
-                'mac':       EXAMPLE_MAC,
-                'timestamp': i,
-                'type':      0x55,
-                'value':     [0x66,0x77],
-            }
-        ]
+    dictsToDump = getRandomObjects(10000)
     
     # dump
     sol.dumpToFile(dictsToDump,FILENAME)

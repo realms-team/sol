@@ -7,6 +7,7 @@ class OpenHdlc(object):
     HDLC_ESCAPE_ESCAPED    = '\x5d'
     HDLC_CRCINIT           = 0xffff
     HDLC_CRCGOOD           = 0xf0b8
+    HDLC_ESCAPE_MASK       = 0x20
     
     FCS16TAB  = (
         0x0000, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf,
@@ -68,46 +69,114 @@ class OpenHdlc(object):
         
         return [ord(b) for b in outBuf]
 
-    def dehdlcify(self,inBuf):
+    def dehdlcify(self,fileName,fileOffset=0,maxNum=None):
         
-        assert inBuf[ 0]==self.HDLC_FLAG
-        assert inBuf[-1]==self.HDLC_FLAG
+        returnVal = []
         
-        # make copy of input
-        outBuf     = inBuf[:]
-        if log.isEnabledFor(logging.DEBUG):
-            log.debug("got              {0}".format(u.formatStringBuf(outBuf)))
+        busyReceiving        = False
+        lastRxByte           = self.HDLC_FLAG
+        self._inputEscaping  = False
         
-        # remove flags
-        outBuf     = outBuf[1:-1]
-        if log.isEnabledFor(logging.DEBUG):
-            log.debug("after flags:     {0}".format(u.formatStringBuf(outBuf)))
+        with open(fileName,'rb') as f:
+            
+            rxByte = f.read(1)
+            
+            while rxByte!="":
+                
+                if (
+                        busyReceiving==False  and
+                        lastRxByte==self.HDLC_FLAG and
+                        rxByte!=self.HDLC_FLAG
+                    ):
+                    # start of frame
+                    
+                    # I'm now receiving
+                    busyReceiving = True
+                    
+                    # create the HDLC frame
+                    self._hdlc_inputOpen()
+                    
+                    # add the byte just received
+                    self._hdlc_inputWrite(rxByte)
+               
+                elif (
+                        busyReceiving==True   and
+                        rxByte!=self.HDLC_FLAG
+                    ):
+                    # middle of frame
+                    
+                    # add the byte just received
+                    self._hdlc_inputWrite(rxByte)
+                    
+                elif (
+                        busyReceiving==True   and
+                        rxByte==self.HDLC_FLAG
+                    ):
+                    # end of frame
+                    
+                    # finalize the HDLC frame
+                    try:
+                        self._hdlc_inputClose()
+                    except ValueError:
+                        # invalid HDLC frame
+                        pass
+                    else:
+                        returnVal += [[ord(b) for b in self._inputBuf]]
+                        if (maxNum and len(returnVal)>=maxNum):
+                            break
+                        
+                    busyReceiving = False
+                
+                else:
+                    # between frames
+                    pass
+                
+                lastRxByte = rxByte
+                
+                rxByte = f.read(1)
         
-        # unstuff
-        outBuf     = outBuf.replace(self.HDLC_ESCAPE+self.HDLC_FLAG_ESCAPED,   self.HDLC_FLAG)
-        outBuf     = outBuf.replace(self.HDLC_ESCAPE+self.HDLC_ESCAPE_ESCAPED, self.HDLC_ESCAPE)
-        if log.isEnabledFor(logging.DEBUG):
-            log.debug("after unstuff:   {0}".format(u.formatStringBuf(outBuf)))
-        
-        if len(outBuf)<2:
-            raise ValueError('packet too short')
-        
-        # check CRC
-        crc        = self.HDLC_CRCINIT
-        for b in outBuf:
-            crc    = self._crcIteration(crc,b)
-        if crc!=self.HDLC_CRCGOOD:
-           raise ValueError('wrong CRC')
-        
-        # remove CRC
-        outBuf     = outBuf[:-2] # remove CRC
-        if log.isEnabledFor(logging.DEBUG):
-            log.debug("after CRC:       {0}".format(u.formatStringBuf(outBuf)))
-        
-        return outBuf
+        return returnVal
 
     #============================ private =====================================
     
     def _crcIteration(self,crc,b):
         return (crc>>8)^self.FCS16TAB[((crc^(ord(b))) & 0xff)]
     
+    def _hdlc_inputOpen(self):
+        
+        # reset the input buffer
+        self._inputBuf = []
+        
+        # initialize the value of the CRC
+        self._inputCrc = self.HDLC_CRCINIT
+
+    def _hdlc_inputWrite(self,b):
+        
+        if b==self.HDLC_ESCAPE:
+            self._inputEscaping = True
+        else:
+            if self._inputEscaping==True:
+                b = chr(ord(b)^self.HDLC_ESCAPE_MASK)
+                self._inputEscaping = False
+
+            # add byte to input buffer
+            self._inputBuf += [b]
+            
+            # iterate through CRC calculator
+            self._inputCrc = self._crcIteration(self._inputCrc,b)
+    
+    def _hdlc_inputClose(self):
+        
+        # verify the validity of the frame
+        if self._inputCrc==self.HDLC_CRCGOOD:
+           # the CRC is correct
+           
+           # remove the CRC from the input buffer
+           self._inputBuf = self._inputBuf[:-2]
+        else:
+           self._inputBuf = []
+           
+           raise ValueError("invalid CRC")
+        
+        # reset escaping
+        self._inputEscaping = False
