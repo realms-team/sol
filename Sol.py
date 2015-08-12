@@ -98,6 +98,7 @@ class Sol(object):
         o_bin = o_bin[1:]
         
         # value
+        
         assert len(o_bin)>=0
         returnVal['value'] = o_bin
         
