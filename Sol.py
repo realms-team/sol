@@ -1,5 +1,7 @@
 import json
 import base64
+import threading
+
 import SolDefines as d
 import SolVersion as ver
 
@@ -8,7 +10,18 @@ class Sol(object):
     Sensor Object Library.
     '''
     
+    def __init__(self):
+        self.fileLock = threading.RLock()
+    
     #======================== public ==========================================
+    
+    #===== admin
+    
+    @property
+    def version(self):
+        return ver.SOL_VERSION
+    
+    #===== conversions
     
     def dict_to_bin(self,o_dict):
         bin   = []
@@ -110,9 +123,25 @@ class Sol(object):
         
         return returnVal
     
-    @property
-    def version(self):
-        return ver.SOL_VERSION
+    #===== file manipulation
+    
+    def dumpToFile(self,dicts,fileName):
+        
+        with self.fileLock:
+            with open(fileName,'ab') as f:
+                for d in dicts:
+                    bin = self.dict_to_bin(d)
+                    # TODO: HDLC
+                    bin = ''.join([chr(b) for b in bin])
+                    f.write(bin)
+    
+    def loadFromFile(self,fileName):
+        
+        returVal = []
+        
+        with self.fileLock:
+            with open(fileName,'rb') as f:
+                raise NotImplementedError()
     
     #======================== private =========================================
     
@@ -143,6 +172,9 @@ class Sol(object):
             }
         else:
             raise SystemError()
+
+
+#============================ main ============================================
 
 if __name__=="__main__":
     import os
