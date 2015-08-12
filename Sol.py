@@ -178,8 +178,14 @@ class Sol(object):
                     with open(fileName,'rb') as f:
                         f.seek(0,os.SEEK_END)
                         right_offset_start = f.tell()
-                    right_offset_start = self._backUpUntilStartFrame(fileName,right_offset_start)
-                    (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
+                    while True:
+                        right_offset_start = self._backUpUntilStartFrame(fileName,right_offset_start)
+                        try:
+                           (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
+                        except IndexError:
+                           right_offset_start -= 1
+                        else:
+                           break
                     
                     if left_timestamp>startTimestamp:
                         startOffset = left_timestamp
@@ -231,9 +237,9 @@ class Sol(object):
     
     #======================== private =========================================
     
-    def _backUpUntilStartFrame(self,fileName,maxOffset):
+    def _backUpUntilStartFrame(self,fileName,curOffset):
         with open(fileName,'rb') as f:
-            f.seek(maxOffset,os.SEEK_SET)
+            f.seek(curOffset,os.SEEK_SET)
             while True:
                 byte = f.read(1)
                 if byte==self.hdlc.HDLC_FLAG:

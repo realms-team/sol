@@ -55,13 +55,13 @@ def expectedRange(request):
 
 #============================ helpers ===============================
 
-def getRandomObjects(num):
+def getRandomObjects(num,startTs=0):
     returnVal = []
     for i in range(num):
         returnVal += [
             {
                 'mac':       EXAMPLE_MAC,
-                'timestamp': i,
+                'timestamp': i+startTs,
                 'type':      random.randint(0x00,0xff),
                 'value':     [random.randint(0x00,0xff) for _ in range(random.randint(0,25))],
             }
@@ -135,3 +135,74 @@ def test_retrieve_range(removeFile,expectedRange):
     
     # compare
     assert dictsLoaded==dictsToDump[100:]
+
+def test_retrieve_range_corrupt_beginning(removeFile):
+    
+    import Sol
+    sol = Sol.Sol()
+    
+    # prepare dicts to dump
+    dictsToDump = getRandomObjects(1000)
+    
+    # dump
+    with open(FILENAME,'ab') as f:
+        f.write("garbage")
+    sol.dumpToFile(dictsToDump,FILENAME)
+    
+    # load
+    dictsLoaded = sol.loadFromFile(
+        FILENAME,
+        startTimestamp=100,
+        endTimestamp=800
+    )
+    
+    # compare
+    assert dictsLoaded==dictsToDump[100:801]
+
+def test_retrieve_range_corrupt_middle(removeFile):
+    
+    import Sol
+    sol = Sol.Sol()
+    
+    # prepare dicts to dump
+    dictsToDump1 = getRandomObjects(500)
+    dictsToDump2 = getRandomObjects(500,startTs=500)
+    
+    # dump
+    sol.dumpToFile(dictsToDump1,FILENAME)
+    with open(FILENAME,'ab') as f:
+        f.write("garbage")
+    sol.dumpToFile(dictsToDump2,FILENAME)
+    
+    # load
+    dictsLoaded = sol.loadFromFile(
+        FILENAME,
+        startTimestamp=100,
+        endTimestamp=800
+    )
+    
+    # compare
+    assert dictsLoaded==(dictsToDump1+dictsToDump2)[100:801]
+
+def test_retrieve_range_corrupt_end(removeFile):
+    
+    import Sol
+    sol = Sol.Sol()
+    
+    # prepare dicts to dump
+    dictsToDump = getRandomObjects(1000)
+    
+    # dump
+    sol.dumpToFile(dictsToDump,FILENAME)
+    with open(FILENAME,'ab') as f:
+        f.write("garbage")
+    
+    # load
+    dictsLoaded = sol.loadFromFile(
+        FILENAME,
+        startTimestamp=100,
+        endTimestamp=800
+    )
+    
+    # compare
+    assert dictsLoaded==dictsToDump[100:801]
