@@ -11,9 +11,6 @@ class Sol(object):
     #======================== public ==========================================
     
     def dict_to_bin(self,o_dict):
-        '''
-        \brief Convert list of dictionaries into a binary string.        
-        '''
         bin   = []
         
         # header
@@ -41,11 +38,6 @@ class Sol(object):
         return bin
     
     def bin_to_dict(self,o_bin,mac=None):
-        '''
-        \brief Convert a binary string onto a list of dictionaries, each
-            representing a sensor object.
-        '''
-        
         returnVal = {}
         
         # header
@@ -96,10 +88,6 @@ class Sol(object):
         return returnVal
     
     def dict_to_json(self,o_dict,mode="verbose"):
-        '''
-        \brief Convert list of dictionaries into a JSON string.
-        '''
-        
         output = {
             'v': d.SOL_HDR_V,
             'o': self._o_to_json(o_dict,mode)
@@ -108,9 +96,6 @@ class Sol(object):
         return json.dumps(output)
     
     def json_to_dict(self,o_json,mode="verbose"):
-        '''
-        \brief Convert list of dictionaries into a JSON string.
-        '''
         returnVal = json.loads(o_json)['o']
         
         if   mode=="minimal":
@@ -158,7 +143,7 @@ class Sol(object):
             }
         else:
             raise SystemError()
-    
+
 if __name__=="__main__":
     import os
     os.system("py.test -x tests/")

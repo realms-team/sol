@@ -133,7 +133,7 @@ This header appears in front on each object, or in a front of a chain of objects
 
 ### example transmission use cases
 
-**Example 1**: transmitting a single 2-byte temperature sensor reading, taken in the past:
+**Example 1**. transmitting a single 2-byte temperature sensor reading, taken in the past:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -149,7 +149,7 @@ This header appears in front on each object, or in a front of a chain of objects
 * `[2B]` value: `0x....`
 
 
-**Example 2**: transmitting a single 2-byte temperature sensor reading, taken just now:
+**Example 2**. transmitting a single 2-byte temperature sensor reading, taken just now:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -168,7 +168,7 @@ This header appears in front on each object, or in a front of a chain of objects
 Total: 4 bytes.
 
 
-**Example 3**: Transmitting 3 sensor readings from 3 different sensors with well-known length, taken at the same time in the past:
+**Example 3**. Transmitting 3 sensor readings from 3 different sensors with well-known length, taken at the same time in the past:
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
@@ -244,7 +244,7 @@ This specification defines two formats:
 #### "minimal" representation
 
 ```
-"TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"
+"TWFuIGlzIGRpc3Rpbmd1aXNoZWQs"
 ```
 
 * the minimal representation is a string representing the binary representation of one or more sensor objects.
@@ -258,7 +258,7 @@ This specification defines two formats:
    "mac":       "00-17-0d-00-00-12-34-56",
    "timestamp": 12345678890,
    "type":      12,
-   "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz",
+   "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQs",
    
 }
 ```
