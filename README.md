@@ -20,11 +20,16 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x00` |                                    |              N.A. | _reserved_  |
 |   `0x01` | `DISTANCE_JUDD_RS232_RAW`          |               7 B | airtemp (`2B`), travel time (`2B`), distance (`2B`), retries (`1B`)  |
 |   `0x02` | `DISTANCE_JUDD_RS232_STATS`        |              12 B | airtemp (`2B`), travel time (`2B`), distance (`2B`), retries (`1B`) ,# readings (`1B`) , std readings(`4B`)                  |
-|   `0x03` | `SNOW_MAXBOTIX_MB7554_RS232_STATS` |               7 B | distance (`2B`), # reading (`1B`), std(`4B`) |
-|   `0x04` |`TEMPRH_SENSERION_SHT15_RS232_STATS`|              17 B | temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`)  |
-|   `0x05` |`TEMPRH_SENSERION_SHT25_RS232_STATS`|              17 B |  temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`) |
-|   `0x06` |`SOLAR_HUKSEFLUX_LP25_AV_STATS`     |              9 B  |  vout(`4B`) , # readings (`1B`) , std readings(`4B`)                       |
-|   `0x07` |`SOIL_DECAGON_GS3_RS232`            |              17 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`),# readings (`1B`) ,std readings(`4B`)                  |
+|   `0x03` | `SNOW_MAXBOTIX_MB7554_RS232_RAW`   |               2 B | distance (`2B`) |
+|   `0x04` | `SNOW_MAXBOTIX_MB7554_RS232_STATS` |               7 B | distance (`2B`), # reading (`1B`), std(`4B`) |
+|   `0x05` |`TEMPRH_SENSERION_SHT15_RS232_RAW`  |               8 B | temp(`4B`),r.H.(`4B`)    |
+|   `0x06` |`TEMPRH_SENSERION_SHT25_RS232_RAW`  |               8 B |  temp(`4B`),r.H.(`4B`)   |
+|   `0x07` |`TEMPRH_SENSERION_SHT15_RS232_STATS`|              17 B | temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`)  |
+|   `0x08` |`TEMPRH_SENSERION_SHT25_RS232_STATS`|              17 B |  temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`) |
+|   `0x09` |`SOLAR_HUKSEFLUX_LP25_AV_RAW`     |                 4 B |  vout(`4B`)                       |
+|   `0x0a` |`SOIL_DECAGON_GS3_RS232_RAW`      |                12 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`)
+|   `0x0b` |`SOLAR_HUKSEFLUX_LP25_AV_STATS`     |               9 B |  vout(`4B`) , # readings (`1B`) , std readings(`4B`)                       |
+|   `0x0c` |`SOIL_DECAGON_GS3_RS232_STATS`      |              17 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`),# readings (`1B`) ,std readings(`4B`)                      |
 |   `0xff` |                                    |              N.A. | _reserved_  |   
 | `0xffff` |                                    |              N.A. | _reserved_  |
 
