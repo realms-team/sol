@@ -1,3 +1,4 @@
+import os
 import json
 import base64
 import threading
@@ -137,18 +138,109 @@ class Sol(object):
                     bin = ''.join([chr(b) for b in bin])
                     f.write(bin)
     
-    def loadFromFile(self,fileName):
+    def loadFromFile(self,fileName,startTimestamp=None,endTimestamp=None):
         
-        with self.fileLock:
-            bins = self.hdlc.dehdlcify(fileName)
+        if startTimestamp!=None or endTimestamp!=None:
+            assert startTimestamp!=None and endTimestamp!=None
         
-        print bins
+        if startTimestamp==None:
+            # retrieve all data
+            
+            with self.fileLock:
+                (bins,_) = self.hdlc.dehdlcify(fileName)
+            
+            dicts = [self.bin_to_dict(b) for b in bins]
         
-        dicts = [self.bin_to_dict(b) for b in bins]
+        else:
+            
+            with self.fileLock:
+                
+                #=== find startOffset
+                
+                while True:
+                    
+                    startOffset = None
+                    
+                    def oneObject(offset):
+                        (o,idx) = self.hdlc.dehdlcify(fileName,fileOffset=offset,maxNum=1)
+                        o = o[0]
+                        o = self.bin_to_dict(o)
+                        return (o,idx)
+                    
+                    def oneTimestamp(offset):
+                        (o,idx) = oneObject(offset)
+                        return (o['timestamp'],idx)
+                    
+                    #=== get boundaries
+                    
+                    left_offset_start = 0
+                    (left_timestamp,left_offset_stop) = oneTimestamp(left_offset_start)
+                    with open(fileName,'rb') as f:
+                        f.seek(0,os.SEEK_END)
+                        right_offset_start = f.tell()
+                    right_offset_start = self._backUpUntilStartFrame(fileName,right_offset_start)
+                    (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
+                    
+                    if left_timestamp>startTimestamp:
+                        startOffset = left_timestamp
+                        break
+                    if right_timestamp<startTimestamp:
+                        startOffset = right_timestamp
+                        break
+                    
+                    #=== binary search
+                    
+                    iter = 0
+                    
+                    while left_offset_stop<right_offset_start-1:
+                        
+                        iter+=1
+                        if iter==100:
+                            raise NotImplementedError()
+                        
+                        cur_offset_start = int((right_offset_start-left_offset_start)/2+left_offset_start)
+                        (cur_timestamp,cur_offset_stop) = oneTimestamp(cur_offset_start)
+                        
+                        if cur_timestamp==startTimestamp:
+                            startOffset = cur_offset_start
+                            break
+                        elif cur_timestamp>startTimestamp:
+                            right_offset_start = cur_offset_start
+                            right_offset_stop  = cur_offset_stop
+                            right_timestamp    = cur_timestamp
+                        elif cur_timestamp<startTimestamp:
+                            left_offset_start  = cur_offset_start
+                            left_offset_stop   = cur_offset_stop
+                            left_timestamp     = cur_timestamp
+                    
+                    if startOffset==None:
+                        startOffset = left_offset_start
+                    
+                    break
+                
+                #=== read objects
+                
+                dicts = []
+                
+                curOffset = startOffset
+                while True:
+                    (o,curOffset) = oneObject(curOffset)
+                    if o['timestamp']>endTimestamp:
+                        break
+                    dicts += [o]
         
         return dicts
     
     #======================== private =========================================
+    
+    def _backUpUntilStartFrame(self,fileName,maxOffset):
+        with open(fileName,'rb') as f:
+            f.seek(maxOffset,os.SEEK_SET)
+            while True:
+                byte = f.read(1)
+                if byte==self.hdlc.HDLC_FLAG:
+                    return f.tell()-1
+                f.seek(-2,os.SEEK_CUR)
     
     def _num_to_list(self,num,length):
         output = []
@@ -157,12 +249,9 @@ class Sol(object):
         return output
     
     def _list_to_num(self,l):
-        print l
         output = 0
         for i in range(len(l)):
             output += l[i]<<(8*(len(l)-i-1))
-            print l[i]
-            print hex(output)
         return output
     
     def _o_to_json(self,o_dict,mode):

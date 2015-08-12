@@ -79,6 +79,8 @@ class OpenHdlc(object):
         
         with open(fileName,'rb') as f:
             
+            f.seek(fileOffset)
+            
             rxByte = f.read(1)
             
             while rxByte!="":
@@ -109,7 +111,7 @@ class OpenHdlc(object):
                     self._hdlc_inputWrite(rxByte)
                     
                 elif (
-                        busyReceiving==True   and
+                        busyReceiving==True and
                         rxByte==self.HDLC_FLAG
                     ):
                     # end of frame
@@ -135,7 +137,7 @@ class OpenHdlc(object):
                 
                 rxByte = f.read(1)
         
-        return returnVal
+            return (returnVal,f.tell())
 
     #============================ private =====================================
     
