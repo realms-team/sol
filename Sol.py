@@ -1,6 +1,7 @@
 import json
 import base64
 import SolDefines as d
+import SolVersion as ver
 
 class Sol(object):
     '''
@@ -123,6 +124,10 @@ class Sol(object):
             raise SystemError()
         
         return returnVal
+    
+    @property
+    def version(self):
+        return ver.SOL_VERSION
     
     #======================== private =========================================
     

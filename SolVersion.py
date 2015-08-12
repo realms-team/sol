@@ -10,7 +10,7 @@ with open('sol-version.h') as f:
         for line in lines:
             m = re.search('{0}\s*(\w)'.format(k), line)
             if m:
-                SOL_VERSION[k] = m.group(1)
+                SOL_VERSION[k] = int(m.group(1))
 
 for k in KEYS:
     assert SOL_VERSION[k] != None
