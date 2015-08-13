@@ -1,10 +1,16 @@
+import os
 import re
 
 SOL_VERSION = {}
 
 KEYS = ['SOL_VERSION_MAJOR','SOL_VERSION_MINOR','SOL_VERSION_PATCH','SOL_VERSION_BUILD']
 
-with open('sol-version.h') as f:
+if os.path.isfile('sol-version.h'):
+    fileName = 'sol-version.h'
+else:
+    fileName = os.path.join('..','sol','sol-version.h')
+
+with open(fileName) as f:
     lines = f.readlines()
     for k in KEYS:
         for line in lines:
