@@ -34,19 +34,19 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x0e` | `NOTIF_DATA_RAW`                    |              None |  srcPort (`2B`), dstPort (`2B`), payload (_variable_) |
 |   `0x0f` | `NOTIF_IPDATA`                      |              None |  payload (_variable_) |
 |   `0x10` | `NOTIF_HEALTHREPORT`                |              None |  payload (_variable_) |
-|   `0x11` | `NOTIF_EVENT_COMMANDFINISHED`       |                 5 |  callbackId (`4`), rc (`1`) |
-|   `0x12` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x13` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x14` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x15` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x16` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x17` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x18` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x19` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x1a` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x1b` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x1c` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
-|   `0x1d` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x11` | `NOTIF_EVENT_COMMANDFINISHED`       |                5B |  callbackId (`4`), rc (`1`) |
+|   `0x12` | `NOTIF_EVENT_PATHCREATE`            |               17B |  source(`8B`) ,dest(`8B`) ,direction (`1B`) |
+|   `0x13` | `NOTIF_EVENT_PATHDELETE`            |               17B |  source(`8B`) ,dest(`8B`) ,direction (`1B`) |
+|   `0x14` | `NOTIF_EVENT_PING`                  |               19B |  callbackId (`4B`),macAddress(`8B`),delay(`4B`),voltage (`2B`),temperature(`1B`)|
+|   `0x15` | `NOTIF_EVENT_NETWORKTIME`           |               19B |  uptime (`4B`),utcTime (`8B`), asn(`5B`),asnOffset(`2B`)|
+|   `0x16` | `NOTIF_EVENT_NETWORKRESET`          |                0B |  0      |
+|   `0x17` | `NOTIF_EVENT_MOTEJOIN`              |                8B |  macAddress (`8B`) |
+|   `0x18` | `NOTIF_EVENT_MOTECREATE`            |               10B |  macAddress (`8B`) ,moteId(`2B`) |
+|   `0x19` | `NOTIF_EVENT_MOTEDELETE`            |               10B |  macAddress (`8B`) ,moteId(`2B`)  |
+|   `0x1a` | `NOTIF_EVENT_MOTELOST`              |                8B |  macAddress (`8B`) |
+|   `0x1b` | `NOTIF_EVENT_MOTEOPERATIONAL`       |                8B |  macAddress (`8B`) |
+|   `0x1c` | `NOTIF_EVENT_MOTERESET`             |                8B |  macAddress (`8B`) |
+|   `0x1d` | `NOTIF_EVENT_PACKETSENT`            |                5B |  callbackId (`4B`),rc (`1`)  |
 |   `0xff` |                                     |              N.A. | _reserved_  |   
 | `0xffff` |                                     |              N.A. | _reserved_  |
 
