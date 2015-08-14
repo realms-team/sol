@@ -25,3 +25,5 @@ if __name__=="__main__":
     for k in KEYS:
         print '{0}: {1}'.format(k,SOL_VERSION[k])
     raw_input("Press Enter to close.")
+
+VERSION = tuple([SOL_VERSION[k] for k in KEYS])
