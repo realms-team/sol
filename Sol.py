@@ -12,8 +12,6 @@ class Sol(object):
     Sensor Object Library.
     '''
     
-    SOL_PORT = d.SOL_PORT
-    
     def __init__(self):
         self.fileLock = threading.RLock()
         self.hdlc     = OpenHdlc.OpenHdlc()
