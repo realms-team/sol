@@ -30,11 +30,23 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x0a` | `SOLAR_HUKSEFLUX_LP25_AV_STATS`     |               9 B |  vout(`4B`) , # readings (`1B`) , std readings(`4B`)                       |
 |   `0x0b` | `SOIL_DECAGON_GS3_RS232_RAW`        |              12 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`)
 |   `0x0c` | `SOIL_DECAGON_GS3_RS232_STATS`      |              17 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`),# readings (`1B`) ,std readings(`4B`)                      |
-|   `0x0d` | `NOTIF_EVENT`                       |              None |  eventID (`4B`), eventType (`1B`), payload (_variable_) |
-|   `0x0e` | `NOTIF_LOG`                         |              None |  payload (_variable_) |
-|   `0x0f` | `NOTIF_DATA_RAW`                    |              None |  srcPort (`2B`), dstPort (`2B`), payload (_variable_) |
-|   `0x10` | `NOTIF_IPDATA`                      |              None |  payload (_variable_) |
-|   `0x11` | `NOTIF_HEALTHREPORT`                |              None |  payload (_variable_) |
+|   `0x0d` | `NOTIF_LOG`                         |              None |  payload (_variable_) |
+|   `0x0e` | `NOTIF_DATA_RAW`                    |              None |  srcPort (`2B`), dstPort (`2B`), payload (_variable_) |
+|   `0x0f` | `NOTIF_IPDATA`                      |              None |  payload (_variable_) |
+|   `0x10` | `NOTIF_HEALTHREPORT`                |              None |  payload (_variable_) |
+|   `0x11` | `NOTIF_EVENT_COMMANDFINISHED`       |                 5 |  callbackId (`4`), rc (`1`) |
+|   `0x12` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x13` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x14` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x15` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x16` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x17` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x18` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x19` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x1a` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x1b` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x1c` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
+|   `0x1d` | `NOTIF_EVENT_`                |            poipoi |  poipoi |
 |   `0xff` |                                     |              N.A. | _reserved_  |   
 | `0xffff` |                                     |              N.A. | _reserved_  |
 
