@@ -1,3 +1,5 @@
+SOL_PORT                = 0xf0ba
+
 # header
 
 SOL_HDR_V_OFFSET        = 6

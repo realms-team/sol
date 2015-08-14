@@ -26,10 +26,11 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x06` |`TEMPRH_SENSERION_SHT25_RS232_RAW`  |               8 B |  temp(`4B`),r.H.(`4B`)   |
 |   `0x07` |`TEMPRH_SENSERION_SHT15_RS232_STATS`|              17 B | temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`)  |
 |   `0x08` |`TEMPRH_SENSERION_SHT25_RS232_STATS`|              17 B |  temp(`4B`),r.H.(`4B`)  , # readings(`1B`), temp std(`4B`), r.H. std(`4B`) |
-|   `0x09` |`SOLAR_HUKSEFLUX_LP25_AV_RAW`     |                 4 B |  vout(`4B`)                       |
-|   `0x0a` |`SOIL_DECAGON_GS3_RS232_RAW`      |                12 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`)
+|   `0x09` |`SOLAR_HUKSEFLUX_LP25_AV_RAW`       |               4 B |  vout(`4B`)                       |
+|   `0x0a` |`SOIL_DECAGON_GS3_RS232_RAW`        |              12 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`)
 |   `0x0b` |`SOLAR_HUKSEFLUX_LP25_AV_STATS`     |               9 B |  vout(`4B`) , # readings (`1B`) , std readings(`4B`)                       |
 |   `0x0c` |`SOIL_DECAGON_GS3_RS232_STATS`      |              17 B |  moisture(`4B`) , soiltemp (`4B`) , soilec(`4B`),# readings (`1B`) ,std readings(`4B`)                      |
+|   `0x0d` |`RAWDATANOTIF`                      |              None |  UDP port (`1B`) , payload (_variable_) |
 |   `0xff` |                                    |              N.A. | _reserved_  |   
 | `0xffff` |                                    |              N.A. | _reserved_  |
 
