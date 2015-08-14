@@ -242,6 +242,18 @@ class Sol(object):
         
         return dicts
     
+    #===== create value
+    
+    def create_value_NOTIF_EVENT(self,eventID,eventType,payload):
+        return self._num_to_list(eventID,4)+     \
+               [eventType]+                      \
+               payload
+    
+    def create_value_NOTIF_DATA_RAW(self,srcPort,dstPort,payload):
+        return self._num_to_list(srcPort,2)+     \
+               self._num_to_list(dstPort,2)+     \
+               payload
+    
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
