@@ -101,7 +101,7 @@ This header appears in front on each object, or in a front of a chain of objects
     * `0`: no MAC address present
     * `1`: 8-byte MAC address present
 * `S`: timestamp encoding
-    * `0`: timestamp is a 4-byte Linux epoch (1-second granularity)
+    * `0`: timestamp is a 4-byte Linux epoch in UTC (1-second granularity)
     * `1`: timestamp is elided, and recovered from the timestamp field present in the SmartMesh IP header
 * `Y`: type encoding
     * `0`: 1-byte type field
