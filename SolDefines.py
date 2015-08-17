@@ -32,6 +32,12 @@ SOL_TYPE_NOTIF_EVENT_MOTEOPERATIONAL        = 0x1b
 SOL_TYPE_NOTIF_EVENT_MOTERESET              = 0x1c
 SOL_TYPE_NOTIF_EVENT_PACKETSENT             = 0x1d
 
+def solTypeToString(solDefinesClass,type):
+    for k in dir(solDefinesClass):
+        if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==type:
+            return k
+    return "UNKNOWN!"
+
 # header
 
 SOL_HDR_V_OFFSET        = 6
