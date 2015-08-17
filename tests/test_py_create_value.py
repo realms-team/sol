@@ -9,50 +9,50 @@ import json
 
 #============================ tests =================================
 
-def test_create_value_NOTIF_DATA_RAW():
+def test_create_value_SOL_TYPE_NOTIF_DATA_RAW():
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_DATA_RAW(
+    assert sol.create_value_SOL_TYPE_NOTIF_DATA_RAW(
         srcPort    = 0x1122,
         dstPort    = 0x3344,
         payload    = [0x55,0x66],
     )==[0x11,0x22,0x33,0x44,0x55,0x66]
 
-def test_create_value_NOTIF_EVENT_COMMANDFINISHED():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_COMMANDFINISHED():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_COMMANDFINISHED(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_COMMANDFINISHED(
         callbackId = 0x11223344,
         rc         = 0x55
     )==[0x11,0x22,0x33,0x44,0x55]
 
-def test_create_value_NOTIF_EVENT_PATHCREATE():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_PATHCREATE():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_PATHCREATE(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_PATHCREATE(
         source     = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
         dest       = [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],
         direction  = 0x12,
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_NOTIF_EVENT_PATHDELETE():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_PATHDELETE():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_PATHDELETE(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_PATHDELETE(
         source     = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
         dest       = [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],
         direction  = 0x12,
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_NOTIF_EVENT_PING():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_PING():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_PING(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_PING(
         callbackId = 0x00112233,
         macAddress = [0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb],
         delay      = 0xccddeeff,
@@ -62,11 +62,11 @@ def test_create_value_NOTIF_EVENT_PING():
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_NOTIF_EVENT_NETWORKTIME():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_NETWORKTIME(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME(
         uptime     = 0x00112233,
         utcTimeSec = 0x44556677,
         utcTimeUsec= 0x8899aabb,
@@ -76,58 +76,58 @@ def test_create_value_NOTIF_EVENT_NETWORKTIME():
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_NOTIF_EVENT_NETWORKRESET():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_NETWORKRESET():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_NETWORKRESET()==[]
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_NETWORKRESET()==[]
 
-def test_create_value_NOTIF_EVENT_MOTEJOIN():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_MOTEJOIN():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_MOTEJOIN(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_MOTEJOIN(
         macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_NOTIF_EVENT_MOTEDELETE():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_MOTEDELETE():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_MOTEDELETE(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_MOTEDELETE(
         macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
         moteId     = 0x8899,
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99]
 
-def test_create_value_NOTIF_EVENT_MOTELOST():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_MOTELOST():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_MOTELOST(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_MOTELOST(
         macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_NOTIF_EVENT_MOTEOPERATIONAL():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_MOTEOPERATIONAL():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_MOTEOPERATIONAL(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_MOTEOPERATIONAL(
         macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_NOTIF_EVENT_MOTERESET():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_MOTERESET():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_MOTERESET(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_MOTERESET(
         macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_NOTIF_EVENT_PACKETSENT():    
+def test_create_value_SOL_TYPE_NOTIF_EVENT_PACKETSENT():    
     import Sol
     sol = Sol.Sol()
     
-    assert sol.create_value_NOTIF_EVENT_PACKETSENT(
+    assert sol.create_value_SOL_TYPE_NOTIF_EVENT_PACKETSENT(
         callbackId = 0x11223344,
         rc         = 0x55
     )==[0x11,0x22,0x33,0x44,0x55]

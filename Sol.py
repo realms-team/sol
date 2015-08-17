@@ -242,59 +242,59 @@ class Sol(object):
     
     #===== create value
     
-    def create_value_NOTIF_DATA_RAW(self,srcPort,dstPort,payload):
+    def create_value_SOL_TYPE_NOTIF_DATA_RAW(self,srcPort,dstPort,payload):
         return self._num_to_list(srcPort,2)+     \
                self._num_to_list(dstPort,2)+     \
                payload
     
-    def create_value_NOTIF_EVENT_COMMANDFINISHED(self,callbackId,rc):
+    def create_value_SOL_TYPE_NOTIF_EVENT_COMMANDFINISHED(self,callbackId,rc):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
     
-    def create_value_NOTIF_EVENT_PATHCREATE(self,source,dest,direction):
+    def create_value_SOL_TYPE_NOTIF_EVENT_PATHCREATE(self,source,dest,direction):
         return source+dest+[direction]
     
-    def create_value_NOTIF_EVENT_PATHDELETE(self,source,dest,direction):
+    def create_value_SOL_TYPE_NOTIF_EVENT_PATHDELETE(self,source,dest,direction):
         return source+dest+[direction]
     
-    def create_value_NOTIF_EVENT_PING(self,callbackId,macAddress,delay,voltage,temperature):
+    def create_value_SOL_TYPE_NOTIF_EVENT_PING(self,callbackId,macAddress,delay,voltage,temperature):
         return self._num_to_list(callbackId,4)+  \
                macAddress+                       \
                self._num_to_list(delay,4)+       \
                self._num_to_list(voltage,2)+     \
                self._num_to_list(temperature,1)
     
-    def create_value_NOTIF_EVENT_NETWORKTIME(self,uptime,utcTimeSec,utcTimeUsec,asn,asnOffset):
+    def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME(self,uptime,utcTimeSec,utcTimeUsec,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
                self._num_to_list(utcTimeSec,4)+  \
                self._num_to_list(utcTimeUsec,4)+ \
                self._num_to_list(asn,5)+         \
                self._num_to_list(asnOffset,2)
     
-    def create_value_NOTIF_EVENT_NETWORKRESET(self):
+    def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKRESET(self):
         return []
     
-    def create_value_NOTIF_EVENT_MOTEJOIN(self,macAddress):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTEJOIN(self,macAddress):
         return macAddress
     
-    def create_value_NOTIF_EVENT_MOTECREATE(self,macAddress,moteId):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTECREATE(self,macAddress,moteId):
         return macAddress +                      \
                self._num_to_list(moteId,2)
     
-    def create_value_NOTIF_EVENT_MOTEDELETE(self,macAddress,moteId):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTEDELETE(self,macAddress,moteId):
         return macAddress +                      \
                self._num_to_list(moteId,2)
     
-    def create_value_NOTIF_EVENT_MOTELOST(self,macAddress):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTELOST(self,macAddress):
         return macAddress
     
-    def create_value_NOTIF_EVENT_MOTEOPERATIONAL(self,macAddress):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTEOPERATIONAL(self,macAddress):
         return macAddress
     
-    def create_value_NOTIF_EVENT_MOTERESET(self,macAddress):
+    def create_value_SOL_TYPE_NOTIF_EVENT_MOTERESET(self,macAddress):
         return macAddress
     
-    def create_value_NOTIF_EVENT_PACKETSENT(self,callbackId,rc):
+    def create_value_SOL_TYPE_NOTIF_EVENT_PACKETSENT(self,callbackId,rc):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
     
