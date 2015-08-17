@@ -264,11 +264,11 @@ class Sol(object):
                self._num_to_list(voltage,2)+     \
                self._num_to_list(temperature,1)
     
-    def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME(self,uptime,utcTimeSec,utcTimeUsec,asn,asnOffset):
+    def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
-               self._num_to_list(utcTimeSec,4)+  \
-               self._num_to_list(utcTimeUsec,4)+ \
-               self._num_to_list(asn,5)+         \
+               self._num_to_list(utcSecs,4)+  \
+               self._num_to_list(utcUsecs,4)+ \
+               list(asn)+         \
                self._num_to_list(asnOffset,2)
     
     def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKRESET(self):
