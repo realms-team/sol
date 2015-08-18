@@ -35,19 +35,23 @@ SOL_EXAMPLE = [
             json.dumps(
                 {
                     'v':         0,
-                    'o':         "EAECAwQFBgcIESIzRFVmdw==",
+                    'o':         [
+                        "EAECAwQFBgcIESIzRFVmdw==",
+                    ],
                 }
             ),
         'json verbose':
             json.dumps(
                 {
                     'v':         0,
-                    'o':         {
-                        "mac":       "01-02-03-04-05-06-07-08",
-                        "timestamp": 0x11223344,
-                        "type":      0x55,
-                        "value":     "Znc=",
-                    },
+                    'o':         [
+                        {
+                            "mac":       "01-02-03-04-05-06-07-08",
+                            "timestamp": 0x11223344,
+                            "type":      0x55,
+                            "value":     "Znc=",
+                        },
+                    ],
                 }
             ),
     },
@@ -83,20 +87,18 @@ def test_bin_to_dict(sol_example):
     
     assert sol.bin_to_dict(sol_example['bin macNO'],mac=EXAMPLE_MAC)==sol_example['dict']
 
-def test_dict_to_json(sol_example,json_mode):
+def test_dicts_to_json(sol_example,json_mode):
     sol_example = json.loads(sol_example)
     
     import Sol
     sol = Sol.Sol()
     
-    print sol.dict_to_json(sol_example['dict'],mode=json_mode)
-    
-    assert sol.dict_to_json(sol_example['dict'],mode=json_mode)==sol_example['json {0}'.format(json_mode)]
+    assert sol.dicts_to_json([sol_example['dict']],mode=json_mode)==sol_example['json {0}'.format(json_mode)]
 
-def test_json_to_dict(sol_example,json_mode):
+def test_json_to_dicts(sol_example,json_mode):
     sol_example = json.loads(sol_example)
     
     import Sol
     sol = Sol.Sol()
     
-    assert sol.json_to_dict(sol_example['json {0}'.format(json_mode)],mode=json_mode)==sol_example['dict']
+    assert sol.json_to_dicts(sol_example['json {0}'.format(json_mode)])==[sol_example['dict']]

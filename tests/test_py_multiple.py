@@ -14,13 +14,13 @@ SOL_EXAMPLE = [
             [
                 {
                     'mac':       EXAMPLE_MAC_1,
-                    'timestamp': 0x111111,
+                    'timestamp': 0x11111111,
                     'type':      0x22,
                     'value':     [0x33,0x44],
                 },
                 {
                     'mac':       EXAMPLE_MAC_2,
-                    'timestamp': 0x555555,
+                    'timestamp': 0x55555555,
                     'type':      0x66,
                     'value':     [0x77,0x88],
                 },
@@ -29,7 +29,10 @@ SOL_EXAMPLE = [
             json.dumps(
                 {
                     'v':         0,
-                    'o':         "EBESExQVFhcYABERESIzRA==ECEiIyQlJicoAFVVVWZ3iA==",
+                    'o':         [
+                        "EBESExQVFhcYERERESIzRA==",
+                        "ECEiIyQlJicoVVVVVWZ3iA==",
+                    ],
                 }
             ),
         'json verbose':
@@ -39,13 +42,13 @@ SOL_EXAMPLE = [
                     'o':         [
                         {
                             "mac":       "11-12-13-14-15-16-17-18",
-                            "timestamp": 0x111111,
+                            "timestamp": 0x11111111,
                             "type":      0x22,
                             "value":     "M0Q=",
                         },
                         {
                             "mac":       "21-22-23-24-25-26-27-28",
-                            "timestamp": 0x555555,
+                            "timestamp": 0x55555555,
                             "type":      0x66,
                             "value":     "d4g=",
                         },
@@ -76,3 +79,11 @@ def test_dicts_to_json(sol_example,json_mode):
     sol = Sol.Sol()
     
     assert sol.dicts_to_json(sol_example['dicts'],mode=json_mode)==sol_example['json {0}'.format(json_mode)]
+
+def test_json_to_dicts(sol_example,json_mode):
+    sol_example = json.loads(sol_example)
+    
+    import Sol
+    sol = Sol.Sol()
+    
+    assert sol.json_to_dicts(sol_example['json {0}'.format(json_mode)])==sol_example['dicts']

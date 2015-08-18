@@ -220,6 +220,7 @@ Total: 4 bytes.
 
 Total: 15 bytes.
 
+
 ### rules for saving to a binary file
 
 The assumption is that a binary file is stored on some hard/flash drive with orders of magnitude more space than a packet. The driving design choice are hence made to allow:
@@ -230,6 +231,7 @@ The following rules hence apply when saving to a binary file:
 * sensor object chaining is NOT allowed
 * each sensor object MUST be framed using HDLC framing ([RFC1662](https://tools.ietf.org/html/rfc1662))
 * the length field MUST be elided, and the `L` bit in the start header set to `b11`
+
 
 ## JSON representation
 
@@ -264,9 +266,8 @@ This specification defines two formats:
 "TWFuIGlzIGRpc3Rpbmd1aXNoZWQs"
 ```
 
-* the minimal representation is a string representing the binary representation of one or more sensor objects.
-* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of one or more sensor objects.
-* when multiple strings are used, a binary sensor object cannot span multiple strings.
+* the minimal representation is a string representing the binary representation of exactly one sensor objects.
+* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of exactly one sensor objects.
 
 #### "verbose" representation
 

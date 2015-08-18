@@ -104,37 +104,36 @@ class Sol(object):
         
         return returnVal
     
-    def dict_to_json(self,o_dict,mode="verbose"):
-        output = {
-            'v': d.SOL_HDR_V,
-            'o': self._o_to_json(o_dict,mode)
-        }
-        
-        return json.dumps(output)
-    
     def dicts_to_json(self,o_dicts,mode="verbose"):
-        o = [self._o_to_json(o_dict,mode) for o_dict in o_dicts]
-        if mode=="minimal":
-            o = ''.join(o)
         output = {
             'v': d.SOL_HDR_V,
-            'o': o,
+            'o': [self._o_to_json(o_dict,mode) for o_dict in o_dicts],
         }
         
         return json.dumps(output)
     
-    def json_to_dict(self,o_json,mode="verbose"):
-        returnVal = json.loads(o_json)['o']
+    def json_to_dicts(self,o_json):
+        all_obj = json.loads(o_json)['o']
         
-        if   mode=="minimal":
-            bin = base64.b64decode(returnVal)
-            bin = [ord(b) for b in bin]
-            returnVal = self.bin_to_dict(bin)
-        elif mode=="verbose":
-            returnVal['mac'] = [int(b,16) for b in returnVal['mac'].split('-')]
-            returnVal['value'] = [ord(b) for b in base64.b64decode(returnVal['value'])]
-        else:
-            raise SystemError()
+        returnVal = []
+        for obj in all_obj:
+            
+            if type(obj)==dict:
+                # verbose
+                
+                thisDict = {}
+                thisDict['mac']        = [int(b,16) for b in obj['mac'].split('-')]
+                thisDict['timestamp']  = obj['timestamp']
+                thisDict['type']       = obj['type']
+                thisDict['value']      = [ord(b) for b in base64.b64decode(obj['value'])]
+            else:
+                # minimal
+                
+                bin = base64.b64decode(obj)
+                bin = [ord(b) for b in bin]
+                
+                thisDict = self.bin_to_dict(bin)
+            returnVal += [thisDict]
         
         return returnVal
     
@@ -345,10 +344,9 @@ class Sol(object):
         else:
             raise SystemError()
 
-
 #============================ main ============================================
 
 if __name__=="__main__":
     import os
-    os.system("py.test -x tests/")
+    os.system("py.test -vv -x tests/")
     raw_input("Press Enter to close.")
