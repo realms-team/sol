@@ -277,7 +277,6 @@ This specification defines two formats:
    "timestamp": 12345678890,
    "type":      12,
    "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQs",
-   
 }
 ```
 
