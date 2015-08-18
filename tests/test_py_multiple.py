@@ -3,51 +3,53 @@ import json
 
 #============================ defines ===============================
 
-EXAMPLE_MAC = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]
+EXAMPLE_MAC_1 = [0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18]
+EXAMPLE_MAC_2 = [0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28]
 
 #============================ fixtures ==============================
 
 SOL_EXAMPLE = [
     {
-        'bin macYES':
+        'dicts':
             [
-                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<0,          # header
-                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                0x11,0x22,0x33,0x44,                       # timestamp
-                0x55,                                      # type
-                0x66,0x77                                  # value
+                {
+                    'mac':       EXAMPLE_MAC_1,
+                    'timestamp': 0x111111,
+                    'type':      0x22,
+                    'value':     [0x33,0x44],
+                },
+                {
+                    'mac':       EXAMPLE_MAC_2,
+                    'timestamp': 0x555555,
+                    'type':      0x66,
+                    'value':     [0x77,0x88],
+                },
             ],
-        'bin macNO':
-            [
-                0<<6 | 0<<5 | 0<<4 | 0<<3 | 0<<0,          # header
-                0x11,0x22,0x33,0x44,                       # timestamp
-                0x55,                                      # type
-                0x66,0x77                                  # value
-            ],
-        'dict':
-            {
-                'mac':       EXAMPLE_MAC,
-                'timestamp': 0x11223344,
-                'type':      0x55,
-                'value':     [0x66,0x77],
-            },
         'json minimal':
             json.dumps(
                 {
                     'v':         0,
-                    'o':         "EAECAwQFBgcIESIzRFVmdw==",
+                    'o':         "EBESExQVFhcYABERESIzRA==ECEiIyQlJicoAFVVVWZ3iA==",
                 }
             ),
         'json verbose':
             json.dumps(
                 {
                     'v':         0,
-                    'o':         {
-                        "mac":       "01-02-03-04-05-06-07-08",
-                        "timestamp": 0x11223344,
-                        "type":      0x55,
-                        "value":     "Znc=",
-                    },
+                    'o':         [
+                        {
+                            "mac":       "11-12-13-14-15-16-17-18",
+                            "timestamp": 0x111111,
+                            "type":      0x22,
+                            "value":     "M0Q=",
+                        },
+                        {
+                            "mac":       "21-22-23-24-25-26-27-28",
+                            "timestamp": 0x555555,
+                            "type":      0x66,
+                            "value":     "d4g=",
+                        },
+                    ]
                 }
             ),
     },
@@ -67,36 +69,10 @@ def json_mode(request):
 
 #============================ tests =================================
 
-def test_dict_to_bin(sol_example):
+def test_dicts_to_json(sol_example,json_mode):
     sol_example = json.loads(sol_example)
     
     import Sol
     sol = Sol.Sol()
     
-    assert sol.dict_to_bin(sol_example['dict'])==sol_example['bin macYES']
-
-def test_bin_to_dict(sol_example):
-    sol_example = json.loads(sol_example)
-    
-    import Sol
-    sol = Sol.Sol()
-    
-    assert sol.bin_to_dict(sol_example['bin macNO'],mac=EXAMPLE_MAC)==sol_example['dict']
-
-def test_dict_to_json(sol_example,json_mode):
-    sol_example = json.loads(sol_example)
-    
-    import Sol
-    sol = Sol.Sol()
-    
-    print sol.dict_to_json(sol_example['dict'],mode=json_mode)
-    
-    assert sol.dict_to_json(sol_example['dict'],mode=json_mode)==sol_example['json {0}'.format(json_mode)]
-
-def test_json_to_dict(sol_example,json_mode):
-    sol_example = json.loads(sol_example)
-    
-    import Sol
-    sol = Sol.Sol()
-    
-    assert sol.json_to_dict(sol_example['json {0}'.format(json_mode)],mode=json_mode)==sol_example['dict']
+    assert sol.dicts_to_json(sol_example['dicts'],mode=json_mode)==sol_example['json {0}'.format(json_mode)]

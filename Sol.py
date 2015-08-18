@@ -113,9 +113,12 @@ class Sol(object):
         return json.dumps(output)
     
     def dicts_to_json(self,o_dicts,mode="verbose"):
+        o = [self._o_to_json(o_dict,mode) for o_dict in o_dicts]
+        if mode=="minimal":
+            o = ''.join(o)
         output = {
             'v': d.SOL_HDR_V,
-            'o': [self._o_to_json(o_dict,mode) for o_dict in o_dicts]
+            'o': o,
         }
         
         return json.dumps(output)
