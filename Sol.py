@@ -112,6 +112,14 @@ class Sol(object):
         
         return json.dumps(output)
     
+    def dicts_to_json(self,o_dicts,mode="verbose"):
+        output = {
+            'v': d.SOL_HDR_V,
+            'o': [self._o_to_json(o_dict,mode) for o_dict in o_dicts]
+        }
+        
+        return json.dumps(output)
+    
     def json_to_dict(self,o_json,mode="verbose"):
         returnVal = json.loads(o_json)['o']
         
@@ -266,9 +274,9 @@ class Sol(object):
     
     def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
-               self._num_to_list(utcSecs,4)+  \
-               self._num_to_list(utcUsecs,4)+ \
-               list(asn)+         \
+               self._num_to_list(utcSecs,4)+     \
+               self._num_to_list(utcUsecs,4)+    \
+               list(asn)+                        \
                self._num_to_list(asnOffset,2)
     
     def create_value_SOL_TYPE_NOTIF_EVENT_NETWORKRESET(self):
