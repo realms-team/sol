@@ -19,21 +19,23 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x0d` | [`DUST_NOTIF_LOG`](#dust_notif_log)                                         |
 |   `0x0e` | [`DUST_NOTIF_DATA_RAW`](#dust_notif_data_raw)                               |
 |   `0x0f` | [`DUST_NOTIF_IPDATA`](#dust_notif_ipdata)                                   |
-|   `0x10` | [`DUST_NOTIF_HEALTHREPORT`](#dust_notif_healthreport)                       |
-|   `0x11` | [`DUST_NOTIF_EVENT_COMMANDFINISHED`](#dust_notif_event_commandfinished)     |
-|   `0x12` | [`DUST_NOTIF_EVENT_PATHCREATE`](#dust_notif_event_pathcreate)               |
-|   `0x13` | [`DUST_NOTIF_EVENT_PATHDELETE`](#dust_notif_event_pathdelete)               |
-|   `0x14` | [`DUST_NOTIF_EVENT_PING`](#dust_notif_event_ping)                           |
-|   `0x15` | [`DUST_NOTIF_EVENT_NETWORKTIME`](#dust_notif_event_networktime)             |
-|   `0x16` | [`DUST_NOTIF_EVENT_NETWORKRESET`](#dust_notif_event_networkreset)           |
-|   `0x17` | [`DUST_NOTIF_EVENT_MOTEJOIN`](#dust_notif_event_motejoin)                   |
-|   `0x18` | [`DUST_NOTIF_EVENT_MOTECREATE`](#dust_notif_event_motecreate)               |
-|   `0x19` | [`DUST_NOTIF_EVENT_MOTEDELETE`](#dust_notif_event_motedelete)               |
-|   `0x1a` | [`DUST_NOTIF_EVENT_MOTELOST`](#dust_notif_event_motelost)                   |
-|   `0x1b` | [`DUST_NOTIF_EVENT_MOTEOPERATIONAL`](#dust_notif_event_moteoperational)     |
-|   `0x1c` | [`DUST_NOTIF_EVENT_MOTERESET`](#dust_notif_event_motereset)                 |
-|   `0x1d` | [`DUST_NOTIF_EVENT_PACKETSENT`](#dust_notif_event_packetsent)               |
-|   `0x1d` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
+|   `0x10` | [`DUST_NOTIF_HR_DEVICE`](#dust_notif_hr_device)                             |
+|   `0x11` | [`DUST_NOTIF_HR_NEIGHBORS`](#dust_notif_hr_neighbors)                       |
+|   `0x12` | [`DUST_NOTIF_HR_DISCOVEREDNEIGHBORS`](#dust_notif_hr_discoveredneighbors)   |
+|   `0x13` | [`DUST_NOTIF_EVENT_COMMANDFINISHED`](#dust_notif_event_commandfinished)     |
+|   `0x14` | [`DUST_NOTIF_EVENT_PATHCREATE`](#dust_notif_event_pathcreate)               |
+|   `0x15` | [`DUST_NOTIF_EVENT_PATHDELETE`](#dust_notif_event_pathdelete)               |
+|   `0x16` | [`DUST_NOTIF_EVENT_PING`](#dust_notif_event_ping)                           |
+|   `0x17` | [`DUST_NOTIF_EVENT_NETWORKTIME`](#dust_notif_event_networktime)             |
+|   `0x18` | [`DUST_NOTIF_EVENT_NETWORKRESET`](#dust_notif_event_networkreset)           |
+|   `0x19` | [`DUST_NOTIF_EVENT_MOTEJOIN`](#dust_notif_event_motejoin)                   |
+|   `0x1a` | [`DUST_NOTIF_EVENT_MOTECREATE`](#dust_notif_event_motecreate)               |
+|   `0x1b` | [`DUST_NOTIF_EVENT_MOTEDELETE`](#dust_notif_event_motedelete)               |
+|   `0x1c` | [`DUST_NOTIF_EVENT_MOTELOST`](#dust_notif_event_motelost)                   |
+|   `0x1d` | [`DUST_NOTIF_EVENT_MOTEOPERATIONAL`](#dust_notif_event_moteoperational)     |
+|   `0x1e` | [`DUST_NOTIF_EVENT_MOTERESET`](#dust_notif_event_motereset)                 |
+|   `0x1f` | [`DUST_NOTIF_EVENT_PACKETSENT`](#dust_notif_event_packetsent)               |
+|   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -127,7 +129,46 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |------------|
 | _variable_ |
 
-#### DUST_NOTIF_HEALTHREPORT
+#### DUST_NOTIF_HR_DEVICE
+
+| macAddress | charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
+|------------|--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
+|         8B | INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
+
+#### DUST_NOTIF_HR_NEIGHBORS
+
+**JSON representation:**
+
+```
+{
+    'macAddress': 'xx-xx-xx-xx-xx-xx-xx-xx',
+    'neighbors': [
+        {
+            'neighborId':         xx,  # INT16U
+            'neighborFlag':       xx,  # INT8U
+            'rssi':               xx,  # INT8
+            'numTxPackets':       xx,  # INT16U
+            'numTxFailures':      xx,  # INT16U
+            'numRxPackets':       xx,  # INT16U
+        },
+        ...
+    ]
+}
+```
+
+**Binary representation:**
+
+| macAddress | num_neighbors |  _neighbor_ | ... |  _neighbor_ |
+|------------|---------------|-------------|-----|-------------|
+|         8B |         INT8U | _see below_ | ... | _see below_ |
+
+Where each _neighbor_:
+
+| neighborId | neighborFlag | rssi | numTxPackets | numTxFailures | numRxPackets |
+|------------|--------------|------|--------------|---------------|--------------|
+|     INT16U |        INT8U | INT8 |       INT16U |        INT16U |       INT16U |
+
+#### DUST_NOTIF_HR_DISCOVEREDNEIGHBORS
 
 |    payload |
 |------------|
@@ -211,7 +252,7 @@ _no payload_
 
 #### DUST_SNAPSHOT
 
-JSON representation:
+**JSON representation:**
 
 ```
 {
@@ -244,7 +285,7 @@ JSON representation:
 }
 ```
 
-Binary representation:
+**Binary representation:**
 
 | num_motes  |     _mote_ | ... |     _mote_ |
 |------------|------------|-----|------------|
@@ -256,7 +297,7 @@ Where each _mote_:
 |------------|--------|-------|-------|-----------|---------|-------------|-------------|---------------|------------|-----------------|-------------|------------|-----------|-----------|-------------|-----|-------------|
 |         8B | INT16U | INT8U | INT8U |     INT8U |   INT8U |       INT8U |      INT32U |        INT32U |     INT32U |          INT32U |      INT32U |     INT32U |    INT32U |     INT8U | _see below_ | ... | _see below_ |
 
-where each _path_:
+Where each _path_:
 
 | macAddress | direction |  numLinks | quality | rssiSrcDest | rssiDestSrc |
 |------------|-----------|-----------|---------|-------------|-------------|
