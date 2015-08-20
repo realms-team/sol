@@ -12,8 +12,6 @@ It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 
 ## "type" registry
 
-See [registry](registry.md).
-
 When a sensor is associated a well-known length, the `L` (length) field MAY be omitted from its binary representation.
 When the well-known length is the table below is "None", the `L` (length) MUST be present in the object's binary representation.
 
