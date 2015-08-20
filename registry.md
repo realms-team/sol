@@ -170,9 +170,34 @@ Where each _neighbor_:
 
 #### DUST_NOTIF_HR_DISCOVEREDNEIGHBORS
 
-|    payload |
-|------------|
-| _variable_ |
+**JSON representation:**
+
+```
+{
+    'macAddress': 'xx-xx-xx-xx-xx-xx-xx-xx',
+    'numJoinParents':             xx,  # INT8U
+    'discoveredNeighbors': [
+        {
+            'neighborId':         xx,  # INT16U
+            'rssi':               xx,  # INT8
+            'numRx':              xx,  # INT8U
+        },
+        ...
+    ]
+}
+```
+
+**Binary representation:**
+
+| macAddress | numJoinParents | num_discoveredNeighbors | _discoveredNeighbors_ | ... | _discoveredNeighbors_ |
+|------------|----------------|-------------------------|-----------------------|-----|-----------------------|
+|         8B |          INT8U |                   INT8U |           _see below_ | ... |           _see below_ |
+
+Where each _discoveredNeighbors_:
+
+| neighborId | rssi | numRx |
+|------------|------|-------|
+|     INT16U | INT8 | INT8U |
 
 #### DUST_NOTIF_EVENT_COMMANDFINISHED
 
