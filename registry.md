@@ -189,11 +189,11 @@ Where each _neighbor_:
 
 **Binary representation:**
 
-| macAddress | numJoinParents | num_discoveredNeighbors | _discoveredNeighbors_ | ... | _discoveredNeighbors_ |
-|------------|----------------|-------------------------|-----------------------|-----|-----------------------|
-|         8B |          INT8U |                   INT8U |           _see below_ | ... |           _see below_ |
+| macAddress | numJoinParents | num_discoveredNeighbors | _discoveredNeighbor_ | ... | _discoveredNeighbor_ |
+|------------|----------------|-------------------------|----------------------|-----|----------------------|
+|         8B |          INT8U |                   INT8U |          _see below_ | ... |          _see below_ |
 
-Where each _discoveredNeighbors_:
+Where each _discoveredNeighbor_:
 
 | neighborId | rssi | numRx |
 |------------|------|-------|
