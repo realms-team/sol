@@ -39,6 +39,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 #### DISTANCE_JUDD_RS232_RAW
 
 | airtemp | travel time | distance | retries |
+|---------|-------------|----------|---------|
 |  INT16U |      INT16U |   INT16U |   INT8U |
 
 #### DISTANCE_JUDD_RS232_STATS
