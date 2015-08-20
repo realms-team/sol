@@ -38,119 +38,172 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### DISTANCE_JUDD_RS232_RAW
 
-| airtemp | travel time | distance | retries |
+| airtemp | travel_time | distance | retries |
 |---------|-------------|----------|---------|
 |  INT16U |      INT16U |   INT16U |   INT8U |
 
 #### DISTANCE_JUDD_RS232_STATS
 
-              12 B | airtemp (`2B`), travel time (`2B`), distance (`2B`), retries (`1B`) , num_readings (`1B`) , std readings(`4B`) |
+| airtemp | travel_time | distance | retries | num_readings | std_readings |
+|---------|-------------|----------|---------|--------------|--------------|
+|  INT16U |      INT16U |   INT16U |   INT8U |        INT8U |       INT32U |
 
 #### SNOW_MAXBOTIX_MB7554_RS232_RAW
 
-               2 B | distance (`2B`) |
-
+| distance |
+|----------|
+|   INT16U |
 
 #### SNOW_MAXBOTIX_MB7554_RS232_STATS
 
-               7 B | distance (`2B`), num_reading (`1B`), std (`4B`) |
-               
+| distance | num_reading |    std |
+|----------|-------------|--------|
+|   INT16U |       INT8U | INT32U |
+
 #### TEMPRH_SENSERION_SHT15_RS232_RAW
 
-               8 B | temp (`4B`), rH (`4B`) |
+|   temp |     rH |
+|--------|--------|
+| INT32U | INT32U |
 
 #### TEMPRH_SENSERION_SHT15_RS232_STATS
 
-              17 B | temp (`4B`), rH (`4B`), num_readings (`1B`), temp_std (`4B`), rH_std (`4B`)  |
+|   temp |     rH | num_readings | temp_std | rH_std |
+|--------|--------|--------------|----------|--------|
+| INT32U | INT32U |        INT8U |   INT32U | INT32U |
 
 #### TEMPRH_SENSERION_SHT25_RS232_RAW
 
-               8 B | temp (`4B`), rH (`4B`)   |
+|   temp |     rH |
+|--------|--------|
+| INT32U | INT32U |
 
 #### TEMPRH_SENSERION_SHT25_RS232_STATS
 
-              17 B | temp (`4B`), rH (`4B`), num_readings (`1B`), temp_std (`4B`), rH_std (`4B`) |
+|   temp |     rH | num_readings | temp_std | rH_std |
+|--------|--------|--------------|----------|--------|
+| INT32U | INT32U |        INT8U |   INT32U | INT32U |
 
 #### SOLAR_HUKSEFLUX_LP25_AV_RAW
 
-               4 B | vout (`4B`) |
+|   vout |
+|--------|
+| INT32U |
 
 #### SOLAR_HUKSEFLUX_LP25_AV_STATS
 
-               9 B | vout (`4B`) , num_readings (`1B`), std_readings(`4B`) |
+|   vout | num_reading |    std |
+|--------|-------------|--------|
+| INT32U |       INT8U | INT32U |
 
 #### SOIL_DECAGON_GS3_RS232_RAW
 
-              12 B | moisture (`4B`), soiltemp (`4B`), soilec (`4B`) |
+| moisture | soiltemp | soilec |
+|----------|----------|--------|
+|   INT32U |   INT32U | INT32U |
 
 #### SOIL_DECAGON_GS3_RS232_STATS
 
-              17 B | moisture (`4B`), soiltemp (`4B`), soilec (`4B`), num_readings (`1B`) , std_readings (`4B`) |
+| moisture | soiltemp | soilec | num_reading |    std |
+|----------|----------|--------|-------------|--------|
+|   INT32U |   INT32U | INT32U |       INT8U | INT32U |
 
 #### NOTIF_LOG
 
- _variable length_ | payload (_variable_) |
+|    payload |
+|------------|
+| _variable_ |
 
 #### NOTIF_DATA_RAW
 
- _variable length_ | srcPort (`2B`), dstPort (`2B`), payload (_variable_) |
+| srcPort | dstPort |    payload |
+|---------|---------|------------|
+|  INT16U |  INT16U | _variable_ |
 
 #### NOTIF_IPDATA
 
- _variable length_ | payload (_variable_) |
+|    payload |
+|------------|
+| _variable_ |
 
 #### NOTIF_HEALTHREPORT
 
- _variable length_ | payload (_variable_) |
+|    payload |
+|------------|
+| _variable_ |
 
 #### NOTIF_EVENT_COMMANDFINISHED
 
-               5 B | callbackId (`4`), rc (`1`) |
+| callbackId |    rc |
+|------------|-------|
+|     INT32U | INT8U |
 
 #### NOTIF_EVENT_PATHCREATE
 
-              17 B | source (`8B`), dest (`8B`), direction (`1B`) |
+| source | dest | direction |
+|--------|------|-----------|
+|     8B |   8B |     INT8U |
 
 #### NOTIF_EVENT_PATHDELETE
 
-              17 B | source (`8B`), dest (`8B`), direction (`1B`) |
+| source | dest | direction |
+|--------|------|-----------|
+|     8B |   8B |     INT8U |
 
 #### NOTIF_EVENT_PING
 
-              19 B | callbackId (`4B`), macAddress (`8B`), delay (`4B`), voltage (`2B`), temperature (`1B`) |
+| callbackId | macAddress |  delay | voltage | temperature |
+|------------|------------|--------|---------|-------------|
+|     INT32U |         8B | INT32U |  INT16U |       INT8U |
 
 #### NOTIF_EVENT_NETWORKTIME
 
-              19 B | uptime (`4B`), utcTime (`8B`), asn(`5B`), asnOffset(`2B`) |
+| uptime | utcTime | asn | asnOffset |
+|--------|---------|-----|-----------|
+| INT32U |      8B |  5B |    INT16U |
 
 #### NOTIF_EVENT_NETWORKRESET
 
-               0 B | N.A. |
+_no payload_
 
 #### NOTIF_EVENT_MOTEJOIN
 
-               8 B | macAddress (`8B`) |
+| macAddress |
+|------------|
+|         8B |
 
 #### NOTIF_EVENT_MOTECREATE
 
-              10 B | macAddress (`8B`), moteId (`2B`) |
+| macAddress | moteId |
+|------------|--------|
+|         8B | INT16U |
 
 #### NOTIF_EVENT_MOTEDELETE
 
-              10 B | macAddress (`8B`), moteId (`2B`)  |
+| macAddress | moteId |
+|------------|--------|
+|         8B | INT16U |
 
 #### NOTIF_EVENT_MOTELOST
 
-               8 B | macAddress (`8B`) |
+| macAddress |
+|------------|
+|         8B |
 
 #### NOTIF_EVENT_MOTEOPERATIONAL
 
-               8 B | macAddress (`8B`) |
+| macAddress |
+|------------|
+|         8B |
 
 #### NOTIF_EVENT_MOTERESET
 
-               8 B | macAddress (`8B`) |
+| macAddress |
+|------------|
+|         8B |
 
 #### NOTIF_EVENT_PACKETSENT
 
-               5 B | callbackId (`4B`), rc (`1`)  |
+| callbackId |    rc |
+|------------|-------|
+|     INT32U | INT8U |
