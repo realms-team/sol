@@ -44,9 +44,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### DISTANCE_JUDD_RS232_STATS
 
-| airtemp | travel_time | distance | retries | num_readings | std_readings |
-|---------|-------------|----------|---------|--------------|--------------|
-|  INT16U |      INT16U |   INT16U |   INT8U |        INT8U |       INT32U |
+| airtemp | travel_time | distance | retries | count |    std |
+|---------|-------------|----------|---------|-------|--------|
+|  INT16U |      INT16U |   INT16U |   INT8U | INT8U | INT32U |
 
 #### SNOW_MAXBOTIX_MB7554_RS232_RAW
 
@@ -56,9 +56,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### SNOW_MAXBOTIX_MB7554_RS232_STATS
 
-| distance | num_reading |    std |
-|----------|-------------|--------|
-|   INT16U |       INT8U | INT32U |
+| distance | count |    std |
+|----------|-------|--------|
+|   INT16U | INT8U | INT32U |
 
 #### TEMPRH_SENSERION_SHT15_RS232_RAW
 
@@ -68,9 +68,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### TEMPRH_SENSERION_SHT15_RS232_STATS
 
-|   temp |     rH | num_readings | temp_std | rH_std |
-|--------|--------|--------------|----------|--------|
-| INT32U | INT32U |        INT8U |   INT32U | INT32U |
+|   temp |     rH | count | std_temp | std_rH |
+|--------|--------|-------|----------|--------|
+| INT32U | INT32U | INT8U |   INT32U | INT32U |
 
 #### TEMPRH_SENSERION_SHT25_RS232_RAW
 
@@ -80,33 +80,33 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### TEMPRH_SENSERION_SHT25_RS232_STATS
 
-|   temp |     rH | num_readings | temp_std | rH_std |
-|--------|--------|--------------|----------|--------|
-| INT32U | INT32U |        INT8U |   INT32U | INT32U |
+|   temp |     rH | count | std_temp | std_rH |
+|--------|--------|-------|----------|--------|
+| INT32U | INT32U | INT8U |   INT32U | INT32U 
 
 #### SOLAR_HUKSEFLUX_LP25_AV_RAW
 
-|   vout |
+|   Vout |
 |--------|
 | INT32U |
 
 #### SOLAR_HUKSEFLUX_LP25_AV_STATS
 
-|   vout | num_reading |    std |
-|--------|-------------|--------|
-| INT32U |       INT8U | INT32U |
+|   Vout | count |    std |
+|--------|-------|--------|
+| INT32U | INT8U | INT32U |
 
 #### SOIL_DECAGON_GS3_RS232_RAW
 
-| moisture | soiltemp | soilec |
-|----------|----------|--------|
-|   INT32U |   INT32U | INT32U |
+| moisture | soil_temp | soil_ec |
+|----------|-----------|---------|
+|   INT32U |    INT32U |  INT32U |
 
 #### SOIL_DECAGON_GS3_RS232_STATS
 
-| moisture | soiltemp | soilec | num_reading |    std |
-|----------|----------|--------|-------------|--------|
-|   INT32U |   INT32U | INT32U |       INT8U | INT32U |
+| moisture | soil_temp | soil_ec | count |    std |
+|----------|-----------|---------|-------|--------|
+|   INT32U |    INT32U |  INT32U | INT8U | INT32U |
 
 #### NOTIF_LOG
 
