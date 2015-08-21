@@ -21,7 +21,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x0f` | [`DUST_NOTIF_IPDATA`](#dust_notif_ipdata)                                   |
 |   `0x10` | [`DUST_NOTIF_HR_DEVICE`](#dust_notif_hr_device)                             |
 |   `0x11` | [`DUST_NOTIF_HR_NEIGHBORS`](#dust_notif_hr_neighbors)                       |
-|   `0x12` | [`DUST_NOTIF_HR_DISCOVEREDNEIGHBORS`](#dust_notif_hr_discoveredneighbors)   |
+|   `0x12` | [`DUST_NOTIF_HR_DISCOVERED`](#dust_notif_hr_discovered)                     |
 |   `0x13` | [`DUST_NOTIF_EVENT_COMMANDFINISHED`](#dust_notif_event_commandfinished)     |
 |   `0x14` | [`DUST_NOTIF_EVENT_PATHCREATE`](#dust_notif_event_pathcreate)               |
 |   `0x15` | [`DUST_NOTIF_EVENT_PATHDELETE`](#dust_notif_event_pathdelete)               |
@@ -168,7 +168,7 @@ Where each _neighbor_:
 |------------|--------------|------|--------------|---------------|--------------|
 |     INT16U |        INT8U | INT8 |       INT16U |        INT16U |       INT16U |
 
-#### DUST_NOTIF_HR_DISCOVEREDNEIGHBORS
+#### DUST_NOTIF_HR_DISCOVERED
 
 **JSON representation:**
 

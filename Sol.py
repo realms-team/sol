@@ -308,6 +308,15 @@ class Sol(object):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
     
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,macAddress,hr):
+        raise NotImplementedError()
+    
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,macAddress,hr):
+        raise NotImplementedError()
+    
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,macAddress,hr):
+        raise NotImplementedError()
+    
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
