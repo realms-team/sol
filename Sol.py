@@ -330,7 +330,7 @@ class Sol(object):
         
         returnVal  = []
         returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
-        returnVal += struct.pack(
+        returnVal += [struct.pack(
             '>IBbHHHHHBBBIB',
             hr['charge'],         # INT32U  I
             hr['queueOcc'],       # INT8U   B
@@ -345,7 +345,7 @@ class Sol(object):
             hr['badLinkFrameId'], # INT8U   B
             hr['badLinkSlot'],    # INT32U  I
             hr['badLinkOffset'],  # INT8U   B
-        )
+        )]
         returnVal  = ''.join(returnVal)
         returnVal  = [ord(c) for c in returnVal]
         
@@ -354,23 +354,44 @@ class Sol(object):
     def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,macAddress,hr):
         '''
         {
-            'numItems': 3
+            'numItems': 2,
             'neighbors': [
                 {
-                    'neighborFlag': 0,
-                    'neighborId': 11,
-                    'numTxFailures': 0,
-                    'rssi': -22,
-                    'numTxPackets': 59,
-                    'numRxPackets': 2
+                    'neighborId':         0x0102,     # INT16U
+                    'neighborFlag':       0x03,       # INT8U
+                    'rssi':               -1,         # INT8
+                    'numTxPackets':       0x0405,     # INT16U
+                    'numTxFailures':      0x0607,     # INT16U
+                    'numRxPackets':       0x0809,     # INT16U
                 },
-                ...
+                {
+                    'neighborId':         0x1112,     # INT16U
+                    'neighborFlag':       0x13,       # INT8U
+                    'rssi':               -1,         # INT8
+                    'numTxPackets':       0x1415,     # INT16U
+                    'numTxFailures':      0x1617,     # INT16U
+                    'numRxPackets':       0x1819,     # INT16U
+                },
             ],
         }
         '''
-        print macAddress
-        print hr
-        raise NotImplementedError()
+        returnVal  = []
+        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
+        returnVal += [chr(len(hr['neighbors']))] # num_neighbors
+        for n in hr['neighbors']:
+            returnVal += [struct.pack(
+                '>HBbHHH',
+                n['neighborId'],       # INT16U  H
+                n['neighborFlag'],     # INT8U   B
+                n['rssi'],             # INT8    b
+                n['numTxPackets'],     # INT16U  H
+                n['numTxFailures'],    # INT16U  H
+                n['numRxPackets'],     # INT16U  H
+            )]
+        returnVal  = ''.join(returnVal)
+        returnVal  = [ord(c) for c in returnVal]
+        
+        return returnVal
     
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,macAddress,hr):
         '''

@@ -174,7 +174,47 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
     import Sol
     sol = Sol.Sol()
     
-    # TODO
+    assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(
+        macAddress = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+        hr         = {
+            'numItems': 2,
+            'neighbors': [
+                {
+                    'neighborId':         0x0102,     # INT16U
+                    'neighborFlag':       0x03,       # INT8U
+                    'rssi':               -1,         # INT8
+                    'numTxPackets':       0x0405,     # INT16U
+                    'numTxFailures':      0x0607,     # INT16U
+                    'numRxPackets':       0x0809,     # INT16U
+                },
+                {
+                    'neighborId':         0x1112,     # INT16U
+                    'neighborFlag':       0x13,       # INT8U
+                    'rssi':               -1,         # INT8
+                    'numTxPackets':       0x1415,     # INT16U
+                    'numTxFailures':      0x1617,     # INT16U
+                    'numRxPackets':       0x1819,     # INT16U
+                },
+            ],
+        }
+    )==[
+        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08, # macAddress
+        0x02,                                    # num_neighbors
+        # neighbor 0
+        0x01,0x02,                               # neighborId
+        0x03,                                    # neighborFlag
+        0xff,                                    # rssi
+        0x04,0x05,                               # numTxPackets
+        0x06,0x07,                               # numTxFailures
+        0x08,0x09,                               # numRxPackets
+        # neighbor 1
+        0x11,0x12,                               # neighborId
+        0x13,                                    # neighborFlag
+        0xff,                                    # rssi
+        0x14,0x15,                               # numTxPackets
+        0x16,0x17,                               # numTxFailures
+        0x18,0x19,                               # numRxPackets
+    ]
 
 def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     import Sol
