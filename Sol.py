@@ -309,7 +309,7 @@ class Sol(object):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
     
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,macAddress,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,hr):
         '''
         {
             'charge':             0x090a0b0c,    # INT32U
@@ -329,7 +329,6 @@ class Sol(object):
         '''
         
         returnVal  = []
-        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
         returnVal += [struct.pack(
             '>IBbHHHHHBBBIB',
             hr['charge'],         # INT32U  I
@@ -351,7 +350,7 @@ class Sol(object):
         
         return returnVal
     
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,macAddress,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,hr):
         '''
         {
             'numItems': 2,
@@ -376,7 +375,6 @@ class Sol(object):
         }
         '''
         returnVal  = []
-        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
         returnVal += [chr(len(hr['neighbors']))] # num_neighbors
         for n in hr['neighbors']:
             returnVal += [struct.pack(
@@ -393,7 +391,7 @@ class Sol(object):
         
         return returnVal
     
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,macAddress,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,hr):
         '''
         {
             'numJoinParents': 0x55,              # INT8U
@@ -413,7 +411,6 @@ class Sol(object):
         }
         '''
         returnVal  = []
-        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
         returnVal += [chr(hr['numJoinParents'])] # numJoinParents
         returnVal += [chr(len(hr['discovered']))] # num_neighbors
         for d in hr['discovered']:

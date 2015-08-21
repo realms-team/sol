@@ -131,36 +131,33 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### DUST_NOTIF_HR_DEVICE
 
-| macAddress | charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
-|------------|--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
-|         8B | INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
+| charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
+|--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
+| INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
 
 #### DUST_NOTIF_HR_NEIGHBORS
 
 **JSON representation:**
 
 ```
-{
-    'macAddress': 'xx-xx-xx-xx-xx-xx-xx-xx',
-    'neighbors': [
-        {
-            'neighborId':         xx,  # INT16U
-            'neighborFlag':       xx,  # INT8U
-            'rssi':               xx,  # INT8
-            'numTxPackets':       xx,  # INT16U
-            'numTxFailures':      xx,  # INT16U
-            'numRxPackets':       xx,  # INT16U
-        },
-        ...
-    ]
-}
+[
+    {
+        'neighborId':         xx,  # INT16U
+        'neighborFlag':       xx,  # INT8U
+        'rssi':               xx,  # INT8
+        'numTxPackets':       xx,  # INT16U
+        'numTxFailures':      xx,  # INT16U
+        'numRxPackets':       xx,  # INT16U
+    },
+    ...
+]
 ```
 
 **Binary representation:**
 
-| macAddress | num_neighbors |  _neighbor_ | ... |  _neighbor_ |
-|------------|---------------|-------------|-----|-------------|
-|         8B |         INT8U | _see below_ | ... | _see below_ |
+| num_neighbors |  _neighbor_ | ... |  _neighbor_ |
+|---------------|-------------|-----|-------------|
+|         INT8U | _see below_ | ... | _see below_ |
 
 Where each _neighbor_:
 
@@ -174,7 +171,6 @@ Where each _neighbor_:
 
 ```
 {
-    'macAddress': 'xx-xx-xx-xx-xx-xx-xx-xx',
     'numJoinParents':             xx,  # INT8U
     'discoveredNeighbors': [
         {
@@ -189,9 +185,9 @@ Where each _neighbor_:
 
 **Binary representation:**
 
-| macAddress | numJoinParents | num_discoveredNeighbors | _discoveredNeighbor_ | ... | _discoveredNeighbor_ |
-|------------|----------------|-------------------------|----------------------|-----|----------------------|
-|         8B |          INT8U |                   INT8U |          _see below_ | ... |          _see below_ |
+| numJoinParents | num_discoveredNeighbors | _discoveredNeighbor_ | ... | _discoveredNeighbor_ |
+|----------------|-------------------------|----------------------|-----|----------------------|
+|          INT8U |                   INT8U |          _see below_ | ... |          _see below_ |
 
 Where each _discoveredNeighbor_:
 

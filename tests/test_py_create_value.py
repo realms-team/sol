@@ -137,7 +137,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
     sol = Sol.Sol()
     
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(
-        macAddress = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
         hr         = {
             'charge':             0x090a0b0c,    # INT32U
             'queueOcc':           0x0d,          # INT8U
@@ -154,7 +153,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
             'badLinkOffset':      0x1f,          # INT8U            
         }
     )==[
-        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08, # macAddress
         0x09,0x0a,0x0b,0x0c,                     # charge
         0x0d,                                    # queueOcc
         0xff,                                    # temperature
@@ -175,7 +173,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
     sol = Sol.Sol()
     
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(
-        macAddress = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
         hr         = {
             'numItems': 2,
             'neighbors': [
@@ -198,7 +195,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
             ],
         }
     )==[
-        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08, # macAddress
         0x02,                                    # num_neighbors
         # neighbor 0
         0x01,0x02,                               # neighborId
@@ -221,7 +217,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     sol = Sol.Sol()
     
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(
-        macAddress = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
         hr         = {
             'numJoinParents': 0x55,              # INT8U
             'numItems':       2,
@@ -239,7 +234,6 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
             ],
         }
     )==[
-        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08, # macAddress
         0x55,                                    # numJoinParents
         0x02,                                    # num_neighbors
         # discovered 0
