@@ -426,6 +426,106 @@ class Sol(object):
         
         return returnVal
     
+    def create_value_SOL_TYPE_DUST_SNAPSHOT(self,summary):
+        '''
+        [
+            {   'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
+                'moteId':              0x090a,        # INT16U  H
+                'isAP':                0x0b,          # BOOL    B
+                'state':               0x0c,          # INT8U   B
+                'isRouting':           0x0d,          # BOOL    B
+                'numNbrs':             0x0e,          # INT8U   B
+                'numGoodNbrs':         0x0f,          # INT8U   B
+                'requestedBw':         0x10111213,    # INT32U  I
+                'totalNeededBw':       0x14151617,    # INT32U  I
+                'assignedBw':          0x18191a1b,    # INT32U  I
+                'packetsReceived':     0x1c1d1e1f,    # INT32U  I
+                'packetsLost':         0x20212223,    # INT32U  I
+                'avgLatency':          0x24252627,    # INT32U  I
+                'stateTime':           0x28292a2b,    # INT32U  I
+                'paths': [
+                    {
+                        'macAddress':    (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
+                        'direction':      0x2c,       # INT8U   B
+                        'numLinks':       0x2d,       # INT8U   B
+                        'quality':        0x2e,       # INT8U   B
+                        'rssiSrcDest':    -1,         # INT8    b
+                        'rssiDestSrc':    -2,         # INT8    b
+                    },
+                    {
+                        'macAddress':    (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
+                        'direction':      0x2c,       # INT8U  B
+                        'numLinks':       0x2d,       # INT8U  B
+                        'quality':        0x2e,       # INT8U  B
+                        'rssiSrcDest':    -1,         # INT8   b
+                        'rssiDestSrc':    -2,         # INT8   b
+                    },
+                ],
+            },
+            {
+                'macAddress':          (0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38),
+                'moteId':              0x090a,        # INT16U
+                'isAP':                0x0b,          # BOOL
+                'state':               0x0c,          # INT8U
+                'isRouting':           0x0d,          # BOOL
+                'numNbrs':             0x0e,          # INT8U
+                'numGoodNbrs':         0x0f,          # INT8U
+                'requestedBw':         0x10111213,    # INT32U
+                'totalNeededBw':       0x14151617,    # INT32U
+                'assignedBw':          0x18191a1b,    # INT32U
+                'packetsReceived':     0x1c1d1e1f,    # INT32U
+                'packetsLost':         0x20212223,    # INT32U
+                'avgLatency':          0x24252627,    # INT32U
+                'stateTime':           0x28292a2b,    # INT32U
+                'paths': [
+                    {
+                        'macAddress':     (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
+                        'direction':      0x2c,       # INT8U
+                        'numLinks':       0x2d,       # INT8U
+                        'quality':        0x2e,       # INT8U
+                        'rssiSrcDest':    -1,         # INT8
+                        'rssiDestSrc':    -2,         # INT8
+                    },
+                ],
+            },
+        ]
+        '''
+        returnVal  = []
+        returnVal += [chr(len(summary))] # num_motes
+        for m in summary:
+            returnVal += [''.join([chr(b) for b in m['macAddress']])] # macAddress
+            returnVal += [struct.pack(
+                '>HBBBBBIIIIIII',
+                m['moteId'],           # INT16U  H
+                m['isAP'],             # BOOL    B
+                m['state'],            # INT8U   B
+                m['isRouting'],        # BOOL    B
+                m['numNbrs'],          # INT8U   B
+                m['numGoodNbrs'],      # INT8U   B
+                m['requestedBw'],      # INT32U  I
+                m['totalNeededBw'],    # INT32U  I
+                m['assignedBw'],       # INT32U  I
+                m['packetsReceived'],  # INT32U  I
+                m['packetsLost'],      # INT32U  I
+                m['avgLatency'],       # INT32U  I
+                m['stateTime'],        # INT32U  I
+            )]
+            returnVal += [chr(len(m['paths']))] # num_paths
+            for p in m['paths']:
+                returnVal += [''.join([chr(b) for b in p['macAddress']])] # macAddress
+                returnVal += [struct.pack(
+                    '>BBBbb',
+                    p['direction'],    # INT8U   B
+                    p['numLinks'],     # INT8U   B
+                    p['quality'],      # INT8U   B
+                    p['rssiSrcDest'],  # INT8    b
+                    p['rssiDestSrc'],  # INT8    b
+                )]
+        returnVal  = ''.join(returnVal)
+        returnVal  = [ord(c) for c in returnVal]
+        
+        return returnVal
+    
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
