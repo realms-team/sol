@@ -395,25 +395,39 @@ class Sol(object):
     
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,macAddress,hr):
         '''
-        'numJoinParents': 8,
-        'numItems': 8,
-        [
-            {
-                'rssi': -19,
-                'numRx': 2,
-                'neighborId': 2
-            },
-            {
-                'rssi': -10,
-                'numRx': 2,
-                'neighborId': 3
-            },
-            ...
-        ]
+        {
+            'numJoinParents': 0x55,              # INT8U
+            'numItems':       2,
+            'discovered': [
+                {
+                    'neighborId':     0x0102,    # INT16U
+                    'rssi':           -1,        # INT8
+                    'numRx':          0x03,      # INT8U
+                },
+                {
+                    'neighborId':     0x1112,    # INT16U
+                    'rssi':           -1,        # INT8
+                    'numRx':          0x13,      # INT8U
+                },
+            ],
+        }
         '''
-        print macAddress
-        print hr
-        raise NotImplementedError()
+        returnVal  = []
+        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
+        returnVal += [chr(hr['numJoinParents'])] # numJoinParents
+        returnVal += [chr(len(hr['discovered']))] # num_neighbors
+        for d in hr['discovered']:
+            returnVal += [struct.pack(
+                '>HbB',
+                d['neighborId'],       # INT16U  H
+                d['rssi'],             # INT8    b
+                d['numRx'],            # INT8U   B
+                
+            )]
+        returnVal  = ''.join(returnVal)
+        returnVal  = [ord(c) for c in returnVal]
+        
+        return returnVal
     
     #======================== private =========================================
     
