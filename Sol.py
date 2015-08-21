@@ -1,5 +1,6 @@
 import os
 import json
+import struct
 import base64
 import threading
 
@@ -309,12 +310,88 @@ class Sol(object):
                self._num_to_list(rc,1)
     
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,macAddress,hr):
-        raise NotImplementedError()
+        '''
+        {
+            'charge':             0x090a0b0c,    # INT32U
+            'queueOcc':           0x0d,          # INT8U
+            'temperature':        -1,            # INT8
+            'batteryVoltage':     0x0e0f,        # INT16U
+            'numTxOk':            0x1011,        # INT16U
+            'numTxFail':          0x1213,        # INT16U
+            'numRxOk':            0x1415,        # INT16U
+            'numRxLost':          0x1617,        # INT16U
+            'numMacDropped':      0x18,          # INT8U
+            'numTxBad':           0x19,          # INT8U
+            'badLinkFrameId':     0x1a,          # INT8U
+            'badLinkSlot':        0x1b1c1d1e,    # INT32U
+            'badLinkOffset':      0x1f,          # INT8U            
+        }
+        '''
+        
+        returnVal  = []
+        returnVal += [''.join([chr(b) for b in macAddress])] # macAddress
+        returnVal += struct.pack(
+            '>IBbHHHHHBBBIB',
+            hr['charge'],         # INT32U  I
+            hr['queueOcc'],       # INT8U   B
+            hr['temperature'],    # INT8    b
+            hr['batteryVoltage'], # INT16U  H
+            hr['numTxOk'],        # INT16U  H
+            hr['numTxFail'],      # INT16U  H
+            hr['numRxOk'],        # INT16U  H
+            hr['numRxLost'],      # INT16U  H
+            hr['numMacDropped'],  # INT8U   B
+            hr['numTxBad'],       # INT8U   B
+            hr['badLinkFrameId'], # INT8U   B
+            hr['badLinkSlot'],    # INT32U  I
+            hr['badLinkOffset'],  # INT8U   B
+        )
+        returnVal  = ''.join(returnVal)
+        returnVal  = [ord(c) for c in returnVal]
+        
+        return returnVal
     
     def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,macAddress,hr):
+        '''
+        {
+            'numItems': 3
+            'neighbors': [
+                {
+                    'neighborFlag': 0,
+                    'neighborId': 11,
+                    'numTxFailures': 0,
+                    'rssi': -22,
+                    'numTxPackets': 59,
+                    'numRxPackets': 2
+                },
+                ...
+            ],
+        }
+        '''
+        print macAddress
+        print hr
         raise NotImplementedError()
     
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,macAddress,hr):
+        '''
+        'numJoinParents': 8,
+        'numItems': 8,
+        [
+            {
+                'rssi': -19,
+                'numRx': 2,
+                'neighborId': 2
+            },
+            {
+                'rssi': -10,
+                'numRx': 2,
+                'neighborId': 3
+            },
+            ...
+        ]
+        '''
+        print macAddress
+        print hr
         raise NotImplementedError()
     
     #======================== private =========================================
