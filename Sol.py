@@ -396,7 +396,7 @@ class Sol(object):
         {
             'numJoinParents': 0x55,              # INT8U
             'numItems':       2,
-            'discovered': [
+            'discoveredNeighbors': [
                 {
                     'neighborId':     0x0102,    # INT16U
                     'rssi':           -1,        # INT8
@@ -412,8 +412,8 @@ class Sol(object):
         '''
         returnVal  = []
         returnVal += [chr(hr['numJoinParents'])] # numJoinParents
-        returnVal += [chr(len(hr['discovered']))] # num_neighbors
-        for d in hr['discovered']:
+        returnVal += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
+        for d in hr['discoveredNeighbors']:
             returnVal += [struct.pack(
                 '>HbB',
                 d['neighborId'],       # INT16U  H

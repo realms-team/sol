@@ -220,7 +220,7 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
         hr         = {
             'numJoinParents': 0x55,              # INT8U
             'numItems':       2,
-            'discovered': [
+            'discoveredNeighbors': [
                 {
                     'neighborId':     0x0102,    # INT16U
                     'rssi':           -1,        # INT8
@@ -236,11 +236,11 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     )==[
         0x55,                                    # numJoinParents
         0x02,                                    # num_neighbors
-        # discovered 0
+        # discoveredNeighbor 0
         0x01,0x02,                               # neighborId
         0xff,                                    # rssi
         0x03,                                    # numRx
-        # neighbor 1
+        # discoveredNeighbor 1
         0x11,0x12,                               # neighborId
         0xff,                                    # rssi
         0x13,                                    # numRx
