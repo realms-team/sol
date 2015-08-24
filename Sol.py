@@ -429,7 +429,8 @@ class Sol(object):
     def create_value_SOL_TYPE_DUST_SNAPSHOT(self,summary):
         '''
         [
-            {   'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
+            {   
+                'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
                 'moteId':              0x090a,        # INT16U  H
                 'isAP':                0x0b,          # BOOL    B
                 'state':               0x0c,          # INT8U   B
@@ -445,20 +446,20 @@ class Sol(object):
                 'stateTime':           0x28292a2b,    # INT32U  I
                 'paths': [
                     {
-                        'macAddress':    (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
-                        'direction':      0x2c,       # INT8U   B
-                        'numLinks':       0x2d,       # INT8U   B
-                        'quality':        0x2e,       # INT8U   B
-                        'rssiSrcDest':    -1,         # INT8    b
-                        'rssiDestSrc':    -2,         # INT8    b
+                        'dest':        (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
+                        'direction':   0x2c,          # INT8U   B
+                        'numLinks':    0x2d,          # INT8U   B
+                        'quality':     0x2e,          # INT8U   B
+                        'rssiSrcDest': -1,            # INT8    b
+                        'rssiDestSrc': -2,            # INT8    b
                     },
                     {
-                        'macAddress':    (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
-                        'direction':      0x2c,       # INT8U  B
-                        'numLinks':       0x2d,       # INT8U  B
-                        'quality':        0x2e,       # INT8U  B
-                        'rssiSrcDest':    -1,         # INT8   b
-                        'rssiDestSrc':    -2,         # INT8   b
+                        'dest':        (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
+                        'direction':   0x2c,          # INT8U  B
+                        'numLinks':    0x2d,          # INT8U  B
+                        'quality':     0x2e,          # INT8U  B
+                        'rssiSrcDest': -1,            # INT8   b
+                        'rssiDestSrc': -2,            # INT8   b
                     },
                 ],
             },
@@ -479,12 +480,12 @@ class Sol(object):
                 'stateTime':           0x28292a2b,    # INT32U
                 'paths': [
                     {
-                        'macAddress':     (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
-                        'direction':      0x2c,       # INT8U
-                        'numLinks':       0x2d,       # INT8U
-                        'quality':        0x2e,       # INT8U
-                        'rssiSrcDest':    -1,         # INT8
-                        'rssiDestSrc':    -2,         # INT8
+                        'dest':        (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
+                        'direction':   0x2c,          # INT8U
+                        'numLinks':    0x2d,          # INT8U
+                        'quality':     0x2e,          # INT8U
+                        'rssiSrcDest': -1,            # INT8
+                        'rssiDestSrc': -2,            # INT8
                     },
                 ],
             },
@@ -495,7 +496,7 @@ class Sol(object):
         for m in summary:
             returnVal += [''.join([chr(b) for b in m['macAddress']])] # macAddress
             returnVal += [struct.pack(
-                '>HBBBBBIIIIIII',
+                '>HBBBBBIIIIII',
                 m['moteId'],           # INT16U  H
                 m['isAP'],             # BOOL    B
                 m['state'],            # INT8U   B
@@ -508,11 +509,10 @@ class Sol(object):
                 m['packetsReceived'],  # INT32U  I
                 m['packetsLost'],      # INT32U  I
                 m['avgLatency'],       # INT32U  I
-                m['stateTime'],        # INT32U  I
             )]
             returnVal += [chr(len(m['paths']))] # num_paths
             for p in m['paths']:
-                returnVal += [''.join([chr(b) for b in p['macAddress']])] # macAddress
+                returnVal += [''.join([chr(b) for b in p['dest']])] # dest
                 returnVal += [struct.pack(
                     '>BBBbb',
                     p['direction'],    # INT8U   B
