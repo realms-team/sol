@@ -69,10 +69,12 @@ This header appears in front on each object, or in a front of a chain of objects
 ```
  0 1 2 3 4 5 6 7
 +-+-+-+-+-+-+-+-+
-|0 0|0|M|S|Y| L |
+|0 0|T|M|S|Y| L |
 +-+-+-+-+-+-+-+-+
 ```
-
+* `T`: Type of MTtlv object:
+    * `0`: single-MTtlv object
+    * `1`: multi-MTtlv object (MTNtlv) this implies the 1st byte next to timestamp is N: number of objects
 * `M`: MAC address encoding:
     * `0`: no MAC address present
     * `1`: 8-byte MAC address present
@@ -88,29 +90,6 @@ This header appears in front on each object, or in a front of a chain of objects
     * `b10`: 2-byte length field present
     * `b11`: elided. The length is recovered from the length of the packet or HDLC frame.
 
-##### "more" header
-
-```
- 0 1 2 3 4 5 6 7
-+-+-+-+-+-+-+-+-+
-|0 0|1|S|Y|L| N |
-+-+-+-+-+-+-+-+-+
-```
-
-* `S`:
-    * `0` no timestamp present in any of the sensor objects following
-    * `1` timestamp present in each of the sensor objects following. Same format as in the "start" header.
-* `Y`:
-    * `0` no type field present in any of the sensor objects following
-    * `1` type field present in each of the sensor objects following. Same format as in the "start" header.
-* `L`: length field
-    * `0` no length field present in any of the sensor objects following
-    * `1` length  field present in each of the sensor objects following. Same format as in the "start" header.
-* `N`: number of objects following
-    * `b00`: 2 objects following
-    * `b01`: 8 objects following
-    * `b10`: 16 objects following
-    * `b11`: explicit 1-byte length field immediately following the "more" header
 
 ### example transmission use cases
 
@@ -153,22 +132,20 @@ Total: 4 bytes.
 
 * `[1B]` "start" header
    * `V`=`00` (version 0)
-   * `H`=`0` ("start" header)
+   * `H`=`1` ("start" header)
    * `M`=`0` (no MAC address)
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
    * `L`=`b00` (well-known value, no length field)
-* `[7B]` sensor reading 1
+* `[--]` MAC: _elided_
+* `[4B]` Timestamp: `0x........`
+* `[1B]` Number of objects = 3
+* `[3B]` sensor reading 1
    * `[--]` MAC: _elided_
-   * `[4B]` Timestamp: `0x........`
+   * `[--]` Timestamp: _elided_
    * `[1B]` type=`b..` (temperature)
    * `[--]` length: _elided_
    * `[2B]` value: `0x....`
-* `[1B]` "more" header
-   * `S`=`0` (inherit)
-   * `Y`=`1` (1-byte type)
-   * `L`=`0` (inherit)
-   * `N`=`b00` (2 objects)
 * `[3B]` sensor reading 2
    * `[--]` MAC: _elided_
    * `[--]` Timestamp: _elided_
@@ -192,7 +169,7 @@ The assumption is that a binary file is stored on some hard/flash drive with ord
 * recoverable file in case parts of it get corrupted.
 
 The following rules hence apply when saving to a binary file:
-* sensor object chaining is NOT allowed
+* sensor object chaining is NOT allowed (except on Neomote SD card level)
 * each sensor object MUST be framed using HDLC framing ([RFC1662](https://tools.ietf.org/html/rfc1662))
 * the length field MUST be elided, and the `L` bit in the start header set to `b11`
 
