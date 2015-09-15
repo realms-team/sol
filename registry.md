@@ -36,6 +36,12 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x1e` | [`DUST_NOTIF_EVENT_MOTERESET`](#dust_notif_event_motereset)                 |
 |   `0x1f` | [`DUST_NOTIF_EVENT_PACKETSENT`](#dust_notif_event_packetsent)               |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
+|   `0x21` | [`GS3_DTYPE_ID1D2T2E2N1`]()                                                 |
+|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`]()                                                   |
+|   `0x23` | [`LP02_DTYPE_IR4N1`]()                                                      |
+|   `0x24` | [`MB7554_DTYPE_D2N1NL1NG1`]()                                               |
+|   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
+|   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
