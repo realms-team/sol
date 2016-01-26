@@ -525,7 +525,59 @@ class Sol(object):
         returnVal  = [ord(c) for c in returnVal]
         
         return returnVal
-    
+   
+    def create_value(self, type_id, **kwargs):
+        '''Create a formated object value
+        Args:
+            type_id (int): the SOL type (see registry.md)
+            vals (dict): the array of values
+        Returns: : bytearray. An array of byte
+        '''
+        if type_id in d.SOL_TYPE_DUST:
+            raise NotImplementedError
+
+        # get sol structure by type
+        sol_item = [] 
+        for item in d.sol_types:
+            if item['type'] == type_id:
+                sol_item = item
+
+        raise NotImplementedError
+       #raw_vals = struct.pack(sol_item['structure'],*kwargs.values())
+
+       #returnVal  = ''.join(raw_vals)
+       #returnVal  = [ord(c) for c in returnVal]
+       #return returnVal
+
+    def parse_value(self, type_id,*payload):
+        ''' Parsed the given sensor object value
+            Returns Dict object
+        ''' 
+        if type_id in d.SOL_TYPE_DUST:
+            raise NotImplementedError
+       
+        # get sol structure by type
+        sol_item = []
+        for item in d.sol_types:
+            if item['type'] == type_id:
+                sol_item = item
+
+        # verify enough bytes
+        numBytes = struct.calcsize(sol_item['structure'])
+
+        if len(payload)<numBytes:
+            raise ValueError("not enough bytes for %s", type_id)
+
+        raise NotImplementedError 
+       ## separate string to parse from remainder
+       #str_payload = ''.join([chr(b) for b in payload[:numBytes]])
+       #remainder = payload[numBytes:]
+
+
+       #vals = struct.unpack(sol_item['structure'],str_payload)
+
+       #return vals
+ 
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
