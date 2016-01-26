@@ -1,6 +1,6 @@
 SOL_PORT                = 0xf0ba
 
-# types
+# type names
 
 SOL_TYPE_DISTANCE_JUDD_RS232_RAW            = 0x01
 SOL_TYPE_DISTANCE_JUDD_RS232_STATS          = 0x02
@@ -129,3 +129,200 @@ SOL_HDR_MORE_N_ALL      = [
     SOL_HDR_MORE_N_16,
     SOL_HDR_MORE_N_EXPLICIT,
 ]
+
+# type definitions
+
+sol_types = [
+    {
+        'type':   1,
+        'command': 'SOL_TYPE_DISTANCE_JUDD_RS232_RAW',
+        'description': '',
+        'structure':'>HHHB',
+        'fields': ['airtemp', 'travel_time', 'distance', 'retries'],
+    },
+    {
+        'type':   2,
+        'command': 'DISTANCE_JUDD_RS232_STATS',
+        'description': '',
+        'structure':'>HHHBBI',
+        'fields': ['airtemp', 'travel_time', 'distance', 'retries', 'count', 'std'],
+    },
+    {
+        'type':   3,
+        'command': 'SNOW_MAXBOTIX_MB7554_RS232_RAW',
+        'description': '',
+        'structure':'>H',
+        'fields': ['distance'],
+    },
+    {
+        'type':   4,
+        'command': 'SNOW_MAXBOTIX_MB7554_RS232_STATS',
+        'description': '',
+        'structure':'>HBI',
+        'fields': ['distance', 'count', 'std'],
+    },
+    {
+        'type':   5,
+        'command': 'TEMPRH_SENSERION_SHT15_RS232_RAW',
+        'description': '',
+        'structure':'>II',
+        'fields': ['temp', 'rH'],
+    },
+    {
+        'type':   6,
+        'command': 'TEMPRH_SENSERION_SHT15_RS232_STATS',
+        'description': '',
+        'structure':'>IIBBII',
+        'fields': ['temp', 'rH', 'count', 'std_temp', 'std_rH'],
+    },
+    {
+        'type':   7,
+        'command': 'TEMPRH_SENSERION_SHT25_RS232_RAW',
+        'description': '',
+        'structure':'>II',
+        'fields': ['temp', 'rH'],
+    },
+    {
+        'type':   8,
+        'command': 'TEMPRH_SENSERION_SHT25_RS232_STATS',
+        'description': '',
+        'structure':'>IIBII',
+        'fields': ['temp', 'rH', 'count', 'std_temp', 'std_rH'],
+    },
+    {
+        'type':   9,
+        'command': 'SOLAR_HUKSEFLUX_LP25_AV_RAW',
+        'description': '',
+        'structure':'>I',
+        'fields': ['Vout'],
+    },
+    {
+        'type':   10,
+        'command': 'SOLAR_HUKSEFLUX_LP25_AV_STATS',
+        'description': '',
+        'structure':'>IBI',
+        'fields': ['Vout', 'count', 'std'],
+    },
+    {
+        'type':   11,
+        'command': 'SOIL_DECAGON_GS3_RS232_RAW',
+        'description': '',
+        'structure':'>III',
+        'fields': ['moisture', 'soil_temp', 'soil_ec'],
+    },
+    {
+        'type':   12,
+        'command': 'SOIL_DECAGON_GS3_RS232_STATS',
+        'description': '',
+        'structure':'>IIIBI',
+        'fields': ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
+    },
+    ####
+    {
+        'type':   16,
+        'command': 'DUST_NOTIF_HR_DEVICE',
+        'description': '',
+        'structure':'',
+        'fields':   [],
+    },
+    ###
+    {
+        'type':   19,
+        'command': 'DUST_NOTIF_EVENT_COMMANDFINISHED',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   20,
+        'command': 'DUST_NOTIF_EVENT_PATHCREATE',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   21,
+        'command': 'DUST_NOTIF_EVENT_PATHDELETE',
+        'description': '',
+        'structure':'>ddB',
+        'fields': [],
+    },
+    {
+        'type':   22,
+        'command': 'DUST_NOTIF_EVENT_PING',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   23,
+        'command': 'DUST_NOTIF_EVENT_NETWORKTIME',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   24,
+        'command': 'DUST_NOTIF_EVENT_NETWORKRESET',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   25,
+        'command': 'DUST_NOTIF_EVENT_MOTEJOIN',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   26,
+        'command': 'DUST_NOTIF_EVENT_MOTECREATE',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   27,
+        'command': 'DUST_NOTIF_EVENT_MOTEDELETE',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   28,
+        'command': 'DUST_NOTIF_EVENT_MOTELOST',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {
+        'type':   29,
+        'command': 'DUST_NOTIF_EVENT_MOTEOPERATIONAL',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {   'type':   30,
+        'command': 'DUST_NOTIF_EVENT_MOTERESET',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+    {    'type':   31,
+        'command': 'DUST_NOTIF_EVENT_PACKETSENT',
+        'description': '',
+        'structure':'',
+        'fields': [],
+    },
+
+
+
+]
+
+
+
+
+
+
+
