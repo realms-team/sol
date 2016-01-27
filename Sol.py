@@ -8,6 +8,11 @@ import SolDefines as d
 import SolVersion as ver
 import OpenHdlc
 
+from array import array
+from SmartMeshSDK                       import  HrParser
+from SmartMeshSDK.protocols.oap         import  OAPMessage, \
+                                                OAPNotif
+
 class Sol(object):
     '''
     Sensor Object Library.
@@ -16,6 +21,7 @@ class Sol(object):
     def __init__(self):
         self.fileLock = threading.RLock()
         self.hdlc     = OpenHdlc.OpenHdlc()
+        self.hrParser = HrParser.HrParser()
     
     #======================== public ==========================================
     
@@ -551,24 +557,28 @@ class Sol(object):
 
     def parse_value(self, type_id,*payload):
         ''' Parsed the given sensor object value
-            Returns Dict object
+            Returns parsed value as Dictionary object
         ''' 
+        obj = {}
+
         if type_id in d.SOL_TYPE_DUST:
-            raise NotImplementedError
-       
-        # get sol structure by type
-        sol_item = []
-        for item in d.sol_types:
-            if item['type'] == type_id:
-                sol_item = item
+            obj = self._parse_specific_DUST(type_id,payload)
+        else: 
+            raise NotImplementedError 
 
-        # verify enough bytes
-        numBytes = struct.calcsize(sol_item['structure'])
+            # get sol structure by type
+            sol_item = []
+            for item in d.sol_types:
+                if item['type'] == type_id:
+                    sol_item = item
 
-        if len(payload)<numBytes:
-            raise ValueError("not enough bytes for %s", type_id)
+            # verify enough bytes
+            numBytes = struct.calcsize(sol_item['structure'])
 
-        raise NotImplementedError 
+            if len(payload)<numBytes:
+                raise ValueError("not enough bytes for %s", type_id)
+
+        return obj
        ## separate string to parse from remainder
        #str_payload = ''.join([chr(b) for b in payload[:numBytes]])
        #remainder = payload[numBytes:]
@@ -613,6 +623,54 @@ class Sol(object):
             }
         else:
             raise SystemError()
+
+    def _parse_specific_DUST(self,type_id,payload):
+        '''
+        Returns a dict
+        '''
+        obj = {}
+        if type_id == d.SOL_TYPE_DUST_NOTIF_DATA_RAW:
+            # TODO An OAP parser in the Smartmesh SDK should be used instead
+
+            # convert into byte array (srcPort + destPort = 4 bytes)
+            data = array('B',payload[4:])
+
+            # first two bytes are transport header
+            trans = OAPMessage.extract_oap_header(data[0:2])
+
+            # third byte is the command (GET, PUT, POST, DELETE, NOTIF)
+            cmd_type = data[2]
+
+            if trans['response']:
+                oap_resp = OAPMessage.parse_oap_response(data, 2)
+            elif cmd_type == OAPMessage.CmdType.NOTIF:
+                # parse the OAP message into a OAPNotif class
+                oap_notif = OAPNotif.parse_oap_notif(data,3)
+
+                # store the parsed message attributes
+                obj = oap_notif.__dict__
+
+                # delete parameter that generate error (TODO)
+                del obj['raw_data']
+                del obj['channel']
+                del obj['received_timestamp']
+
+        # Health Reports
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
+            hr = [self.hrParser.HR_ID_DEVICE,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS:
+            hr = [self.hrParser.HR_ID_NEIGHBORS,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
+            hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+        
+        else:
+            raise NotImplementedError
+        
+        return obj
+
 
 #============================ main ============================================
 
