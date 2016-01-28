@@ -665,9 +665,28 @@ class Sol(object):
         elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
             hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
+
+        elif    (   type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PING
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET
+                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
+                ):
+            obj = payload
+
+        elif type_id == d.SOL_TYPE_DUST_SNAPSHOT
+            obj = payload
         
         else:
-            raise NotImplementedError
+            raise NotImplementedError("Sol type "+str(type_id)+" is not implemented yet")
         
         return obj
 
