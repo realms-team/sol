@@ -9,6 +9,7 @@ import SolVersion as ver
 import OpenHdlc
 
 from array import array
+from datetime import datetime
 from SmartMeshSDK                       import  HrParser
 from SmartMeshSDK.protocols.oap         import  OAPMessage, \
                                                 OAPNotif
@@ -650,10 +651,10 @@ class Sol(object):
                 # store the parsed message attributes
                 obj = oap_notif.__dict__
 
-                # delete parameter that generate error (TODO)
-                del obj['raw_data']
-                del obj['channel']
-                del obj['received_timestamp']
+                # clear value for pymongo
+                obj['raw_data'] = obj['raw_data'].tolist()
+                obj['channel'] = obj['channel'].tolist()[0]
+                obj['received_timestamp'] = (obj['received_timestamp'] - datetime(1970, 1, 1)).total_seconds()
 
         # Health Reports
         elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
@@ -682,7 +683,7 @@ class Sol(object):
                 ):
             obj = payload
 
-        elif type_id == d.SOL_TYPE_DUST_SNAPSHOT
+        elif type_id == d.SOL_TYPE_DUST_SNAPSHOT:
             obj = payload
         
         else:
