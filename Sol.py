@@ -536,9 +536,16 @@ class Sol(object):
     def create_value(self, type_name, **kwargs):
         '''Create a formated object value
         Args:
-            type_id (int): the SOL type (see registry.md)
-            vals (dict): the array of values
-        Returns: : bytearray. An array of byte
+            type_name (str): the SOL type as str (see registry.md)
+            kwargs (dict): a dictionary of values
+        Returns: An array of byte
+        Example:
+            create_value("SOL_TYPE_DUST_NOTIF_SOMETHING",
+                    srcPort = 61625,
+                    dstPort = 61625,
+                    payload = [0, 0, 5, 0, 255])
+            Will return:
+                [240, 185, 240, 185, 0, 0, 5, 0, 255]
         '''
         if hasattr(d,type_name):
             type_id = getattr(d,type_name)
