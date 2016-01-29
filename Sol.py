@@ -533,23 +533,31 @@ class Sol(object):
         
         return returnVal
    
-    def create_value(self, type_id, **kwargs):
+    def create_value(self, type_name, **kwargs):
         '''Create a formated object value
         Args:
             type_id (int): the SOL type (see registry.md)
             vals (dict): the array of values
         Returns: : bytearray. An array of byte
         '''
+        if hasattr(d,type_name):
+            type_id = getattr(d,type_name)
+        else: raise NotImplementedError("Unkown SOL type.")
+
+        # call corresponding DUST methods
         if type_id in d.SOL_TYPE_DUST:
+            if hasattr(self,"create_value_%s" % type_name):
+                return getattr(self,"create_value_%s" % type_name)(**kwargs)
+            else: raise NotImplementedError("Function create_value_%s does not exist." % type_name)
+
+        else:
+            # get sol structure by type
+            sol_item = [] 
+            for item in d.sol_types:
+                if item['type'] == type_id:
+                    sol_item = item
+
             raise NotImplementedError
-
-        # get sol structure by type
-        sol_item = [] 
-        for item in d.sol_types:
-            if item['type'] == type_id:
-                sol_item = item
-
-        raise NotImplementedError
        #raw_vals = struct.pack(sol_item['structure'],*kwargs.values())
 
        #returnVal  = ''.join(raw_vals)
