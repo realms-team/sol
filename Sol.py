@@ -8,8 +8,8 @@ import SolDefines as d
 import SolVersion as ver
 import OpenHdlc
 
-from array import array
-from datetime import datetime
+import array
+import datetime
 from SmartMeshSDK                       import  HrParser
 from SmartMeshSDK.protocols.oap         import  OAPMessage, \
                                                 OAPNotif
@@ -542,7 +542,8 @@ class Sol(object):
         '''
         if hasattr(d,type_name):
             type_id = getattr(d,type_name)
-        else: raise NotImplementedError("Unkown SOL type.")
+        else:
+            raise NotImplementedError("Unkown SOL type.")
 
         # call corresponding DUST methods
         if type_id in d.SOL_TYPE_DUST:
@@ -642,7 +643,7 @@ class Sol(object):
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
             # convert into byte array (srcPort + destPort = 4 bytes)
-            data = array('B',payload[4:])
+            data = array.array('B',payload[4:])
 
             # first two bytes are transport header
             trans = OAPMessage.extract_oap_header(data[0:2])
@@ -662,7 +663,7 @@ class Sol(object):
                 # clear value for pymongo
                 obj['raw_data'] = obj['raw_data'].tolist()
                 obj['channel'] = obj['channel'].tolist()[0]
-                obj['received_timestamp'] = (obj['received_timestamp'] - datetime(1970, 1, 1)).total_seconds()
+                obj['received_timestamp'] = (obj['received_timestamp'] - datetime.datetime(1970, 1, 1)).total_seconds()
 
         # Health Reports
         elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
