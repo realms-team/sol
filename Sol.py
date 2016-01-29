@@ -530,9 +530,9 @@ class Sol(object):
                 )]
         returnVal  = ''.join(returnVal)
         returnVal  = [ord(c) for c in returnVal]
-        
+
         return returnVal
-   
+
     def create_value(self, type_name, **kwargs):
         '''Create a formated object value
         Args:
@@ -543,38 +543,34 @@ class Sol(object):
         if hasattr(d,type_name):
             type_id = getattr(d,type_name)
         else:
-            raise NotImplementedError("Unkown SOL type.")
+            raise ValueError("Unkown SOL type.")
 
         # call corresponding DUST methods
         if type_id in d.SOL_TYPE_DUST:
             if hasattr(self,"create_value_%s" % type_name):
                 return getattr(self,"create_value_%s" % type_name)(**kwargs)
-            else: raise NotImplementedError("Function create_value_%s does not exist." % type_name)
+            else:
+                raise ValueError("Function create_value_%s does not exist." % type_name)
 
         else:
             # get sol structure by type
-            sol_item = [] 
+            sol_item = []
             for item in d.sol_types:
                 if item['type'] == type_id:
                     sol_item = item
 
             raise NotImplementedError
-       #raw_vals = struct.pack(sol_item['structure'],*kwargs.values())
-
-       #returnVal  = ''.join(raw_vals)
-       #returnVal  = [ord(c) for c in returnVal]
-       #return returnVal
 
     def parse_value(self, type_id,*payload):
         ''' Parsed the given sensor object value
             Returns parsed value as Dictionary object
-        ''' 
+        '''
         obj = {}
 
         if type_id in d.SOL_TYPE_DUST:
             obj = self._parse_specific_DUST(type_id,payload)
-        else: 
-            raise NotImplementedError 
+        else:
+            raise NotImplementedError
 
             # get sol structure by type
             sol_item = []
@@ -589,15 +585,7 @@ class Sol(object):
                 raise ValueError("not enough bytes for %s", type_id)
 
         return obj
-       ## separate string to parse from remainder
-       #str_payload = ''.join([chr(b) for b in payload[:numBytes]])
-       #remainder = payload[numBytes:]
 
-
-       #vals = struct.unpack(sol_item['structure'],str_payload)
-
-       #return vals
- 
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
@@ -676,21 +664,23 @@ class Sol(object):
             hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
 
-        elif    (   type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PING
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET
-                or  type_id == d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
-                ):
-            obj = payload
+        elif(   type_id in [
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PING,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
+                ]
+            ):
+                obj = payload
 
         elif type_id == d.SOL_TYPE_DUST_SNAPSHOT:
             obj = payload
