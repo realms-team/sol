@@ -36,9 +36,28 @@ SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 
 # types group 
-SOL_TYPE_DUST                               =   [0x0d,0x0e,0x0f,0x10,0x11,0x12,0x13,0x14,0x15,
-                                                 0x16,0x17,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,
-                                                 0x1f,0x20]
+SOL_TYPE_DUST                               =   [
+                                                SOL_TYPE_DUST_NOTIF_LOG,
+                                                SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                                                SOL_TYPE_DUST_NOTIF_IPDATA,
+                                                SOL_TYPE_DUST_NOTIF_HR_DEVICE,
+                                                SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS,
+                                                SOL_TYPE_DUST_NOTIF_HR_DISCOVERED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PING,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+                                                SOL_TYPE_DUST_SNAPSHOT,
+                                                ]
 
 
 def solTypeToString(solDefinesClass,type):
