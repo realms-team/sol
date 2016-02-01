@@ -631,7 +631,19 @@ class Sol(object):
 
     def _parse_specific_DUST(self,type_id,payload):
         '''
-        Returns a dict
+        Args: 
+            type_id (int): The SOL type ID
+            payload (array of byte): The data to parse
+        Description: Prepare the data and call corresponding DUST parser.
+        Returns: a dict element with the parsed data
+        Example:
+            _parse_specific_DUST(
+                    SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                    (240, 185, 240, 185, 0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, ...)
+                )
+            output =    {'packet_timestamp': (262572558848, 246301952),
+                         'received_timestamp': 1454335765.694352, 
+                         'raw_dat': ...}
         '''
         obj = {}
         if type_id == d.SOL_TYPE_DUST_NOTIF_DATA_RAW:
