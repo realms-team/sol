@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=master)](https://travis-ci.org/realms-team/sol)
+
 This repo contains a set of libraries to manipulate sensor objects.
 
 An sensor object contains the following _conceptual_ fields:
