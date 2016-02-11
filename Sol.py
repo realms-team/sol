@@ -208,9 +208,9 @@ class Sol(object):
                         try:
                            (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
                         except IndexError:
-                           right_offset_start -= 1
+                            right_offset_start -= 1
                         else:
-                           break
+                            break
                     
                     if left_timestamp>startTimestamp:
                         startOffset = left_timestamp
