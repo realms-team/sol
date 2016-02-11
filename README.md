@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=master)](https://travis-ci.org/realms-team/sol)
-[![Code Health](https://landscape.io/github/realms-team/basestation-fw/master/landscape.svg?style=flat)](https://landscape.io/github/realms-team/basestation-fw/master)
+[![Code Health](https://landscape.io/github/realms-team/sol/master/landscape.svg?style=flat)](https://landscape.io/github/realms-team/sol/master)
 
 This repo contains a set of libraries to manipulate sensor objects.
 
