@@ -18,7 +18,7 @@ def removeFile(request):
     #request.addfinalizer(removeFileFunc)
     try:
         os.remove(FILENAME)
-    except WindowsError:
+    except OSError:
         # if file does not exist. NOT an error.
         pass
 
