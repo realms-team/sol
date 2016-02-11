@@ -37,7 +37,7 @@ class Sol(object):
     #===== conversions
     
     def dict_to_bin(self,o_dict):
-        bin   = []
+        o_bin   = []
         
         # header
         h     = 0
@@ -47,21 +47,21 @@ class Sol(object):
         h    |= d.SOL_HDR_START_S_EPOCH<<d.SOL_HDR_START_S_OFFSET
         h    |=    d.SOL_HDR_START_Y_1B<<d.SOL_HDR_START_Y_OFFSET
         h    |=    d.SOL_HDR_START_L_WK<<d.SOL_HDR_START_L_OFFSET
-        bin  += [h]
+        o_bin  += [h]
         
         # mac
-        bin  += o_dict['mac']
+        o_bin  += o_dict['mac']
         
         # timestamp 
-        bin  += self._num_to_list(o_dict['timestamp'],4)
+        o_bin  += self._num_to_list(o_dict['timestamp'],4)
         
         # type 
-        bin  += self._num_to_list(o_dict['type'],1)
+        o_bin  += self._num_to_list(o_dict['type'],1)
         
         # value 
-        bin  += o_dict['value']
+        o_bin  += o_dict['value']
         
-        return bin
+        return o_bin
     
     def bin_to_dict(self,o_bin,mac=None):
         returnVal = {}
@@ -139,10 +139,10 @@ class Sol(object):
             else:
                 # minimal
                 
-                bin = base64.b64decode(obj)
-                bin = [ord(b) for b in bin]
+                o_bin = base64.b64decode(obj)
+                o_bin = [ord(b) for b in o_bin]
                 
-                thisDict = self.bin_to_dict(bin)
+                thisDict = self.bin_to_dict(o_bin)
             returnVal += [thisDict]
         
         return returnVal
@@ -153,11 +153,11 @@ class Sol(object):
         
         with self.fileLock:
             with open(fileName,'ab') as f:
-                for d in dicts:
-                    bin = self.dict_to_bin(d)
-                    bin = self.hdlc.hdlcify(bin)
-                    bin = ''.join([chr(b) for b in bin])
-                    f.write(bin)
+                for o_dict in dicts:
+                    o_bin = self.dict_to_bin(o_dict)
+                    o_bin = self.hdlc.hdlcify(o_bin)
+                    o_bin = ''.join([chr(b) for b in o_bin])
+                    f.write(o_bin)
     
     def loadFromFile(self,fileName,startTimestamp=None,endTimestamp=None):
         
@@ -422,12 +422,12 @@ class Sol(object):
         returnVal  = []
         returnVal += [chr(hr['numJoinParents'])] # numJoinParents
         returnVal += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
-        for d in hr['discoveredNeighbors']:
+        for n in hr['discoveredNeighbors']:
             returnVal += [struct.pack(
                 '>HbB',
-                d['neighborId'],       # INT16U  H
-                d['rssi'],             # INT8    b
-                d['numRx'],            # INT8U   B
+                n['neighborId'],       # INT16U  H
+                n['rssi'],             # INT8    b
+                n['numRx'],            # INT8U   B
                 
             )]
         returnVal  = ''.join(returnVal)
