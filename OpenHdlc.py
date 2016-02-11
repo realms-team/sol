@@ -174,11 +174,11 @@ class OpenHdlc(object):
            # the CRC is correct
            
            # remove the CRC from the input buffer
-           self._inputBuf = self._inputBuf[:-2]
+            self._inputBuf = self._inputBuf[:-2]
         else:
-           self._inputBuf = []
+            self._inputBuf = []
            
-           raise ValueError("invalid CRC")
+            raise ValueError("invalid CRC")
         
         # reset escaping
         self._inputEscaping = False
