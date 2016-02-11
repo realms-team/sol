@@ -720,6 +720,5 @@ class Sol(object):
 #============================ main ============================================
 
 if __name__=="__main__":
-    import os
     os.system("py.test -vv -x tests/")
     raw_input("Press Enter to close.")
