@@ -5,22 +5,18 @@ SOL_VERSION = {}
 
 KEYS = ['SOL_VERSION_MAJOR','SOL_VERSION_MINOR','SOL_VERSION_PATCH','SOL_VERSION_BUILD']
 
-if os.path.isfile('sol-version.h'):
-    fileName = 'sol-version.h'
-else:
-    curr_dir = os.path.dirname(os.path.abspath(__file__))
-    fileName = os.path.join(curr_dir,'../sol','sol-version.h')
+fileName = os.path.join(os.path.dirname(__file__),'../sol/','sol-version.h')
+if os.path.isfile(fileName):
+    with open(fileName) as f:
+        lines = f.readlines()
+        for k in KEYS:
+            for line in lines:
+                m = re.search('{0}\s*(\w)'.format(k), line)
+                if m:
+                    SOL_VERSION[k] = int(m.group(1))
 
-with open(fileName) as f:
-    lines = f.readlines()
     for k in KEYS:
-        for line in lines:
-            m = re.search('{0}\s*(\w)'.format(k), line)
-            if m:
-                SOL_VERSION[k] = int(m.group(1))
-
-for k in KEYS:
-    assert SOL_VERSION[k] != None
+        assert SOL_VERSION[k] != None
 
 if __name__=="__main__":
     for k in KEYS:
