@@ -8,7 +8,8 @@ KEYS = ['SOL_VERSION_MAJOR','SOL_VERSION_MINOR','SOL_VERSION_PATCH','SOL_VERSION
 if os.path.isfile('sol-version.h'):
     fileName = 'sol-version.h'
 else:
-    fileName = os.path.join('..','sol','sol-version.h')
+    curr_dir = os.path.dirname(__file__)
+    fileName = os.path.join(curr_dir,'../sol','sol-version.h')
 
 with open(fileName) as f:
     lines = f.readlines()
