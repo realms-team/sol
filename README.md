@@ -19,6 +19,7 @@ See [registry](registry.md).
 # Representations
 
 This sections details how this object is represented.
+Each object can be represented in [binary](#binary-representation) or [JSON](#json-representation).
 
 ## binary representation
 
