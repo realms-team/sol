@@ -631,7 +631,7 @@ class Sol(object):
 
     def _parse_specific_DUST(self,type_id,payload):
         '''
-        Args: 
+        Args:
             type_id (int): The SOL type ID
             payload (array of byte): The data to parse
         Description: Prepare the data and call corresponding DUST parser.
@@ -642,8 +642,8 @@ class Sol(object):
                     (240, 185, 240, 185, 0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, ...)
                 )
             output =    {'packet_timestamp': (262572558848, 246301952),
-                         'received_timestamp': 1454335765.694352, 
-                         'raw_dat': ...}
+                         'received_timestamp': 1454335765.694352,
+                         'raw_data': ...}
         '''
         obj = {}
         if type_id == d.SOL_TYPE_DUST_NOTIF_DATA_RAW:
@@ -667,10 +667,12 @@ class Sol(object):
                 # store the parsed message attributes
                 obj = oap_notif.__dict__
 
-                # clear value for pymongo
+                # clear value for pymongo (does not accept arrays of bytes)
                 obj['raw_data'] = obj['raw_data'].tolist()
                 obj['channel'] = obj['channel'].tolist()[0]
-                obj['received_timestamp'] = (obj['received_timestamp'] - datetime.datetime(1970, 1, 1)).total_seconds()
+                obj['received_timestamp'] = (obj['received_timestamp'] -
+                        datetime.datetime(1970, 1, 1)
+                    ).total_seconds()
 
         # Health Reports
         elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
@@ -683,6 +685,7 @@ class Sol(object):
             hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
 
+        # Dust Notifs
         elif(   type_id in [
                     d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
                     d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
@@ -699,14 +702,16 @@ class Sol(object):
                     d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
                 ]
             ):
+            # Return raw object (TODO: parse)
                 obj = payload
 
         elif type_id == d.SOL_TYPE_DUST_SNAPSHOT:
+            # Return raw object (TODO: parse)
             obj = payload
-        
+
         else:
-            raise NotImplementedError("Sol type "+str(type_id)+" is not implemented yet")
-        
+            raise ValueError("Sol type "+str(type_id)+" does not exist.")
+
         return obj
 
 
