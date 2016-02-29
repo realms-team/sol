@@ -1,9 +1,8 @@
 import sys
 import os
 
-if __name__ == "__main__":
-    here = sys.path[0]
-    sys.path.insert(0, os.path.join(here, 'smartmeshsdk'))
+here = sys.path[0]
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk'))
 
 import json
 import struct
