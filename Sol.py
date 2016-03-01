@@ -1,9 +1,6 @@
 import sys
 import os
 
-# Add SmartMeshSDK to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'smartmeshsdk'))
-
 import json
 import struct
 import base64
