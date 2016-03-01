@@ -1,4 +1,6 @@
+import sys
 import os
+
 import json
 import struct
 import base64
@@ -8,6 +10,12 @@ import SolDefines as d
 import SolVersion as ver
 import OpenHdlc
 
+import array
+import datetime
+from SmartMeshSDK                       import  HrParser
+from SmartMeshSDK.protocols.oap         import  OAPMessage, \
+                                                OAPNotif
+
 class Sol(object):
     '''
     Sensor Object Library.
@@ -16,6 +24,7 @@ class Sol(object):
     def __init__(self):
         self.fileLock = threading.RLock()
         self.hdlc     = OpenHdlc.OpenHdlc()
+        self.hrParser = HrParser.HrParser()
     
     #======================== public ==========================================
     
@@ -523,9 +532,69 @@ class Sol(object):
                 )]
         returnVal  = ''.join(returnVal)
         returnVal  = [ord(c) for c in returnVal]
-        
+
         return returnVal
-    
+
+    def create_value(self, type_name, **kwargs):
+        '''Create a formated object value
+        Args:
+            type_name (str): the SOL type as str (see registry.md)
+            kwargs (dict): a dictionary of values
+        Returns: An array of byte
+        Example:
+            create_value("SOL_TYPE_DUST_NOTIF_SOMETHING",
+                    srcPort = 61625,
+                    dstPort = 61625,
+                    payload = [0, 0, 5, 0, 255])
+            Will return:
+                [240, 185, 240, 185, 0, 0, 5, 0, 255]
+        '''
+        if hasattr(d,type_name):
+            type_id = getattr(d,type_name)
+        else:
+            raise ValueError("Unkown SOL type.")
+
+        # call corresponding DUST methods
+        if type_id in d.SOL_TYPE_DUST:
+            if hasattr(self,"create_value_%s" % type_name):
+                return getattr(self,"create_value_%s" % type_name)(**kwargs)
+            else:
+                raise ValueError("Function create_value_%s does not exist." % type_name)
+
+        else:
+            # get sol structure by type
+            sol_item = []
+            for item in d.sol_types:
+                if item['type'] == type_id:
+                    sol_item = item
+
+            raise NotImplementedError
+
+    def parse_value(self, type_id,*payload):
+        ''' Parsed the given sensor object value
+            Returns parsed value as Dictionary object
+        '''
+        obj = {}
+
+        if type_id in d.SOL_TYPE_DUST:
+            obj = self._parse_specific_DUST(type_id,payload)
+        else:
+            raise NotImplementedError
+
+            # get sol structure by type
+            sol_item = []
+            for item in d.sol_types:
+                if item['type'] == type_id:
+                    sol_item = item
+
+            # verify enough bytes
+            numBytes = struct.calcsize(sol_item['structure'])
+
+            if len(payload)<numBytes:
+                raise ValueError("not enough bytes for %s", type_id)
+
+        return obj
+
     #======================== private =========================================
     
     def _backUpUntilStartFrame(self,fileName,curOffset):
@@ -561,6 +630,92 @@ class Sol(object):
             }
         else:
             raise SystemError()
+
+    def _parse_specific_DUST(self,type_id,payload):
+        '''
+        Args:
+            type_id (int): The SOL type ID
+            payload (array of byte): The data to parse
+        Description: Prepare the data and call corresponding DUST parser.
+        Returns: a dict element with the parsed data
+        Example:
+            _parse_specific_DUST(
+                    SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                    (240, 185, 240, 185, 0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, ...)
+                )
+            output =    {'packet_timestamp': (262572558848, 246301952),
+                         'received_timestamp': 1454335765.694352,
+                         'raw_data': ...}
+        '''
+        obj = {}
+        if type_id == d.SOL_TYPE_DUST_NOTIF_DATA_RAW:
+            # TODO An OAP parser in the Smartmesh SDK should be used instead
+
+            # convert into byte array (srcPort + destPort = 4 bytes)
+            data = array.array('B',payload[4:])
+
+            # first two bytes are transport header
+            trans = OAPMessage.extract_oap_header(data[0:2])
+
+            # third byte is the command (GET, PUT, POST, DELETE, NOTIF)
+            cmd_type = data[2]
+
+            if trans['response']:
+                oap_resp = OAPMessage.parse_oap_response(data, 2)
+            elif cmd_type == OAPMessage.CmdType.NOTIF:
+                # parse the OAP message into a OAPNotif class
+                oap_notif = OAPNotif.parse_oap_notif(data,3)
+
+                # store the parsed message attributes
+                obj = oap_notif.__dict__
+
+                # clear value for pymongo (does not accept arrays of bytes)
+                obj['raw_data'] = obj['raw_data'].tolist()
+                obj['channel'] = obj['channel'].tolist()[0]
+                obj['received_timestamp'] = (obj['received_timestamp'] -
+                        datetime.datetime(1970, 1, 1)
+                    ).total_seconds()
+
+        # Health Reports
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
+            hr = [self.hrParser.HR_ID_DEVICE,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS:
+            hr = [self.hrParser.HR_ID_NEIGHBORS,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
+            hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
+            obj = self.hrParser.parseHr(hr)
+
+        # Dust Notifs
+        elif(   type_id in [
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PING,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+                    d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
+                ]
+            ):
+            # Return raw object (TODO: parse)
+                obj = payload
+
+        elif type_id == d.SOL_TYPE_DUST_SNAPSHOT:
+            # Return raw object (TODO: parse)
+            obj = payload
+
+        else:
+            raise ValueError("Sol type "+str(type_id)+" does not exist.")
+
+        return obj
+
 
 #============================ main ============================================
 

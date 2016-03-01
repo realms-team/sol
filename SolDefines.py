@@ -1,6 +1,6 @@
 SOL_PORT                = 0xf0ba
 
-# types
+# type names
 
 SOL_TYPE_DISTANCE_JUDD_RS232_RAW            = 0x01
 SOL_TYPE_DISTANCE_JUDD_RS232_STATS          = 0x02
@@ -34,6 +34,31 @@ SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL   = 0x1d
 SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET         = 0x1e
 SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
+
+# types group 
+SOL_TYPE_DUST                               =   [
+                                                SOL_TYPE_DUST_NOTIF_LOG,
+                                                SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                                                SOL_TYPE_DUST_NOTIF_IPDATA,
+                                                SOL_TYPE_DUST_NOTIF_HR_DEVICE,
+                                                SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS,
+                                                SOL_TYPE_DUST_NOTIF_HR_DISCOVERED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PING,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+                                                SOL_TYPE_DUST_SNAPSHOT,
+                                                ]
+
 
 def solTypeToString(solDefinesClass,type):
     for k in dir(solDefinesClass):
@@ -129,3 +154,87 @@ SOL_HDR_MORE_N_ALL      = [
     SOL_HDR_MORE_N_16,
     SOL_HDR_MORE_N_EXPLICIT,
 ]
+
+# type definitions
+
+sol_types = [
+    {
+        'type':         SOL_TYPE_DISTANCE_JUDD_RS232_RAW,
+        'description':  '',
+        'structure':    '>HHHB',
+        'fields':       ['airtemp', 'travel_time', 'distance', 'retries'],
+    },
+    {
+        'type':         SOL_TYPE_DISTANCE_JUDD_RS232_STATS,
+        'description':  '',
+        'structure':    '>HHHBBI',
+        'fields':       ['airtemp', 'travel_time', 'distance', 'retries', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_RAW,
+        'description':  '',
+        'structure':    '>H',
+        'fields':       ['distance'],
+    },
+    {
+        'type':         SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_STATS,
+        'description':  '',
+        'structure':    '>HBI',
+        'fields':       ['distance', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_RAW,
+        'description':  '',
+        'structure':    '>II',
+        'fields':       ['temp', 'rH'],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_STATS,
+        'description':  '',
+        'structure':    '>IIBBII',
+        'fields':       ['temp', 'rH', 'count', 'std_temp', 'std_rH'],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_RAW,
+        'description':  '',
+        'structure':    '>II',
+        'fields':       ['temp', 'rH'],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_STATS,
+        'description':  '',
+        'structure':    '>IIBII',
+        'fields':       ['temp', 'rH', 'count', 'std_temp', 'std_rH'],
+    },
+    {
+        'type':         SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_RAW,
+        'description':  '',
+        'structure':    '>I',
+        'fields':       ['Vout'],
+    },
+    {
+        'type':         SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_STATS,
+        'description':  '',
+        'structure':    '>IBI',
+        'fields':       ['Vout', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_SOIL_DECAGON_GS3_RS232_RAW,
+        'description':  '',
+        'structure':    '>III',
+        'fields':       ['moisture', 'soil_temp', 'soil_ec'],
+    },
+    {
+        'type':         SOL_TYPE_SOIL_DECAGON_GS3_RS232_STATS,
+        'description':  '',
+        'structure':    '>IIIBI',
+        'fields':       ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
+    },
+]
+
+
+
+
+
+
+
