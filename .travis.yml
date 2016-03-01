@@ -2,5 +2,8 @@ language: python
 python:
   - "2.7"
 
+install:
+  cd smartmeshsdk/ && python setup.py build && python setup.py install && cd ..
+
 # command to run tests
 script: py.test tests/
