@@ -10,6 +10,14 @@ An sensor object contains the following _conceptual_ fields:
 
 It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 
+# Installation
+Download source:
+`git clone https://github.com/realms-team/sol.git`
+
+Init submodule
+`git submodule update --init`
+
+
 # Registry
 
 ## "type" registry
