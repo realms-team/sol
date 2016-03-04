@@ -6,4 +6,4 @@ install:
   cd smartmeshsdk/ && python setup.py build && python setup.py install && cd ..
 
 # command to run tests
-script: py.test tests/
+script: python -m pytest tests/
