@@ -12,7 +12,9 @@ import OpenHdlc
 
 import array
 import datetime
-from SmartMeshSDK                       import  HrParser
+
+from SmartMeshSDK.protocols.Hr          import  HrParser
+
 from SmartMeshSDK.protocols.oap         import  OAPMessage, \
                                                 OAPNotif
 
