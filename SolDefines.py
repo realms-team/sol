@@ -35,6 +35,31 @@ SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET         = 0x1e
 SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 
+# types group 
+SOL_TYPE_DUST                               =   [
+                                                SOL_TYPE_DUST_NOTIF_LOG,
+                                                SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                                                SOL_TYPE_DUST_NOTIF_IPDATA,
+                                                SOL_TYPE_DUST_NOTIF_HR_DEVICE,
+                                                SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS,
+                                                SOL_TYPE_DUST_NOTIF_HR_DISCOVERED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PING,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+                                                SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+                                                SOL_TYPE_DUST_SNAPSHOT,
+                                                ]
+
+
 def solTypeToString(solDefinesClass,sol_type):
     for k in dir(solDefinesClass):
         if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==sol_type:
