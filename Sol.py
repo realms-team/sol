@@ -13,9 +13,9 @@ import OpenHdlc
 import array
 import datetime
 
-here = sys.path[0]
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk','libs'))
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk','external_libs'))
+here = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk','libs'))
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk','external_libs'))
 
 from SmartMeshSDK.protocols.Hr          import  HrParser
 
