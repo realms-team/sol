@@ -4,10 +4,6 @@ python:
 
 install:
   - pip install pytest==2.9.0
-  - cd smartmeshsdk/
-    && python setup.py build
-    && python setup.py install
-    && cd ..
 
 # command to run tests
 script: python -m pytest tests/
