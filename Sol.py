@@ -566,7 +566,7 @@ class Sol(object):
             raise ValueError("Unkown SOL type.")
 
         # call corresponding DUST methods
-        if type_id in d.SOL_TYPE_DUST:
+        if type_name.startswith('SOL_TYPE_DUST') and getattr(d,type_name)==type_id:
             if hasattr(self,"create_value_%s" % type_name):
                 return getattr(self,"create_value_%s" % type_name)(**kwargs)
             else:
