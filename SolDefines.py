@@ -1,4 +1,5 @@
 SOL_PORT                = 0xf0ba
+OAP_PORT                = 0xf0b9
 
 # type names
 
