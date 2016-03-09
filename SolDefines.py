@@ -35,7 +35,7 @@ SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL   = 0x1d
 SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET         = 0x1e
 SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
-SOL_TYPE_DUST_OAP                           = 0x21
+SOL_TYPE_DUST_OAP                           = 0x27
 
 
 def solTypeToString(solDefinesClass,type):
