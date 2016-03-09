@@ -700,26 +700,17 @@ class Sol(object):
             obj = self.hrParser.parseHr(hr)
 
         # Dust Notifs
-        elif(   type_id in [
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_PING,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
-                    d.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT
-                ]
-            ):
+        elif (  type_name.startswith('SOL_TYPE_DUST_NOTIF_EVENT') and
+                getattr(d,type_name)==type_id
+                ):
             # Return raw object (TODO: parse)
                 obj = payload
 
-        elif type_id == d.SOL_TYPE_DUST_SNAPSHOT:
+        elif (type_id in [
+                    d.SOL_TYPE_DUST_SNAPSHOT,
+                    d.SOL_TYPE_DUST_RAW
+                ]
+        ):
             # Return raw object (TODO: parse)
             obj = payload
 
