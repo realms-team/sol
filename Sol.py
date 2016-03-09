@@ -5,6 +5,7 @@ import json
 import struct
 import base64
 import threading
+import pdb
 
 import SolDefines as d
 import SolVersion as ver
@@ -152,6 +153,10 @@ class Sol(object):
             returnVal += [thisDict]
         
         return returnVal
+
+    def oap_to_sol(self, o_oap):
+        '''
+        '''
     
     #===== file manipulation
     
@@ -581,8 +586,9 @@ class Sol(object):
             Returns parsed value as Dictionary object
         '''
         obj = {}
+        type_name = d.solTypeToString(d,type_id)
 
-        if type_id in d.SOL_TYPE_DUST:
+        if type_name.startswith('SOL_TYPE_DUST') and getattr(d,type_name)==type_id:
             obj = self._parse_specific_DUST(type_id,payload)
         else:
             raise NotImplementedError
@@ -654,11 +660,11 @@ class Sol(object):
                          'raw_data': ...}
         '''
         obj = {}
-        if type_id == d.SOL_TYPE_DUST_NOTIF_DATA_RAW:
+        if type_id == d.SOL_TYPE_DUST_OAP:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
             # convert into byte array (srcPort + destPort = 4 bytes)
-            data = array.array('B',payload[4:])
+            data = array.array('B',payload)
 
             # first two bytes are transport header
             trans = OAPMessage.extract_oap_header(data[0:2])
