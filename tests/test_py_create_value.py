@@ -373,22 +373,6 @@ def test_create_value():
     #----- TRUE ASSERTIONS -----#
 
     assert sol.create_value(
-            type_name = "SOL_TYPE_DUST_NOTIF_DATA_RAW",
-            srcPort = 61625,
-            dstPort = 61625,
-            payload = [
-                0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 107, 125, 0, 0,
-                107, 15, 0, 0, 117, 48, 1, 16, 8, 174
-            ]
-        )== [
-                240, 185,                           # srcPort
-                240, 185,                           # dstPort
-                0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0,  # payload
-                61, 34, 107, 125, 0, 0, 107, 15, 0, # payload
-                0, 117, 48, 1, 16, 8, 174           # payload
-            ]
-
-    assert sol.create_value(
             type_name = "SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE",
             macAddress = [0, 23, 13, 0, 0, 56, 0, 99],
             moteId = 3
