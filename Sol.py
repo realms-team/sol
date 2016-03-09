@@ -5,7 +5,6 @@ import json
 import struct
 import base64
 import threading
-import pdb
 
 import SolDefines as d
 import SolVersion as ver
@@ -153,10 +152,6 @@ class Sol(object):
             returnVal += [thisDict]
         
         return returnVal
-
-    def oap_to_sol(self, o_oap):
-        '''
-        '''
     
     #===== file manipulation
     
