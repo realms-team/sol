@@ -546,7 +546,7 @@ class Sol(object):
         Args:
             type_name (str): the SOL type as str (see registry.md)
             kwargs (dict): a dictionary of values
-        returns:: An array of byte
+        :returns: An array of byte
         Example:
             create_value("SOL_TYPE_DUST_NOTIF_SOMETHING",
                     srcPort = 61625,
