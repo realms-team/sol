@@ -38,11 +38,11 @@ SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP                           = 0x27
 
 
-def solTypeToString(solDefinesClass,type):
-    for k in dir(solDefinesClass):
-        if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==type:
-            return k
-    return "UNKNOWN!"
+def solTypeToString(solDefinesClass,type_id):
+    for n in dir(solDefinesClass):
+        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
+            return n
+    raise ValueError("SOL type %s does not exist" % type_id)
 
 def solStructure(solDefinesClass,type_id):
     '''
@@ -224,6 +224,12 @@ sol_types = [
         'description':  '',
         'structure':    '>IIIBI',
         'fields':       ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_DATA_RAW,
+        'description':  '',
+        'structure':    '>HH?',
+        'fields':       ['srcPort', 'dstPort', 'payload'],
     },
     {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
