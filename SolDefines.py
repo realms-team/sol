@@ -44,6 +44,23 @@ def solTypeToString(solDefinesClass,type):
             return k
     return "UNKNOWN!"
 
+def solStructure(solDefinesClass,type_id):
+    '''
+    Return the SOL structure according to the given type id
+    If the element is not found, it raises a ValueError
+
+    :return: a dictionnary that contains the following keys:
+        type, description, structure and fields
+    '''
+    sol_item = {}
+    for item in d.sol_types:
+        if item['type'] == type_id:
+            sol_item = item
+    if any(sol_item):
+        return sol_item
+    else:
+        raise ValueError("SOL structure not found for given id:%s" % type_id)
+
 # header
 
 SOL_HDR_V_OFFSET        = 6
@@ -207,6 +224,36 @@ sol_types = [
         'description':  '',
         'structure':    '>IIIBI',
         'fields':       ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+        'description':  '',
+        'structure':    '>IB',
+        'fields':       ['callbackId', 'rc'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+        'description':  '',
+        'structure':    '>QQB',
+        'fields':       ['source', 'destination', 'direction'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+        'description':  '',
+        'structure':    '>QQB',
+        'fields':       ['source', 'destination', 'direction'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+        'description':  '',
+        'structure':    '>QH',
+        'fields':       ['macAddress', 'moteId'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+        'description':  '',
+        'structure':    '>QH',
+        'fields':       ['macAddress', 'moteId'],
     },
 ]
 
