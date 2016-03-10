@@ -12,60 +12,68 @@ import json
 def test_create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW(
         srcPort    = 0x1122,
         dstPort    = 0x3344,
         payload    = [0x55,0x66],
     )==[0x11,0x22,0x33,0x44,0x55,0x66]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED(
-        callbackId = 0x11223344,
-        rc         = 0x55
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+        0x11223344,     # callbackId
+        0x55            # rc
     )==[0x11,0x22,0x33,0x44,0x55]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE(
-        source     = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
-        dest       = [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],
-        direction  = 0x12,
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # source
+        [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],              # dest
+        0x12,                                                   # direction
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE(
-        source     = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
-        dest       = [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],
-        direction  = 0x12,
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # source
+        [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],              # dest
+        0x12,                                                   # direction
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING(
-        callbackId = 0x00112233,
-        macAddress = [0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb],
-        delay      = 0xccddeeff,
-        voltage    = 0x1011,
-        temperature= 0x12,
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PING,
+        0x00112233,                                             # callbackId
+        [0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb],              # macAddress
+        0xccddeeff,                                             # delay
+        0x1011,                                                 # voltage
+        0x12,                                                   # temperature
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(
         uptime     = 0x00112233,
         utcSecs    = 0x44556677,
@@ -76,66 +84,78 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET()==[]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN(
-        macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE(
-        macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],
-        moteId     = 0x8899,
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # macAddress
+        0x8899,                                                 # modeId
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST(
-        macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL(
-        macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAdress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET(
-        macAddress = [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+        [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():    
+def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
-    
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT(
-        callbackId = 0x11223344,
-        rc         = 0x55
+
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+        0x11223344,                                             # callbackId
+        0x55                                                    # rc
     )==[0x11,0x22,0x33,0x44,0x55]
 
 def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(
         hr         = {
             'charge':             0x090a0b0c,    # INT32U
@@ -150,7 +170,7 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
             'numTxBad':           0x19,          # INT8U
             'badLinkFrameId':     0x1a,          # INT8U
             'badLinkSlot':        0x1b1c1d1e,    # INT32U
-            'badLinkOffset':      0x1f,          # INT8U            
+            'badLinkOffset':      0x1f,          # INT8U
         }
     )==[
         0x09,0x0a,0x0b,0x0c,                     # charge
@@ -171,7 +191,7 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
 def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(
         hr         = {
             'numItems': 2,
@@ -215,7 +235,7 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
 def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(
         hr         = {
             'numJoinParents': 0x55,              # INT8U
@@ -249,10 +269,10 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
 def test_create_value_SOL_TYPE_DUST_SNAPSHOT():
     import Sol
     sol = Sol.Sol()
-    
+
     assert sol.create_value_SOL_TYPE_DUST_SNAPSHOT(
         summary         = [
-            {   
+            {
                 'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
                 'moteId':              0x090a,        # INT16U  H
                 'isAP':                0x0b,          # BOOL    B
@@ -368,21 +388,12 @@ def test_create_value_SOL_TYPE_DUST_SNAPSHOT():
 
 def test_create_value():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
 
-    #----- TRUE ASSERTIONS -----#
-
-    assert sol.create_value(
-            type_name = "SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE",
-            macAddress = [0, 23, 13, 0, 0, 56, 0, 99],
-            moteId = 3
-        )== [
-                0, 23, 13, 0, 0, 56, 0, 99,         # macAddress
-                0, 3                                # moteId
-            ]
-
-
     #----- FALSE ASSERTIONS -----#
+    WRONG_SOL_TYPE = 0xff
+    random_data = 666
     with pytest.raises(ValueError):
-        sol.create_value("WRONG_SOL_TYPE", random_data = 666)
+        sol.create_value(WRONG_SOL_TYPE, random_data)
 
