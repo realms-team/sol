@@ -12,6 +12,7 @@ import OpenHdlc
 
 import array
 import datetime
+import pdb
 
 here = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(here, 'smartmeshsdk','libs'))
@@ -267,63 +268,17 @@ class Sol(object):
         return dicts
     
     #===== create value
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW(self,srcPort,dstPort,payload):
-        return self._num_to_list(srcPort,2)+     \
-               self._num_to_list(dstPort,2)+     \
-               payload
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED(self,callbackId,rc):
-        return self._num_to_list(callbackId,4)+  \
-               self._num_to_list(rc,1)
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE(self,source,dest,direction):
-        return source+dest+[direction]
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE(self,source,dest,direction):
-        return source+dest+[direction]
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING(self,callbackId,macAddress,delay,voltage,temperature):
-        return self._num_to_list(callbackId,4)+  \
-               macAddress+                       \
-               self._num_to_list(delay,4)+       \
-               self._num_to_list(voltage,2)+     \
-               self._num_to_list(temperature,1)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
                self._num_to_list(utcSecs,4)+     \
                self._num_to_list(utcUsecs,4)+    \
                list(asn)+                        \
                self._num_to_list(asnOffset,2)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET(self):
         return []
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN(self,macAddress):
-        return macAddress
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE(self,macAddress,moteId):
-        return macAddress +                      \
-               self._num_to_list(moteId,2)
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE(self,macAddress,moteId):
-        return macAddress +                      \
-               self._num_to_list(moteId,2)
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST(self,macAddress):
-        return macAddress
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL(self,macAddress):
-        return macAddress
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET(self,macAddress):
-        return macAddress
-    
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT(self,callbackId,rc):
-        return self._num_to_list(callbackId,4)+  \
-               self._num_to_list(rc,1)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,hr):
         '''
         {
@@ -541,12 +496,12 @@ class Sol(object):
 
         return returnVal
 
-    def create_value(self, type_name, **kwargs):
+    def create_value(self, type_id, *args):
         '''Create a formated object value
         Args:
             type_name (str): the SOL type as str (see registry.md)
             kwargs (dict): a dictionary of values
-        :returns: An array of byte
+        :returns: An list of bytes
         Example:
             create_value("SOL_TYPE_DUST_NOTIF_SOMETHING",
                     srcPort = 61625,
@@ -555,26 +510,35 @@ class Sol(object):
             Will return:
                 [240, 185, 240, 185, 0, 0, 5, 0, 255]
         '''
-        if hasattr(d,type_name):
-            type_id = getattr(d,type_name)
-        else:
-            raise ValueError("Unkown SOL type.")
+        ret_val = []
+
+        # get SOL type name
+        type_name = d.solTypeToString(d,type_id)
 
         # call corresponding DUST methods
         if type_name.startswith('SOL_TYPE_DUST') and getattr(d,type_name)==type_id:
             if hasattr(self,"create_value_%s" % type_name):
-                return getattr(self,"create_value_%s" % type_name)(**kwargs)
+                ret_val = getattr(self,"create_value_%s" % type_name)(*args)
             else:
-                raise ValueError("Function create_value_%s does not exist." % type_name)
+                # get SOL structure
+                sol_item = d.solStructure(d,type_id)
+
+                # change each args to a list if not already a list
+                count = 0
+                for a in args:
+                    count += 1
+                    if not isinstance(a, list):
+                        size = struct.calcsize(sol_item['structure'][count])
+                        item = self._num_to_list(a, size)
+                    else:
+                        item = a
+                    # add list to return value
+                    ret_val += item
 
         else:
-            # get sol structure by type
-            sol_item = []
-            for item in d.sol_types:
-                if item['type'] == type_id:
-                    sol_item = item
-
             raise NotImplementedError
+
+        return ret_val
 
     def parse_value(self, type_id,*payload):
         ''' Parsed the given sensor object value
@@ -588,11 +552,8 @@ class Sol(object):
         else:
             raise NotImplementedError
 
-            # get sol structure by type
-            sol_item = []
-            for item in d.sol_types:
-                if item['type'] == type_id:
-                    sol_item = item
+            # get SOL structure by type
+            sol_item = d.solStructure(d,type_id)
 
             # verify enough bytes
             numBytes = struct.calcsize(sol_item['structure'])
@@ -655,6 +616,10 @@ class Sol(object):
                          'raw_data': ...}
         '''
         obj = {}
+
+        # get SOL type
+        type_name = d.solTypeToString(d,type_id)
+
         if type_id == d.SOL_TYPE_DUST_OAP:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
@@ -696,8 +661,8 @@ class Sol(object):
 
         # Dust Notifs
         elif (  type_name.startswith('SOL_TYPE_DUST_NOTIF_EVENT') and
-                getattr(d,type_name)==type_id
-                ):
+                getattr(d,type_name)==type_id ):
+
             # Return raw object (TODO: parse)
                 obj = payload
 
