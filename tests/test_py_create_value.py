@@ -11,12 +11,14 @@ import json
 
 def test_create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW(
-        srcPort    = 0x1122,
-        dstPort    = 0x3344,
-        payload    = [0x55,0x66],
+    assert sol.create_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW,
+        0x1122,                                                 # srcPort
+        0x3344,                                                 # dstPort
+        [0x55,0x66],                                            # payload
     )==[0x11,0x22,0x33,0x44,0x55,0x66]
 
 def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
