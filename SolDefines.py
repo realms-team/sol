@@ -53,7 +53,7 @@ def solStructure(solDefinesClass,type_id):
         type, description, structure and fields
     '''
     sol_item = {}
-    for item in d.sol_types:
+    for item in sol_types:
         if item['type'] == type_id:
             sol_item = item
     if any(sol_item):
@@ -244,6 +244,18 @@ sol_types = [
         'fields':       ['source', 'destination', 'direction'],
     },
     {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PING,
+        'description':  '',
+        'structure':    '>IQIHB',
+        'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
         'description':  '',
         'structure':    '>QH',
@@ -254,6 +266,30 @@ sol_types = [
         'description':  '',
         'structure':    '>QH',
         'fields':       ['macAddress', 'moteId'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+        'description':  '',
+        'structure':    '>IB',
+        'fields':       ['callbackId', 'rc'],
     },
 ]
 
