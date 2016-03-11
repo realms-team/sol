@@ -655,6 +655,11 @@ class Sol(object):
                          'raw_data': ...}
         '''
         obj = {}
+
+        # get SOL type
+        type_name = d.solTypeToString(d,type_id)
+
+
         if type_id == d.SOL_TYPE_DUST_OAP:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
