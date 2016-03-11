@@ -241,13 +241,13 @@ sol_types = [
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
         'description':  '',
         'structure':    '>QQB',
-        'fields':       ['source', 'destination', 'direction'],
+        'fields':       ['source', 'dest', 'direction'],
     },
     {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
         'description':  '',
         'structure':    '>QQB',
-        'fields':       ['source', 'destination', 'direction'],
+        'fields':       ['source', 'dest', 'direction'],
     },
     {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_PING,
