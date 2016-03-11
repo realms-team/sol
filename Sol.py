@@ -663,12 +663,17 @@ class Sol(object):
         elif (  type_name.startswith('SOL_TYPE_DUST_NOTIF_EVENT') and
                 getattr(d,type_name)==type_id ):
 
-            # Return raw object (TODO: parse)
-                obj = payload
+            # get SOL structure
+            sol_item = d.solStructure(d,type_id)
+
+            # unpack payload to dict
+            spayload = ''.join(chr( val ) for val in payload)
+            values = struct.unpack(sol_item['structure'],spayload)
+            obj = dict(zip(sol_item['fields'], values))
 
         elif (type_id in [
                     d.SOL_TYPE_DUST_SNAPSHOT,
-                    d.SOL_TYPE_DUST_RAW
+                    d.SOL_TYPE_DUST_NOTIF_DATA_RAW
                 ]
         ):
             # Return raw object (TODO: parse)
