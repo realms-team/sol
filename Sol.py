@@ -14,37 +14,38 @@ import array
 import datetime
 
 here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk','libs'))
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk','external_libs'))
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'external_libs'))
 
 from SmartMeshSDK.protocols.Hr          import  HrParser
 
 from SmartMeshSDK.protocols.oap         import  OAPMessage, \
                                                 OAPNotif
 
+
 class Sol(object):
     '''
     Sensor Object Library.
     '''
-    
+
     def __init__(self):
         self.fileLock = threading.RLock()
         self.hdlc     = OpenHdlc.OpenHdlc()
         self.hrParser = HrParser.HrParser()
-    
+
     #======================== public ==========================================
-    
+
     #===== admin
-    
+
     @property
     def version(self):
         return ver.SOL_VERSION
-    
+
     #===== conversions
-    
+
     def dict_to_bin(self,o_dict):
         o_bin   = []
-        
+
         # header
         h     = 0
         h    |=             d.SOL_HDR_V<<d.SOL_HDR_V_OFFSET
@@ -54,28 +55,28 @@ class Sol(object):
         h    |=    d.SOL_HDR_START_Y_1B<<d.SOL_HDR_START_Y_OFFSET
         h    |=    d.SOL_HDR_START_L_WK<<d.SOL_HDR_START_L_OFFSET
         o_bin  += [h]
-        
+
         # mac
         o_bin  += o_dict['mac']
-        
+
         # timestamp 
         o_bin  += self._num_to_list(o_dict['timestamp'],4)
-        
+
         # type 
         o_bin  += self._num_to_list(o_dict['type'],1)
-        
+
         # value 
         o_bin  += o_dict['value']
-        
+
         return o_bin
-    
+
     def bin_to_dict(self,o_bin,mac=None):
-        returnVal = {}
-        
+        return_val = {}
+
         # header
-        
+
         assert len(o_bin)>=1
-        
+
         h     = o_bin[0]
         h_V   = (h>>d.SOL_HDR_V_OFFSET)&0x03
         assert h_V==d.SOL_HDR_V
@@ -88,150 +89,151 @@ class Sol(object):
         assert h_Y==d.SOL_HDR_START_Y_1B
         h_L   = (h>>d.SOL_HDR_START_L_OFFSET)&0x03
         assert h_L==d.SOL_HDR_START_L_WK
-        
+
         o_bin = o_bin[1:]
-        
+
         # mac
-        
+
         if h_M==d.SOL_HDR_START_M_NOMAC:
-            assert mac!=None
-            returnVal['mac'] = mac
+            assert mac is not None
+            return_val['mac'] = mac
         else:
             assert len(o_bin)>=8
-            returnVal['mac'] = o_bin[:8]
+            return_val['mac'] = o_bin[:8]
             o_bin = o_bin[8:]
-        
+
         # timestamp
-        
+
         assert len(o_bin)>=4
-        returnVal['timestamp'] = self._list_to_num(o_bin[:4])
+        return_val['timestamp'] = self._list_to_num(o_bin[:4])
         o_bin = o_bin[4:]
-        
+
         # type
-        
+
         assert len(o_bin)>=1
-        returnVal['type'] = o_bin[0]
+        return_val['type'] = o_bin[0]
         o_bin = o_bin[1:]
-        
+
         # value
-        
+
         assert len(o_bin)>=0
-        returnVal['value'] = o_bin
-        
-        return returnVal
-    
+        return_val['value'] = o_bin
+
+        return return_val
+
     def dicts_to_json(self,o_dicts,mode="verbose"):
         output = {
             'v': d.SOL_HDR_V,
             'o': [self._o_to_json(o_dict,mode) for o_dict in o_dicts],
         }
-        
+
         return json.dumps(output)
-    
+
     def json_to_dicts(self,o_json):
         all_obj = json.loads(o_json)['o']
-        
-        returnVal = []
+
+        return_val = []
         for obj in all_obj:
-            
+
             if type(obj)==dict:
                 # verbose
-                
-                thisDict = {}
-                thisDict['mac']        = [int(b,16) for b in obj['mac'].split('-')]
-                thisDict['timestamp']  = obj['timestamp']
-                thisDict['type']       = obj['type']
-                thisDict['value']      = [ord(b) for b in base64.b64decode(obj['value'])]
+
+                thisDict = {
+                    'mac': [int(b, 16) for b in obj['mac'].split('-')],
+                    'timestamp': obj['timestamp'],
+                    'type': obj['type'],
+                    'value': [ord(b) for b in base64.b64decode(obj['value'])]
+                }
             else:
                 # minimal
-                
+
                 o_bin = base64.b64decode(obj)
                 o_bin = [ord(b) for b in o_bin]
-                
+
                 thisDict = self.bin_to_dict(o_bin)
-            returnVal += [thisDict]
-        
-        return returnVal
-    
+            return_val += [thisDict]
+
+        return return_val
+
     #===== file manipulation
-    
-    def dumpToFile(self,dicts,fileName):
-        
+
+    def dumpToFile(self,dicts,file_name):
+
         with self.fileLock:
-            with open(fileName,'ab') as f:
+            with open(file_name,'ab') as f:
                 for o_dict in dicts:
                     o_bin = self.dict_to_bin(o_dict)
                     o_bin = self.hdlc.hdlcify(o_bin)
                     o_bin = ''.join([chr(b) for b in o_bin])
                     f.write(o_bin)
-    
-    def loadFromFile(self,fileName,startTimestamp=None,endTimestamp=None):
-        
-        if startTimestamp!=None or endTimestamp!=None:
-            assert startTimestamp!=None and endTimestamp!=None
-        
-        if startTimestamp==None:
+
+    def loadFromFile(self,file_name,startTimestamp=None,endTimestamp=None):
+
+        if startTimestamp is not None or endTimestamp is not None:
+            assert startTimestamp is not None and endTimestamp is not None
+
+        if startTimestamp is None:
             # retrieve all data
-            
+
             with self.fileLock:
-                (bins,_) = self.hdlc.dehdlcify(fileName)
-            
+                (bins,_) = self.hdlc.dehdlcify(file_name)
+
             dicts = [self.bin_to_dict(b) for b in bins]
-        
+
         else:
-            
+
             with self.fileLock:
-                
+
                 #=== find startOffset
-                
+
                 while True:
-                    
+
                     startOffset = None
-                    
+
                     def oneObject(offset):
-                        (o,idx) = self.hdlc.dehdlcify(fileName,fileOffset=offset,maxNum=1)
+                        (o,idx) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
                         o = o[0]
                         o = self.bin_to_dict(o)
-                        return (o,idx)
-                    
+                        return o, idx
+
                     def oneTimestamp(offset):
                         (o,idx) = oneObject(offset)
-                        return (o['timestamp'],idx)
-                    
+                        return o['timestamp'], idx
+
                     #=== get boundaries
-                    
+
                     left_offset_start = 0
                     try:
                         (left_timestamp,left_offset_stop) = oneTimestamp(left_offset_start)
                     except IndexError:
                         # complete file is corrupted
                         return []
-                    with open(fileName,'rb') as f:
+                    with open(file_name,'rb') as f:
                         f.seek(0,os.SEEK_END)
                         right_offset_start = f.tell()
                     while True:
-                        right_offset_start = self._backUpUntilStartFrame(fileName,right_offset_start)
+                        right_offset_start = self._backUpUntilStartFrame(file_name,right_offset_start)
                         try:
                            (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
                         except IndexError:
                             right_offset_start -= 1
                         else:
                             break
-                    
+
                     if left_timestamp>startTimestamp:
                         startOffset = left_timestamp
                         break
                     if right_timestamp<startTimestamp:
                         startOffset = right_timestamp
                         break
-                    
+
                     #=== binary search
-                    
+
                     while left_offset_stop<right_offset_start-1:
-                        
+
                         cur_offset_start = int((right_offset_start-left_offset_start)/2+left_offset_start)
                         (cur_timestamp,cur_offset_stop) = oneTimestamp(cur_offset_start)
-                        
+
                         if cur_timestamp==startTimestamp:
                             startOffset = cur_offset_start
                             break
@@ -243,16 +245,16 @@ class Sol(object):
                             left_offset_start  = cur_offset_start
                             left_offset_stop   = cur_offset_stop
                             left_timestamp     = cur_timestamp
-                    
-                    if startOffset==None:
+
+                    if startOffset is None:
                         startOffset = left_offset_start
-                    
+
                     break
-                
+
                 #=== read objects
-                
+
                 dicts = []
-                
+
                 curOffset = startOffset
                 while True:
                     try:
@@ -263,67 +265,67 @@ class Sol(object):
                     if o['timestamp']>endTimestamp:
                         break
                     dicts += [o]
-        
+
         return dicts
-    
+
     #===== create value
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW(self,srcPort,dstPort,payload):
         return self._num_to_list(srcPort,2)+     \
                self._num_to_list(dstPort,2)+     \
                payload
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED(self,callbackId,rc):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE(self,source,dest,direction):
         return source+dest+[direction]
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE(self,source,dest,direction):
         return source+dest+[direction]
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING(self,callbackId,macAddress,delay,voltage,temperature):
         return self._num_to_list(callbackId,4)+  \
                macAddress+                       \
                self._num_to_list(delay,4)+       \
                self._num_to_list(voltage,2)+     \
                self._num_to_list(temperature,1)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
                self._num_to_list(utcSecs,4)+     \
                self._num_to_list(utcUsecs,4)+    \
                list(asn)+                        \
                self._num_to_list(asnOffset,2)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET(self):
         return []
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN(self,macAddress):
         return macAddress
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE(self,macAddress,moteId):
         return macAddress +                      \
                self._num_to_list(moteId,2)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE(self,macAddress,moteId):
         return macAddress +                      \
                self._num_to_list(moteId,2)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST(self,macAddress):
         return macAddress
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL(self,macAddress):
         return macAddress
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET(self,macAddress):
         return macAddress
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT(self,callbackId,rc):
         return self._num_to_list(callbackId,4)+  \
                self._num_to_list(rc,1)
-    
+
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,hr):
         '''
         {
@@ -339,12 +341,12 @@ class Sol(object):
             'numTxBad':           0x19,          # INT8U
             'badLinkFrameId':     0x1a,          # INT8U
             'badLinkSlot':        0x1b1c1d1e,    # INT32U
-            'badLinkOffset':      0x1f,          # INT8U            
+            'badLinkOffset':      0x1f,          # INT8U
         }
         '''
-        
-        returnVal  = []
-        returnVal += [struct.pack(
+
+        return_val  = []
+        return_val += [struct.pack(
             '>IBbHHHHHBBBIB',
             hr['charge'],         # INT32U  I
             hr['queueOcc'],       # INT8U   B
@@ -360,11 +362,11 @@ class Sol(object):
             hr['badLinkSlot'],    # INT32U  I
             hr['badLinkOffset'],  # INT8U   B
         )]
-        returnVal  = ''.join(returnVal)
-        returnVal  = [ord(c) for c in returnVal]
-        
-        return returnVal
-    
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
+
+        return return_val
+
     def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,hr):
         '''
         {
@@ -389,10 +391,10 @@ class Sol(object):
             ],
         }
         '''
-        returnVal  = []
-        returnVal += [chr(len(hr['neighbors']))] # num_neighbors
+        return_val  = []
+        return_val += [chr(len(hr['neighbors']))] # num_neighbors
         for n in hr['neighbors']:
-            returnVal += [struct.pack(
+            return_val += [struct.pack(
                 '>HBbHHH',
                 n['neighborId'],       # INT16U  H
                 n['neighborFlag'],     # INT8U   B
@@ -401,11 +403,11 @@ class Sol(object):
                 n['numTxFailures'],    # INT16U  H
                 n['numRxPackets'],     # INT16U  H
             )]
-        returnVal  = ''.join(returnVal)
-        returnVal  = [ord(c) for c in returnVal]
-        
-        return returnVal
-    
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
+
+        return return_val
+
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,hr):
         '''
         {
@@ -425,26 +427,26 @@ class Sol(object):
             ],
         }
         '''
-        returnVal  = []
-        returnVal += [chr(hr['numJoinParents'])] # numJoinParents
-        returnVal += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
+        return_val  = []
+        return_val += [chr(hr['numJoinParents'])] # numJoinParents
+        return_val += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
         for n in hr['discoveredNeighbors']:
-            returnVal += [struct.pack(
+            return_val += [struct.pack(
                 '>HbB',
                 n['neighborId'],       # INT16U  H
                 n['rssi'],             # INT8    b
                 n['numRx'],            # INT8U   B
-                
+
             )]
-        returnVal  = ''.join(returnVal)
-        returnVal  = [ord(c) for c in returnVal]
-        
-        return returnVal
-    
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
+
+        return return_val
+
     def create_value_SOL_TYPE_DUST_SNAPSHOT(self,summary):
         '''
         [
-            {   
+            {
                 'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
                 'moteId':              0x090a,        # INT16U  H
                 'isAP':                0x0b,          # BOOL    B
@@ -506,11 +508,11 @@ class Sol(object):
             },
         ]
         '''
-        returnVal  = []
-        returnVal += [chr(len(summary))] # num_motes
+        return_val  = []
+        return_val += [chr(len(summary))] # num_motes
         for m in summary:
-            returnVal += [''.join([chr(b) for b in m['macAddress']])] # macAddress
-            returnVal += [struct.pack(
+            return_val += [''.join([chr(b) for b in m['macAddress']])] # macAddress
+            return_val += [struct.pack(
                 '>HBBBBBIIIIII',
                 m['moteId'],           # INT16U  H
                 m['isAP'],             # BOOL    B
@@ -525,10 +527,10 @@ class Sol(object):
                 m['packetsLost'],      # INT32U  I
                 m['avgLatency'],       # INT32U  I
             )]
-            returnVal += [chr(len(m['paths']))] # num_paths
+            return_val += [chr(len(m['paths']))] # num_paths
             for p in m['paths']:
-                returnVal += [''.join([chr(b) for b in p['dest']])] # dest
-                returnVal += [struct.pack(
+                return_val += [''.join([chr(b) for b in p['dest']])] # dest
+                return_val += [struct.pack(
                     '>BBBbb',
                     p['direction'],    # INT8U   B
                     p['numLinks'],     # INT8U   B
@@ -536,10 +538,10 @@ class Sol(object):
                     p['rssiSrcDest'],  # INT8    b
                     p['rssiDestSrc'],  # INT8    b
                 )]
-        returnVal  = ''.join(returnVal)
-        returnVal  = [ord(c) for c in returnVal]
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
 
-        return returnVal
+        return return_val
 
     def create_value(self, type_name, **kwargs):
         '''Create a formated object value
@@ -603,28 +605,30 @@ class Sol(object):
         return obj
 
     #======================== private =========================================
-    
-    def _backUpUntilStartFrame(self,fileName,curOffset):
-        with open(fileName,'rb') as f:
+
+    def _backUpUntilStartFrame(self,file_name,curOffset):
+        with open(file_name,'rb') as f:
             f.seek(curOffset,os.SEEK_SET)
             while True:
                 byte = f.read(1)
                 if byte==self.hdlc.HDLC_FLAG:
                     return f.tell()-1
                 f.seek(-2,os.SEEK_CUR)
-    
-    def _num_to_list(self,num,length):
+
+    @staticmethod
+    def _num_to_list(num, length):
         output = []
         for l in range(length):
-            output = [(num>>8*l)&0xff]+output 
+            output = [(num>>8*l)&0xff]+output
         return output
-    
-    def _list_to_num(self,l):
+
+    @staticmethod
+    def _list_to_num(l):
         output = 0
         for i in range(len(l)):
             output += l[i]<<(8*(len(l)-i-1))
         return output
-    
+
     def _o_to_json(self,o_dict,mode):
         if   mode=="minimal":
             return base64.b64encode(''.join(chr(b) for b in self.dict_to_bin(o_dict)))

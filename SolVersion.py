@@ -15,7 +15,7 @@ with open(fileName) as f:
                 SOL_VERSION[k] = int(m.group(1))
 
 for k in KEYS:
-    assert SOL_VERSION[k] != None
+    assert SOL_VERSION[k] is not None
 
 if __name__=="__main__":
     for k in KEYS:
