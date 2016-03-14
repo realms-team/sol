@@ -38,11 +38,28 @@ SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP                           = 0x27
 
 
-def solTypeToString(solDefinesClass,sol_type):
-    for k in dir(solDefinesClass):
-        if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==sol_type:
-            return k
-    return "UNKNOWN!"
+def solTypeToString(solDefinesClass,type_id):
+    for n in dir(solDefinesClass):
+        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
+            return n
+    raise ValueError("SOL type %s does not exist" % type_id)
+
+def solStructure(solDefinesClass,type_id):
+    '''
+    Return the SOL structure according to the given type id
+    If the element is not found, it raises a ValueError
+
+    :return: a dictionnary that contains the following keys:
+        type, description, structure and fields
+    '''
+    sol_item = {}
+    for item in sol_types:
+        if item['type'] == type_id:
+            sol_item = item
+    if any(sol_item):
+        return sol_item
+    else:
+        raise ValueError("SOL structure not found for given id:%s" % type_id)
 
 # header
 
@@ -207,6 +224,78 @@ sol_types = [
         'description':  '',
         'structure':    '>IIIBI',
         'fields':       ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_DATA_RAW,
+        'description':  '',
+        'structure':    '>HH?',
+        'fields':       ['srcPort', 'dstPort', 'payload'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+        'description':  '',
+        'structure':    '>IB',
+        'fields':       ['callbackId', 'rc'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+        'description':  '',
+        'structure':    '>QQB',
+        'fields':       ['source', 'dest', 'direction'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+        'description':  '',
+        'structure':    '>QQB',
+        'fields':       ['source', 'dest', 'direction'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PING,
+        'description':  '',
+        'structure':    '>IQIHB',
+        'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+        'description':  '',
+        'structure':    '>QH',
+        'fields':       ['macAddress', 'moteId'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+        'description':  '',
+        'structure':    '>QH',
+        'fields':       ['macAddress', 'moteId'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+        'description':  '',
+        'structure':    '>Q',
+        'fields':       ['macAddress'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+        'description':  '',
+        'structure':    '>IB',
+        'fields':       ['callbackId', 'rc'],
     },
 ]
 
