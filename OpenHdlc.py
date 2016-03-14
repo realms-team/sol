@@ -61,8 +61,12 @@ class OpenHdlc(object):
         outBuf     = outBuf + chr(crc & 0xff) + chr((crc & 0xff00) >> 8)
         
         # stuff bytes
-        outBuf     = outBuf.replace(self.HDLC_ESCAPE, self.HDLC_ESCAPE+self.HDLC_ESCAPE_ESCAPED)
-        outBuf     = outBuf.replace(self.HDLC_FLAG,   self.HDLC_ESCAPE+self.HDLC_FLAG_ESCAPED)
+        outBuf     = outBuf.replace(
+                        self.HDLC_ESCAPE,
+                        self.HDLC_ESCAPE+self.HDLC_ESCAPE_ESCAPED)
+        outBuf     = outBuf.replace(
+                        self.HDLC_FLAG,
+                        self.HDLC_ESCAPE+self.HDLC_FLAG_ESCAPED)
         
         # add flags
         outBuf     = self.HDLC_FLAG + outBuf + self.HDLC_FLAG
@@ -174,11 +178,11 @@ class OpenHdlc(object):
            # the CRC is correct
            
            # remove the CRC from the input buffer
-           self._inputBuf = self._inputBuf[:-2]
+            self._inputBuf = self._inputBuf[:-2]
         else:
-           self._inputBuf = []
+            self._inputBuf = []
            
-           raise ValueError("invalid CRC")
+            raise ValueError("invalid CRC")
         
         # reset escaping
         self._inputEscaping = False

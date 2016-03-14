@@ -38,9 +38,9 @@ SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP                           = 0x27
 
 
-def solTypeToString(solDefinesClass,type):
+def solTypeToString(solDefinesClass,sol_type):
     for k in dir(solDefinesClass):
-        if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==type:
+        if k.startswith('SOL_TYPE_') and getattr(solDefinesClass,k)==sol_type:
             return k
     return "UNKNOWN!"
 
