@@ -43,6 +43,21 @@ class Sol(object):
         return ver.SOL_VERSION
 
     #===== conversions
+    def DUST_to_JSON():
+        '''
+        Convert DUST Object to SOL Object in JSON format
+        :return:
+        '''
+
+    def JSON_to_bin():
+        '''
+        Convert SOL Object in JSON format to SOL Object in binary format
+        '''
+
+    def bin_to_JSON():
+        '''
+        Convert SOL Object in binary format to SOL Object in JSON format
+        '''
 
     def dict_to_bin(self,o_dict):
         o_bin   = []
