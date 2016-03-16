@@ -215,7 +215,7 @@ This specification defines two formats:
 #### "minimal" representation
 
 ```
-"TWFuIGlzIGRpc3Rpbmd1aXNoZWQs"
+"ew0KICAgIm1hYyI6ICAgICAgICIwMC0xNy0wZC0wMC0wMC0xMi0zNC01NiIsDQogICAidGltZXN0YW1wIjogMTIzNDU2Nzg4OTAsDQogICAidHlwZSI6ICAgICAgMTIsDQogICAidmFsdWUiOiAgICAgIlRXRnVJR2x6SUdScGMzUnBibWQxYVhOb1pXUXMiLA0KfQ=="
 ```
 
 * the minimal representation is a string representing the binary representation of exactly one sensor objects.
