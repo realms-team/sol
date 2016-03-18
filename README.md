@@ -6,6 +6,7 @@ An sensor Object contains the following _conceptual_ fields:
 * `M`: MAC address of the device creating the Object
 * `T`: timestamp of when the Object was created
 * `t`: type of Object, a number
+* `L`: the length of the value
 * `V`: Object value, a opaque string of bytes
 
 It is a generalization of the well-known "Type-Length-Value" (TLV) format.
