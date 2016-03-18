@@ -85,10 +85,10 @@ Only value `b00` is defined in this document. Other values for the 2 first bits 
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
    * `L`=`b00` (well-known value, no length field)
-* `[0B]` MAC: _elided_
+* `[--]` MAC: _elided_
 * `[4B]` Timestamp: `0x........`
 * `[1B]` type=`b..` (temperature)
-* `[0B]` length: _elided_
+* `[--]` length: _elided_
 * `[2B]` value: `0x....`
 
 Total 8 bytes.
