@@ -120,6 +120,14 @@ class Sol(object):
         return json_obj
 
     def json_to_bin(self, json_obj):
+        '''
+        Converts a JSON represented object into a binary represented object
+
+        :param dict json_obj: The JSON represented object
+        :return bin_obj: The binary represented object
+        :rtype: list
+        '''
+
         bin_obj = []
 
         # header
@@ -149,6 +157,14 @@ class Sol(object):
         return json_m_obj
 
     def bin_to_json(self,o_bin,mac=None):
+        '''
+        Converts a binary represented object into a JSON represented object
+
+        :param dict o_bin: The binary represented object
+        :return json_obj: The JSON represented object
+        :rtype: dict
+        '''
+
         return_val = {}
 
         # header
@@ -615,15 +631,15 @@ class Sol(object):
         ret_val = []
 
         # get SOL type name
-        type_name = d.solTypeToString(d,type_id)
+        type_name = SolDefines.solTypeToString(SolDefines,type_id)
 
         # call corresponding DUST methods
-        if type_name.startswith('SOL_TYPE_DUST') and getattr(d,type_name)==type_id:
+        if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==type_id:
             if hasattr(self,"create_value_%s" % type_name):
                 ret_val = getattr(self,"create_value_%s" % type_name)(*args)
             else:
                 # get SOL structure
-                sol_item = d.solStructure(d,type_id)
+                sol_item = SolDefines.solStructure(SolDefines,type_id)
 
                 # change each args to a list if not already a list
                 count = 0
