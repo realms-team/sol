@@ -725,13 +725,13 @@ class Sol(object):
                     ).total_seconds()
 
         # Health Reports
-        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
             hr = [self.hrParser.HR_ID_DEVICE,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
-        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS:
             hr = [self.hrParser.HR_ID_NEIGHBORS,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
-        elif type_id == d.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
             hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
 

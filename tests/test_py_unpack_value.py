@@ -9,12 +9,12 @@ import json
 
 #============================ tests =================================
 
-#def test_parse_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
+#def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
 #    import Sol
 #    import SolDefines
 #    sol = Sol.Sol()
 #
-#    assert sol.parse_value(
+#    assert sol.unpack_obj_value(
 #        SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW,
 #        [0x11,0x22,0x33,0x44,0x55,0x66]
 #    )=={
@@ -23,12 +23,12 @@ import json
 #        'payload'       : [0x55,0x66]
 #    }
 #
-#def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
+#def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
 #    import Sol
 #    import SolDefines
 #    sol = Sol.Sol()
 #
-#    assert sol.parse_value(
+#    assert sol.unpack_obj_value(
 #        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
 #        [0x11,0x22,0x33,0x44,0x55]
 #    )=={
@@ -36,12 +36,12 @@ import json
 #        'rc'            : 0x55
 #    }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12
     )=={
@@ -50,12 +50,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
         'direction'     : 0x12,
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,\
         0xee,0xff,0x12
@@ -65,12 +65,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
         'direction'     : 0x12,
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PING,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,
         0xee,0xff,0x10,0x11,0x12
@@ -82,12 +82,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
         'temperature'   : 0x12,
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,
         0xee,0xff,0x10,0x11,0x12
@@ -99,32 +99,32 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
         'asnOffset'     : 0x1112
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET)==[]
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
         'macAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99
     )=={
@@ -132,48 +132,48 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
         'moteId'        : 0x8899,
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
         'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
         'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
         'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
         0x11,0x22,0x33,0x44,0x55
     )=={
@@ -181,12 +181,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
         'rc'            : 0x55
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_HR_DEVICE,
         0x09,0x0a,0x0b,0x0c,                     # charge
         0x0d,                                    # queueOcc
@@ -219,12 +219,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
         }
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS,
         0x02,                                    # num_neighbors
         # neighbor 0
@@ -265,12 +265,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
         }
     }
 
-def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
+def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED,
         0x55,                                    # numJoinParents
         0x02,                                    # num_neighbors
@@ -301,12 +301,12 @@ def test_parse_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
         }
     }
 
-def test_parse_value_SOL_TYPE_DUST_SNAPSHOT():
+def test_unpack_obj_value_SOL_TYPE_DUST_SNAPSHOT():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.parse_value(
+    assert sol.unpack_obj_value(
         SolDefines.SOL_TYPE_DUST_SNAPSHOT,
         0x02,                                    # num_motes
         # mote 0
@@ -423,7 +423,7 @@ def test_parse_value_SOL_TYPE_DUST_SNAPSHOT():
         ]
     }
 
-def test_parse_value():
+def test_unpack_obj_value():
     import Sol
     import SolDefines
     sol = Sol.Sol()
@@ -432,5 +432,5 @@ def test_parse_value():
     WRONG_SOL_TYPE = 0xff
     random_data = 666
     with pytest.raises(ValueError):
-        sol.parse_value(WRONG_SOL_TYPE, random_data)
+        sol.unpack_obj_value(WRONG_SOL_TYPE, random_data)
 
