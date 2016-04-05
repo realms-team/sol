@@ -61,94 +61,52 @@ def solStructure(solDefinesClass,type_id):
     else:
         raise ValueError("SOL structure not found for given id:%s" % type_id)
 
-# header
+### Header
+
+# version
 
 SOL_HDR_V_OFFSET        = 6
 SOL_HDR_V               = 0
 
-SOL_HDR_H_OFFSET        = 5
-SOL_HDR_H_START         = 0
-SOL_HDR_H_MORE          = 1
-SOL_HDR_H_ALL           = [
-    SOL_HDR_H_START,
-    SOL_HDR_H_MORE,
-]
+# Type: single or multi MTtlv
 
-# "start" header
+SOL_HDR_T_OFFSET        = 5
+SOL_HDR_T_SINGLE        = 0
+SOL_HDR_T_MULTI         = 1
 
-SOL_HDR_START_M_OFFSET  = 4
-SOL_HDR_START_M_NOMAC   = 0
-SOL_HDR_START_M_8BMAC   = 1
-SOL_HDR_START_M_ALL     = [
-    SOL_HDR_START_M_NOMAC,
-    SOL_HDR_START_M_8BMAC,
-]
+# MAC
 
-SOL_HDR_START_S_OFFSET  = 3
-SOL_HDR_START_S_EPOCH   = 0
-SOL_HDR_START_S_ELIDED  = 1
-SOL_HDR_START_S_ALL     = [
-    SOL_HDR_START_S_EPOCH,
-    SOL_HDR_START_S_ELIDED,
-]
+SOL_HDR_M_OFFSET  = 4
+SOL_HDR_M_NOMAC   = 0
+SOL_HDR_M_8BMAC   = 1
 
-SOL_HDR_START_Y_OFFSET  = 2
-SOL_HDR_START_Y_1B      = 0
-SOL_HDR_START_Y_2B      = 1
-SOL_HDR_START_Y_ALL     = [
-    SOL_HDR_START_Y_1B,
-    SOL_HDR_START_Y_2B,
-]
+# timestamp encoding
 
-SOL_HDR_START_L_OFFSET  = 0
-SOL_HDR_START_L_WK      = 0
-SOL_HDR_START_L_1B      = 1
-SOL_HDR_START_L_2B      = 2
-SOL_HDR_START_L_ELIDED  = 3
-SOL_HDR_START_L_ALL     = [
-    SOL_HDR_START_L_WK,
-    SOL_HDR_START_L_1B,
-    SOL_HDR_START_L_2B,
-    SOL_HDR_START_L_ELIDED,
-]
+SOL_HDR_S_OFFSET  = 3
+SOL_HDR_S_EPOCH   = 0
+SOL_HDR_S_ELIDED  = 1
 
-# "more" header
+# Type encoding
 
-SOL_HDR_MORE_S_OFFSET   = 4
-SOL_HDR_MORE_S_NONE     = 0
-SOL_HDR_MORE_S_INHERIT  = 1
-SOL_HDR_MORE_S_ALL      = [
-    SOL_HDR_MORE_S_NONE,
-    SOL_HDR_MORE_S_INHERIT,
-]
+SOL_HDR_Y_OFFSET  = 2
+SOL_HDR_Y_1B      = 0
+SOL_HDR_Y_2B      = 1
 
-SOL_HDR_MORE_Y_OFFSET   = 3
-SOL_HDR_MORE_Y_NONE     = 0
-SOL_HDR_MORE_Y_INHERIT  = 1
-SOL_HDR_MORE_Y_ALL      = [
-    SOL_HDR_MORE_Y_NONE,
-    SOL_HDR_MORE_Y_INHERIT,
-]
+# Length encoding
 
-SOL_HDR_MORE_L_OFFSET   = 3
-SOL_HDR_MORE_L_NONE     = 0
-SOL_HDR_MORE_L_INHERIT  = 1
-SOL_HDR_MORE_L_ALL      = [
-    SOL_HDR_MORE_L_NONE,
-    SOL_HDR_MORE_L_INHERIT,
-]
+SOL_HDR_L_OFFSET  = 0
+SOL_HDR_L_WK      = 0
+SOL_HDR_L_1B      = 1
+SOL_HDR_L_2B      = 2
+SOL_HDR_L_ELIDED  = 3
+
+# Number of objects
 
 SOL_HDR_MORE_N_OFFSET   = 3
 SOL_HDR_MORE_N_2        = 0
 SOL_HDR_MORE_N_8        = 1
 SOL_HDR_MORE_N_16       = 2
 SOL_HDR_MORE_N_EXPLICIT = 3
-SOL_HDR_MORE_N_ALL      = [
-    SOL_HDR_MORE_N_2,
-    SOL_HDR_MORE_N_8,
-    SOL_HDR_MORE_N_16,
-    SOL_HDR_MORE_N_EXPLICIT,
-]
 
 # type definitions
 
