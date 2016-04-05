@@ -450,6 +450,7 @@ class Sol(object):
 
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,hr):
         '''
+        Example::
         {
             'numJoinParents': 0x55,              # INT8U
             'numItems':       2,
