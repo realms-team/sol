@@ -9,59 +9,59 @@ import json
 
 #============================ tests =================================
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_DATA_RAW():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW,
         0x1122,                                                 # srcPort
         0x3344,                                                 # dstPort
         [0x55,0x66],                                            # payload
     )==[0x11,0x22,0x33,0x44,0x55,0x66]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
         0x11223344,     # callbackId
         0x55            # rc
     )==[0x11,0x22,0x33,0x44,0x55]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # source
         [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],              # dest
         0x12,                                                   # direction
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # source
         [0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff],              # dest
         0x12,                                                   # direction
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PING,
         0x00112233,                                             # callbackId
         [0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb],              # macAddress
@@ -72,11 +72,11 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
     import Sol
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(
+    assert sol.pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(
         uptime     = 0x00112233,
         utcSecs    = 0x44556677,
         utcUsecs   = 0x8899aabb,
@@ -86,69 +86,69 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
         0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff,
         0x10,0x11,0x12]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
     import Sol
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET()==[]
+    assert sol.pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET()==[]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77],              # macAddress
         0x8899,                                                 # modeId
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAdress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
         [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]               # macAddress
     )==[0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value(
+    assert sol.pack_obj_value(
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
         0x11223344,                                             # callbackId
         0x55                                                    # rc
@@ -388,7 +388,7 @@ def test_create_value_SOL_TYPE_DUST_SNAPSHOT():
         0xfe,                                    # rssiDestSrc
     ]
 
-def test_create_value():
+def test_pack_obj_value():
     import Sol
     import SolDefines
     sol = Sol.Sol()
@@ -397,5 +397,5 @@ def test_create_value():
     WRONG_SOL_TYPE = 0xff
     random_data = 666
     with pytest.raises(ValueError):
-        sol.create_value(WRONG_SOL_TYPE, random_data)
+        sol.pack_obj_value(WRONG_SOL_TYPE, random_data)
 
