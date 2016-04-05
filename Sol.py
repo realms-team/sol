@@ -10,7 +10,7 @@ import array
 import datetime
 import pdb
 
-import SolDefines as d
+import SolDefines
 import SolVersion as ver
 import OpenHdlc
 
@@ -42,21 +42,63 @@ class Sol(object):
     def version(self):
         return ver.SOL_VERSION
 
-    #===== conversions
-    def DUST_to_JSON(dust_obj):
+    #===== SOL Compound conversions
+    @staticmethod
+    def list_to_compound(obj_list):
         '''
-        Convert DUST Objects to SOL Objects in JSON format.
+        Converts a list of SOL Objects to a SOL Compound.
+        All the Objects in the list must be in verbose fomat
 
-        :param int type_id: The SOL type id (see SOL registry)
-        :param dict dust_obj: The DUST Object(s)
-        :return: A dictionnary containing the SOL Object(s) in JSON format
+        :param list obj_list: a list of SOL Objects in verbose format
+        :return: A SOL Compound in JSON representation
+        :rtype: dict
+        '''
+
+        sol_comp = {
+            "v": SolDefines.SOL_HDR_V,
+            "o": obj_list,
+        }
+
+        return sol_comp
+
+    @staticmethod
+    def compound_to_list(sol_comp):
+        '''
+        Converts a SOL Compound Object into a list of SOL Objects
+        The returned Objects are in verbose format.
+
+        :param dict sol_comp: A SOL Compound in JSON representation
+        :return: A list of Objects in verbose format
+        :rtype: list
+        '''
+
+        obj_list = sol_comp['o']
+
+        return obj_list
+
+    @staticmethod
+    def comp_json_to_bin():
+        return NotImplementedError
+
+    @staticmethod
+    def comp_bin_to_json():
+        return NotImplementedError
+
+    #===== SOL Object creation
+    def dust_to_sol(self, dust_obj):
+        '''
+        Convert DUST messages into SOL Objects in JSON format.
+
+        :param dict dust_obj: The DUST Object
+        :return: A SOL Object in verbose format
+        :rtype: dict
         '''
 
         # extract the important data
         #netTs      = self._calcNetTs(notifParams)
-        srcPort    = notifParams.srcPort
-        dstPort    = notifParams.dstPort
-        data       = notifParams.data
+        srcPort    = dust_obj['srcPort']
+        dstPort    = dust_obj['dstPort']
+        data       = dust_obj['data']
 
         # Find SOL type by port
         obj_id = 0
@@ -67,18 +109,22 @@ class Sol(object):
         else:
             obj_id = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
 
-        # Format Object value
-        obj_value = self.sol.create_value(obj_id, dust_obj['data'])
-
         # Create JSON Object
         json_obj = {
-            'mac':          dust_obj['macAddress'],
-            'timestamp':    int(time.time()),
-            'type':         obj_id,
-            'value':        obj_value
+            "mac":          dust_obj['macAddress'],
+            "timestamp":    int(time.time()),
+            "type":         obj_id,
+            "value":        dust_obj['data']
         }
 
         return json_obj
+
+    #===== SOL JSON Object conversions
+    def json_verb_to_min():
+        return NotImplementedError
+
+    def json_min_to_verb():
+        return NotImplementedError
 
     def _json_to_bin(self,o_dict,mode):
         '''
@@ -96,13 +142,6 @@ class Sol(object):
             }
         else:
             raise SystemError()
-
-    def bin_to_JSON(obj_bin, obj_json):
-        '''
-        Convert SOL Object in binary format to SOL Object in JSON format
-        '''
-
-        raise NotImplementedError
 
     def dict_to_bin(self,o_dict):
         o_bin   = []
@@ -182,14 +221,6 @@ class Sol(object):
 
         return return_val
 
-    def dicts_to_json(self,o_dicts,mode="verbose"):
-        output = {
-            'v': d.SOL_HDR_V,
-            'o': [self._o_to_json(o_dict,mode) for o_dict in o_dicts],
-        }
-
-        return json.dumps(output)
-
     def json_to_dicts(self,o_json):
         all_obj = json.loads(o_json)['o']
 
@@ -200,10 +231,10 @@ class Sol(object):
                 # verbose
 
                 thisDict = {
-                    'mac': [int(b, 16) for b in obj['mac'].split('-')],
-                    'timestamp': obj['timestamp'],
-                    'type': obj['type'],
-                    'value': [ord(b) for b in base64.b64decode(obj['value'])]
+                    "mac": [int(b, 16) for b in obj['mac'].split('-')],
+                    "timestamp": obj['timestamp'],
+                    "type": obj['type'],
+                    "value": [ord(b) for b in base64.b64decode(obj['value'])]
                 }
             else:
                 # minimal
@@ -558,7 +589,7 @@ class Sol(object):
 
         return return_val
 
-    def create_value(self, type_id, *args):
+    def pack_obj_value(self, type_id, *args):
         '''Create a formated object value
         Args:
             type_id (int): the SOL type ID (see registry.md)
@@ -602,20 +633,20 @@ class Sol(object):
 
         return ret_val
 
-    def parse_value(self, type_id,*payload):
+    def unpack_obj_value(self, type_id,*payload):
         ''' Parsed the given sensor object value
             Returns parsed value as Dictionary object
         '''
         obj = {}
-        type_name = d.solTypeToString(d,type_id)
+        type_name = SolDefines.solTypeToString(SolDefines,type_id)
 
-        if type_name.startswith('SOL_TYPE_DUST') and getattr(d,type_name)==type_id:
+        if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==type_id:
             obj = self._parse_specific_DUST(type_id,payload)
         else:
             raise NotImplementedError
 
             # get SOL structure by type
-            sol_item = d.solStructure(d,type_id)
+            sol_item = SolDefines.solStructure(SolDefines,type_id)
 
             # verify enough bytes
             numBytes = struct.calcsize(sol_item['structure'])
@@ -669,9 +700,9 @@ class Sol(object):
         obj = {}
 
         # get SOL type
-        type_name = d.solTypeToString(d,type_id)
+        type_name = SolDefines.solTypeToString(SolDefines,type_id)
 
-        if type_id == d.SOL_TYPE_DUST_OAP:
+        if type_id == SolDefines.SOL_TYPE_DUST_OAP:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
             # convert into byte array (srcPort + destPort = 4 bytes)
@@ -712,10 +743,10 @@ class Sol(object):
 
         # Dust Notifs
         elif (  type_name.startswith('SOL_TYPE_DUST_NOTIF_EVENT') and
-                getattr(d,type_name)==type_id ):
+                getattr(SolDefines,type_name)==type_id ):
 
             # get SOL structure
-            sol_item = d.solStructure(d,type_id)
+            sol_item = SolDefines.solStructure(SolDefines,type_id)
 
             # unpack payload to dict
             spayload = ''.join(chr( val ) for val in payload)
@@ -723,8 +754,8 @@ class Sol(object):
             obj = dict(zip(sol_item['fields'], values))
 
         elif (type_id in [
-                    d.SOL_TYPE_DUST_SNAPSHOT,
-                    d.SOL_TYPE_DUST_NOTIF_DATA_RAW
+                    SolDefines.SOL_TYPE_DUST_SNAPSHOT,
+                    SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
                 ]
         ):
             # Return raw object (TODO: parse)
