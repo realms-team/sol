@@ -84,8 +84,8 @@ class Sol(object):
     def comp_bin_to_json():
         return NotImplementedError
 
-    #===== SOL Object creation
-    def dust_to_sol(self, dust_obj):
+    #===== SOL Object conversion
+    def dust_to_json(self, dust_obj):
         '''
         Convert DUST messages into SOL Objects in JSON format.
 
@@ -119,58 +119,36 @@ class Sol(object):
 
         return json_obj
 
-    #===== SOL JSON Object conversions
-    def json_verb_to_min():
-        return NotImplementedError
-
-    def json_min_to_verb():
-        return NotImplementedError
-
-    def _json_to_bin(self,o_dict,mode):
-        '''
-        Convert SOL Object in JSON format to SOL Object in binary format
-        '''
-
-        if   mode=="minimal":
-            return base64.b64encode(''.join(chr(b) for b in self.dict_to_bin(o_dict)))
-        elif mode=="verbose":
-            return {
-                "mac":       '-'.join(['%02x'%b for b in o_dict['mac']]),
-                "timestamp": o_dict['timestamp'],
-                "type":      o_dict['type'],
-                "value":     base64.b64encode(''.join(chr(b) for b in o_dict["value"])),
-            }
-        else:
-            raise SystemError()
-
-    def dict_to_bin(self,o_dict):
-        o_bin   = []
+    def json_to_bin(self, json_obj):
+        bin_obj = []
 
         # header
         h     = 0
-        h    |=             d.SOL_HDR_V<<d.SOL_HDR_V_OFFSET
-        h    |=       d.SOL_HDR_H_START<<d.SOL_HDR_H_OFFSET
-        h    |= d.SOL_HDR_START_M_8BMAC<<d.SOL_HDR_START_M_OFFSET
-        h    |= d.SOL_HDR_START_S_EPOCH<<d.SOL_HDR_START_S_OFFSET
-        h    |=    d.SOL_HDR_START_Y_1B<<d.SOL_HDR_START_Y_OFFSET
-        h    |=    d.SOL_HDR_START_L_WK<<d.SOL_HDR_START_L_OFFSET
-        o_bin  += [h]
+        h    |= SolDefines.SOL_HDR_V<<SolDefines.SOL_HDR_V_OFFSET
+        h    |= SolDefines.SOL_HDR_H_START<<SolDefines.SOL_HDR_H_OFFSET
+        h    |= SolDefines.SOL_HDR_START_M_8BMAC<<SolDefines.SOL_HDR_START_M_OFFSET
+        h    |= SolDefines.SOL_HDR_START_S_EPOCH<<SolDefines.SOL_HDR_START_S_OFFSET
+        h    |= SolDefines.SOL_HDR_START_Y_1B<<SolDefines.SOL_HDR_START_Y_OFFSET
+        h    |= SolDefines.SOL_HDR_START_L_WK<<SolDefines.SOL_HDR_START_L_OFFSET
+        bin_obj  += [h]
 
         # mac
-        o_bin  += o_dict['mac']
+        bin_obj  += json_obj['mac']
 
-        # timestamp 
-        o_bin  += self._num_to_list(o_dict['timestamp'],4)
+        # timestamp
+        bin_obj  += self._num_to_list(json_obj['timestamp'],4)
 
-        # type 
-        o_bin  += self._num_to_list(o_dict['type'],1)
+        # type
+        bin_obj  += self._num_to_list(json_obj['type'],1)
 
-        # value 
-        o_bin  += o_dict['value']
+        # value
+        bin_obj  += json_obj['value']
 
-        return o_bin
+        return bin_obj
 
-    def bin_to_dict(self,o_bin,mac=None):
+        return json_m_obj
+
+    def bin_to_json(self,o_bin,mac=None):
         return_val = {}
 
         # header
@@ -178,23 +156,23 @@ class Sol(object):
         assert len(o_bin)>=1
 
         h     = o_bin[0]
-        h_V   = (h>>d.SOL_HDR_V_OFFSET)&0x03
-        assert h_V==d.SOL_HDR_V
-        h_H   = (h>>d.SOL_HDR_H_OFFSET)&0x01
-        assert h_H==d.SOL_HDR_H_START
-        h_M   = (h>>d.SOL_HDR_START_M_OFFSET)&0x01
-        h_S   = (h>>d.SOL_HDR_START_S_OFFSET)&0x01
-        assert h_S==d.SOL_HDR_START_S_EPOCH
-        h_Y   = (h>>d.SOL_HDR_START_Y_OFFSET)&0x01
-        assert h_Y==d.SOL_HDR_START_Y_1B
-        h_L   = (h>>d.SOL_HDR_START_L_OFFSET)&0x03
-        assert h_L==d.SOL_HDR_START_L_WK
+        h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
+        assert h_V==SolDefines.SOL_HDR_V
+        h_H   = (h>>SolDefines.SOL_HDR_H_OFFSET)&0x01
+        assert h_H==SolDefines.SOL_HDR_H_START
+        h_M   = (h>>SolDefines.SOL_HDR_START_M_OFFSET)&0x01
+        h_S   = (h>>SolDefines.SOL_HDR_START_S_OFFSET)&0x01
+        assert h_S==SolDefines.SOL_HDR_START_S_EPOCH
+        h_Y   = (h>>SolDefines.SOL_HDR_START_Y_OFFSET)&0x01
+        assert h_Y==SolDefines.SOL_HDR_START_Y_1B
+        h_L   = (h>>SolDefines.SOL_HDR_START_L_OFFSET)&0x03
+        assert h_L==SolDefines.SOL_HDR_START_L_WK
 
         o_bin = o_bin[1:]
 
         # mac
 
-        if h_M==d.SOL_HDR_START_M_NOMAC:
+        if h_M==SolDefines.SOL_HDR_START_M_NOMAC:
             assert mac is not None
             return_val['mac'] = mac
         else:
@@ -220,6 +198,22 @@ class Sol(object):
         return_val['value'] = o_bin
 
         return return_val
+
+    #===== JSON Object conversions
+    def json_verb_to_min(self, verb_obj):
+        '''
+        Converts a JSON Object from verbose format to minimal format.
+
+        :param dict json_obj: The JSON Object in verbose format
+        :return: The JSON Object in minimal format (bytes list)
+        :rtype: list
+        '''
+        return base64.b64encode(''.join(chr(b) for b in self.json_to_bin(verb_obj)))
+
+    def json_min_to_verb(self, min_obj):
+        bin_obj = base64.b64decode(min_obj)
+        bin_obj = [ord(b) for b in bin_obj]
+        return self.bin_to_json(bin_obj)
 
     def json_to_dicts(self,o_json):
         all_obj = json.loads(o_json)['o']

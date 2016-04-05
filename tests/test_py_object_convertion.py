@@ -17,7 +17,7 @@ SOL_EXAMPLE = [
             "dstPort":        61625,
             "data":           [0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 104, 238, 0, 2, 56, 160, 0, 0, 117, 48, 1, 16, 9, 25]
         },
-        "MIN_JSON_OBJ":       "EAAXDQAAOABjVubEbBECAAIA9ABBAAIAAgABANsAZwABAAg=",
+        "MIN_JSON_OBJ":       "EAAXDQAAOAPdVwNJricAAAUA/wEFAAAAAD0iaO4AAjigAAB1MAEQCRk=",
         "VERB_JSON_OBJ":
             {
                 "timestamp"     : 1459833262,
@@ -56,14 +56,14 @@ def json_mode(request):
 
 #============================ tests =================================
 
-def test_dust_to_sol(sol_example):
+def test_dust_to_json(sol_example):
     sol_example = json.loads(sol_example)
 
     import Sol
     sol = Sol.Sol()
 
     # convert dust object
-    dust_obj = sol.dust_to_sol(sol_example["DUST_OBJ"])
+    dust_obj = sol.dust_to_json(sol_example["DUST_OBJ"])
 
     # update timestamp from JSON reference
     json_obj = sol_example["VERB_JSON_OBJ"]
@@ -86,3 +86,17 @@ def test_compound_to_list(sol_example):
     sol = Sol.Sol()
 
     assert sol.compound_to_list(sol_example["COMP_JSON"])==[sol_example["VERB_JSON_OBJ"]]
+
+def test_json_verb_to_min(sol_example):
+    sol_example = json.loads(sol_example)
+    import Sol
+    sol = Sol.Sol()
+
+    assert sol.json_verb_to_min(sol_example["VERB_JSON_OBJ"])==sol_example["MIN_JSON_OBJ"]
+
+def test_json_min_to_verb(sol_example):
+    sol_example = json.loads(sol_example)
+    import Sol
+    sol = Sol.Sol()
+
+    assert sol.json_min_to_verb(sol_example["MIN_JSON_OBJ"])==sol_example["VERB_JSON_OBJ"]
