@@ -5,14 +5,14 @@ import json
 import struct
 import base64
 import threading
+import time
+import array
+import datetime
+import pdb
 
 import SolDefines as d
 import SolVersion as ver
 import OpenHdlc
-
-import array
-import datetime
-import pdb
 
 here = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
@@ -43,21 +43,66 @@ class Sol(object):
         return ver.SOL_VERSION
 
     #===== conversions
-    def DUST_to_JSON():
+    def DUST_to_JSON(dust_obj):
         '''
-        Convert DUST Object to SOL Object in JSON format
-        :return:
+        Convert DUST Objects to SOL Objects in JSON format.
+
+        :param int type_id: The SOL type id (see SOL registry)
+        :param dict dust_obj: The DUST Object(s)
+        :return: A dictionnary containing the SOL Object(s) in JSON format
         '''
 
-    def JSON_to_bin():
+        # extract the important data
+        #netTs      = self._calcNetTs(notifParams)
+        srcPort    = notifParams.srcPort
+        dstPort    = notifParams.dstPort
+        data       = notifParams.data
+
+        # Find SOL type by port
+        obj_id = 0
+        if dstPort==SolDefines.SOL_PORT:
+            raise NotImplementedError()
+        elif dstPort==SolDefines.OAP_PORT:
+            obj_id = SolDefines.SOL_TYPE_DUST_OAP
+        else:
+            obj_id = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
+
+        # Format Object value
+        obj_value = self.sol.create_value(obj_id, dust_obj['data'])
+
+        # Create JSON Object
+        json_obj = {
+            'mac':          dust_obj['macAddress'],
+            'timestamp':    int(time.time()),
+            'type':         obj_id,
+            'value':        obj_value
+        }
+
+        return json_obj
+
+    def _json_to_bin(self,o_dict,mode):
         '''
         Convert SOL Object in JSON format to SOL Object in binary format
         '''
 
-    def bin_to_JSON():
+        if   mode=="minimal":
+            return base64.b64encode(''.join(chr(b) for b in self.dict_to_bin(o_dict)))
+        elif mode=="verbose":
+            return {
+                "mac":       '-'.join(['%02x'%b for b in o_dict['mac']]),
+                "timestamp": o_dict['timestamp'],
+                "type":      o_dict['type'],
+                "value":     base64.b64encode(''.join(chr(b) for b in o_dict["value"])),
+            }
+        else:
+            raise SystemError()
+
+    def bin_to_JSON(obj_bin, obj_json):
         '''
         Convert SOL Object in binary format to SOL Object in JSON format
         '''
+
+        raise NotImplementedError
 
     def dict_to_bin(self,o_dict):
         o_bin   = []
@@ -516,11 +561,11 @@ class Sol(object):
     def create_value(self, type_id, *args):
         '''Create a formated object value
         Args:
-            type_name (str): the SOL type as str (see registry.md)
+            type_id (int): the SOL type ID (see registry.md)
             kwargs (dict): a dictionary of values
         :returns: An list of bytes
         Example:
-            create_value("SOL_TYPE_DUST_NOTIF_SOMETHING",
+            create_value(SolDefines.SOL_TYPE_DUST_NOTIF_SOMETHING,
                     srcPort = 61625,
                     dstPort = 61625,
                     payload = [0, 0, 5, 0, 255])
@@ -604,19 +649,6 @@ class Sol(object):
         for i in range(len(l)):
             output += l[i]<<(8*(len(l)-i-1))
         return output
-
-    def _o_to_json(self,o_dict,mode):
-        if   mode=="minimal":
-            return base64.b64encode(''.join(chr(b) for b in self.dict_to_bin(o_dict)))
-        elif mode=="verbose":
-            return {
-                "mac":       '-'.join(['%02x'%b for b in o_dict['mac']]),
-                "timestamp": o_dict['timestamp'],
-                "type":      o_dict['type'],
-                "value":     base64.b64encode(''.join(chr(b) for b in o_dict["value"])),
-            }
-        else:
-            raise SystemError()
 
     def _parse_specific_DUST(self,type_id,payload):
         '''
