@@ -1,22 +1,19 @@
 [![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=master)](https://travis-ci.org/realms-team/sol)
 
-This repo contains a set of libraries to manipulate sensor objects.
+This repo contains a set of libraries to manipulate sensor Objects.
 
-An sensor object contains the following _conceptual_ fields:
-* `M`: MAC address of the device creating the object
-* `T`: timestamp of when the object was created
-* `t`: type of object, a number
-* `V`: object value, a opaque string of bytes
+An sensor Object contains the following _conceptual_ fields:
+* `M`: MAC address of the device creating the Object
+* `T`: timestamp of when the Object was created
+* `t`: type of Object, a number
+* `L`: the length of the value
+* `V`: Object value, a opaque string of bytes
 
 It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 
 # Installation
 Download source:
 `git clone https://github.com/realms-team/sol.git`
-
-Init submodule
-`git submodule update --init`
-
 
 # Registry
 
@@ -26,29 +23,27 @@ See [registry](registry.md).
 
 # Representations
 
-This sections details how this object is represented.
-Each object can be represented in [binary](#binary-representation) or [JSON](#json-representation).
+The SOL Objects are manipulated in groups.
+Each group of Objects can be represented in [binary](#binary-representation) or [JSON](#json-representation).
 
-## binary representation
+## Binary representation
 
 This representation is used for:
 * sending data in packets
 * writing data to a file
 
-Each object consists of the following fields:
+Each group of Objects consists of the following fields:
 
 ```
-| header | mac | timestamp | type | length | Value |
+| SOL header | Objects list |
 ```
 
 Some rules:
 * all multi-byte value are encoded "big endian" (a.k.a "network order")
-* when chaining objects in a packet, a "more" header SHOULD be inserted for a more compact representation.
-* when chaining objects in a binary file, each MUST be frames using HDLC.
+* when chaining Objects in a packet, a "more" header SHOULD be inserted for a more compact representation.
+* when chaining Objects in a binary file, each MUST be frames using HDLC.
 
-### field format
-
-#### "header" field format
+#### SOL Header
 
 The header always starts with a 2-bit `V` field (version).
 Only value `b00` is defined in this document. Other values for the 2 first bits are reserved and may be defined in later revisions of this document.
@@ -56,36 +51,13 @@ Only value `b00` is defined in this document. Other values for the 2 first bits 
 ```
  0 1 2 3 4 5 6 7
 +-+-+-+-+-+-+-+-+
-| V |x x x x x x|
+| V |T|M|S|Y| L |
 +-+-+-+-+-+-+-+-+
 ```
 
-The `H` bit in position 2 identifies the type of header
-
-```
- 0 1 2 3 4 5 6 7
-+-+-+-+-+-+-+-+-+
-| V |H| x x x x |
-+-+-+-+-+-+-+-+-+
-```
-
-* `H`: header
-    * `0`: "start" header
-    * `1`: "more" header
-
-##### "start" header
-
-This header appears in front on each object, or in a front of a chain of objects.
-
-```
- 0 1 2 3 4 5 6 7
-+-+-+-+-+-+-+-+-+
-|0 0|T|M|S|Y| L |
-+-+-+-+-+-+-+-+-+
-```
-* `T`: Type of MTtlv object:
-    * `0`: single-MTtlv object
-    * `1`: multi-MTtlv object (MTNtlv) this implies the 1st byte next to timestamp is N: number of objects
+* `T`: Type of MTtlv Object:
+    * `0`: single-MTtlv Object
+    * `1`: multi-MTtlv Object (MTNtlv) this implies the 1st byte next to timestamp is N: number of Objects
 * `M`: MAC address encoding:
     * `0`: no MAC address present
     * `1`: 8-byte MAC address present
@@ -102,27 +74,28 @@ This header appears in front on each object, or in a front of a chain of objects
     * `b11`: elided. The length is recovered from the length of the packet or HDLC frame.
 
 
-### example transmission use cases
+### Example transmission use cases
 
 **Example 1**. transmitting a single 2-byte temperature sensor reading, taken in the past:
 
-* `[1B]` "start" header
+* `[1B]` SOL Header
    * `V`=`00` (version 0)
    * `H`=`0` ("start" header)
    * `M`=`0` (no MAC address)
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
    * `L`=`b00` (well-known value, no length field)
-* `[0B]` MAC: _elided_
+* `[--]` MAC: _elided_
 * `[4B]` Timestamp: `0x........`
 * `[1B]` type=`b..` (temperature)
-* `[0B]` length: _elided_
+* `[--]` length: _elided_
 * `[2B]` value: `0x....`
 
+Total 8 bytes.
 
 **Example 2**. transmitting a single 2-byte temperature sensor reading, taken just now:
 
-* `[1B]` "start" header
+* `[1B]` SOL Header
    * `V`=`00` (version 0)
    * `H`=`0` ("start" header)
    * `M`=`0` (no MAC address)
@@ -141,7 +114,7 @@ Total: 4 bytes.
 
 **Example 3**. Transmitting 3 sensor readings from 3 different sensors with well-known length, taken at the same time in the past:
 
-* `[1B]` "start" header
+* `[1B]` SOL Header
    * `V`=`00` (version 0)
    * `H`=`1` ("start" header)
    * `M`=`0` (no MAC address)
@@ -150,7 +123,7 @@ Total: 4 bytes.
    * `L`=`b00` (well-known value, no length field)
 * `[--]` MAC: _elided_
 * `[4B]` Timestamp: `0x........`
-* `[1B]` Number of objects = 3
+* `[1B]` Number of Objects = 3
 * `[3B]` sensor reading 1
    * `[--]` MAC: _elided_
    * `[--]` Timestamp: _elided_
@@ -173,25 +146,25 @@ Total: 4 bytes.
 Total: 15 bytes.
 
 
-### rules for saving to a binary file
+### Rules for saving to a binary file
 
 The assumption is that a binary file is stored on some hard/flash drive with orders of magnitude more space than a packet. The driving design choice are hence made to allow:
 * simple parsing
 * recoverable file in case parts of it get corrupted.
 
 The following rules hence apply when saving to a binary file:
-* sensor object chaining is NOT allowed (except on Neomote SD card level)
-* each sensor object MUST be framed using HDLC framing ([RFC1662](https://tools.ietf.org/html/rfc1662))
+* sensor Object chaining is NOT allowed (except on Neomote SD card level)
+* each sensor Object MUST be framed using HDLC framing ([RFC1662](https://tools.ietf.org/html/rfc1662))
 * the length field MUST be elided, and the `L` bit in the start header set to `b11`
 
 
 ## JSON representation
 
-A [JSON](http://json.org/) representation is used to communicate sensors objects across a network, typically using HTTP.
+A [JSON](http://json.org/) representation is used when the Objects are stored in a database.
 
 We use clean indentation for easier readability in these examples. An efficient implementation SHOULD represent the entire JSON string on a single line.
 
-The following is the general format of a JSON representation of sensor objects:
+The following is the general format of a JSON representation of sensor Objects:
 
 ```
 {
@@ -206,7 +179,7 @@ The following is the general format of a JSON representation of sensor objects:
 ```
 
 * `v`: the version of the representation. Only version `0` is defined in this specification. Other values SHOULD NOT be used. Future revisions of this document MIGHT define further versions.
-* `o`: an array of representations. Each representation can be either a JSON string (for the "minimal" representation) or a JSON object (for the "verbose" representation). A single JSON string CAN contain both "minimal" and "verbose" representations.
+* `o`: an array of representations. Each representation can be either a JSON string (for the "minimal" representation) or a JSON Object (for the "verbose" representation). A single JSON string CAN contain both "minimal" and "verbose" representations.
 
 This specification defines two formats:
 * a "compact" representation for minimal communication overhead.
@@ -215,11 +188,11 @@ This specification defines two formats:
 #### "minimal" representation
 
 ```
-"TWFuIGlzIGRpc3Rpbmd1aXNoZWQs"
+"ew0KICAgIm1hYyI6ICAgICAgICIwMC0xNy0wZC0wMC0wMC0xMi0zNC01NiIsDQogICAidGltZXN0YW1wIjogMTIzNDU2Nzg4OTAsDQogICAidHlwZSI6ICAgICAgMTIsDQogICAidmFsdWUiOiAgICAgIlRXRnVJR2x6SUdScGMzUnBibWQxYVhOb1pXUXMiLA0KfQ=="
 ```
 
-* the minimal representation is a string representing the binary representation of exactly one sensor objects.
-* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of exactly one sensor objects.
+* the minimal representation is a string representing the binary representation of exactly one sensor Objects.
+* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of exactly one sensor Objects.
 
 #### "verbose" representation
 
