@@ -368,22 +368,24 @@ class Sol(object):
 
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,hr):
         '''
-        {
-            'charge':             0x090a0b0c,    # INT32U
-            'queueOcc':           0x0d,          # INT8U
-            'temperature':        -1,            # INT8
-            'batteryVoltage':     0x0e0f,        # INT16U
-            'numTxOk':            0x1011,        # INT16U
-            'numTxFail':          0x1213,        # INT16U
-            'numRxOk':            0x1415,        # INT16U
-            'numRxLost':          0x1617,        # INT16U
-            'numMacDropped':      0x18,          # INT8U
-            'numTxBad':           0x19,          # INT8U
-            'badLinkFrameId':     0x1a,          # INT8U
-            'badLinkSlot':        0x1b1c1d1e,    # INT32U
-            'badLinkOffset':      0x1f,          # INT8U
-        }
-        '''
+        Example ::
+
+            {
+                'charge':             0x090a0b0c,    # INT32U
+                'queueOcc':           0x0d,          # INT8U
+                'temperature':        -1,            # INT8
+                'batteryVoltage':     0x0e0f,        # INT16U
+                'numTxOk':            0x1011,        # INT16U
+                'numTxFail':          0x1213,        # INT16U
+                'numRxOk':            0x1415,        # INT16U
+                'numRxLost':          0x1617,        # INT16U
+                'numMacDropped':      0x18,          # INT8U
+                'numTxBad':           0x19,          # INT8U
+                'badLinkFrameId':     0x1a,          # INT8U
+                'badLinkSlot':        0x1b1c1d1e,    # INT32U
+                'badLinkOffset':      0x1f,          # INT8U
+            }
+       '''
 
         return_val  = []
         return_val += [struct.pack(
@@ -409,7 +411,9 @@ class Sol(object):
 
     def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,hr):
         '''
-        {
+        Example ::
+
+            {
             'numItems': 2,
             'neighbors': [
                 {
@@ -429,8 +433,9 @@ class Sol(object):
                     'numRxPackets':       0x1819,     # INT16U
                 },
             ],
-        }
+            }
         '''
+
         return_val  = []
         return_val += [chr(len(hr['neighbors']))] # num_neighbors
         for n in hr['neighbors']:
@@ -450,24 +455,26 @@ class Sol(object):
 
     def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,hr):
         '''
-        Example::
-        {
-            'numJoinParents': 0x55,              # INT8U
-            'numItems':       2,
-            'discoveredNeighbors': [
-                {
-                    'neighborId':     0x0102,    # INT16U
-                    'rssi':           -1,        # INT8
-                    'numRx':          0x03,      # INT8U
-                },
-                {
-                    'neighborId':     0x1112,    # INT16U
-                    'rssi':           -1,        # INT8
-                    'numRx':          0x13,      # INT8U
-                },
-            ],
-        }
+        Example ::
+
+            {
+                'numJoinParents': 0x55,              # INT8U
+                'numItems':       2,
+                'discoveredNeighbors': [
+                    {
+                        'neighborId':     0x0102,    # INT16U
+                        'rssi':           -1,        # INT8
+                        'numRx':          0x03,      # INT8U
+                    },
+                    {
+                        'neighborId':     0x1112,    # INT16U
+                        'rssi':           -1,        # INT8
+                        'numRx':          0x13,      # INT8U
+                    },
+                ],
+            }
         '''
+
         return_val  = []
         return_val += [chr(hr['numJoinParents'])] # numJoinParents
         return_val += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
@@ -486,69 +493,72 @@ class Sol(object):
 
     def create_value_SOL_TYPE_DUST_SNAPSHOT(self,summary):
         '''
-        [
-            {
-                'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
-                'moteId':              0x090a,        # INT16U  H
-                'isAP':                0x0b,          # BOOL    B
-                'state':               0x0c,          # INT8U   B
-                'isRouting':           0x0d,          # BOOL    B
-                'numNbrs':             0x0e,          # INT8U   B
-                'numGoodNbrs':         0x0f,          # INT8U   B
-                'requestedBw':         0x10111213,    # INT32U  I
-                'totalNeededBw':       0x14151617,    # INT32U  I
-                'assignedBw':          0x18191a1b,    # INT32U  I
-                'packetsReceived':     0x1c1d1e1f,    # INT32U  I
-                'packetsLost':         0x20212223,    # INT32U  I
-                'avgLatency':          0x24252627,    # INT32U  I
-                'stateTime':           0x28292a2b,    # INT32U  I
-                'paths': [
-                    {
-                        'dest':        (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
-                        'direction':   0x2c,          # INT8U   B
-                        'numLinks':    0x2d,          # INT8U   B
-                        'quality':     0x2e,          # INT8U   B
-                        'rssiSrcDest': -1,            # INT8    b
-                        'rssiDestSrc': -2,            # INT8    b
-                    },
-                    {
-                        'dest':        (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
-                        'direction':   0x2c,          # INT8U  B
-                        'numLinks':    0x2d,          # INT8U  B
-                        'quality':     0x2e,          # INT8U  B
-                        'rssiSrcDest': -1,            # INT8   b
-                        'rssiDestSrc': -2,            # INT8   b
-                    },
-                ],
-            },
-            {
-                'macAddress':          (0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38),
-                'moteId':              0x090a,        # INT16U
-                'isAP':                0x0b,          # BOOL
-                'state':               0x0c,          # INT8U
-                'isRouting':           0x0d,          # BOOL
-                'numNbrs':             0x0e,          # INT8U
-                'numGoodNbrs':         0x0f,          # INT8U
-                'requestedBw':         0x10111213,    # INT32U
-                'totalNeededBw':       0x14151617,    # INT32U
-                'assignedBw':          0x18191a1b,    # INT32U
-                'packetsReceived':     0x1c1d1e1f,    # INT32U
-                'packetsLost':         0x20212223,    # INT32U
-                'avgLatency':          0x24252627,    # INT32U
-                'stateTime':           0x28292a2b,    # INT32U
-                'paths': [
-                    {
-                        'dest':        (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
-                        'direction':   0x2c,          # INT8U
-                        'numLinks':    0x2d,          # INT8U
-                        'quality':     0x2e,          # INT8U
-                        'rssiSrcDest': -1,            # INT8
-                        'rssiDestSrc': -2,            # INT8
-                    },
-                ],
-            },
-        ]
+        Example ::
+
+            [
+                {
+                    'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
+                    'moteId':              0x090a,        # INT16U  H
+                    'isAP':                0x0b,          # BOOL    B
+                    'state':               0x0c,          # INT8U   B
+                    'isRouting':           0x0d,          # BOOL    B
+                    'numNbrs':             0x0e,          # INT8U   B
+                    'numGoodNbrs':         0x0f,          # INT8U   B
+                    'requestedBw':         0x10111213,    # INT32U  I
+                    'totalNeededBw':       0x14151617,    # INT32U  I
+                    'assignedBw':          0x18191a1b,    # INT32U  I
+                    'packetsReceived':     0x1c1d1e1f,    # INT32U  I
+                    'packetsLost':         0x20212223,    # INT32U  I
+                    'avgLatency':          0x24252627,    # INT32U  I
+                    'stateTime':           0x28292a2b,    # INT32U  I
+                    'paths': [
+                        {
+                            'dest':        (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
+                            'direction':   0x2c,          # INT8U   B
+                            'numLinks':    0x2d,          # INT8U   B
+                            'quality':     0x2e,          # INT8U   B
+                            'rssiSrcDest': -1,            # INT8    b
+                            'rssiDestSrc': -2,            # INT8    b
+                        },
+                        {
+                            'dest':        (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
+                            'direction':   0x2c,          # INT8U  B
+                            'numLinks':    0x2d,          # INT8U  B
+                            'quality':     0x2e,          # INT8U  B
+                            'rssiSrcDest': -1,            # INT8   b
+                            'rssiDestSrc': -2,            # INT8   b
+                        },
+                    ],
+                },
+                {
+                    'macAddress':          (0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38),
+                    'moteId':              0x090a,        # INT16U
+                    'isAP':                0x0b,          # BOOL
+                    'state':               0x0c,          # INT8U
+                    'isRouting':           0x0d,          # BOOL
+                    'numNbrs':             0x0e,          # INT8U
+                    'numGoodNbrs':         0x0f,          # INT8U
+                    'requestedBw':         0x10111213,    # INT32U
+                    'totalNeededBw':       0x14151617,    # INT32U
+                    'assignedBw':          0x18191a1b,    # INT32U
+                    'packetsReceived':     0x1c1d1e1f,    # INT32U
+                    'packetsLost':         0x20212223,    # INT32U
+                    'avgLatency':          0x24252627,    # INT32U
+                    'stateTime':           0x28292a2b,    # INT32U
+                    'paths': [
+                        {
+                            'dest':        (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
+                            'direction':   0x2c,          # INT8U
+                            'numLinks':    0x2d,          # INT8U
+                            'quality':     0x2e,          # INT8U
+                            'rssiSrcDest': -1,            # INT8
+                            'rssiDestSrc': -2,            # INT8
+                        },
+                    ],
+                },
+            ]
         '''
+
         return_val  = []
         return_val += [chr(len(summary))] # num_motes
         for m in summary:
@@ -585,12 +595,16 @@ class Sol(object):
         return return_val
 
     def pack_obj_value(self, type_id, *args):
-        '''Create a formated object value
-        Args:
-            type_id (int): the SOL type ID (see registry.md)
-            kwargs (dict): a dictionary of values
-        :returns: An list of bytes
-        Example:
+        '''
+        Create a formated object value
+
+        :param int type_id: the SOL type ID (see registry.md)
+        :param dict kwargs: a dictionary of values
+        :return: An list of bytes
+        :rtype: list
+
+        Example::
+
             create_value(SolDefines.SOL_TYPE_DUST_NOTIF_SOMETHING,
                     srcPort = 61625,
                     dstPort = 61625,
