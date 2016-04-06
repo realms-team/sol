@@ -47,9 +47,9 @@ class Sol(object):
     def list_to_compound(obj_list):
         '''
         Converts a list of SOL Objects to a SOL Compound.
-        All the Objects in the list must be in verbose fomat
+        All the Objects in the list must be in minimal fomat
 
-        :param list obj_list: a list of SOL Objects in verbose format
+        :param list obj_list: a list of SOL Objects in minimal format
         :return: A SOL Compound in JSON representation
         :rtype: dict
         '''
@@ -133,11 +133,11 @@ class Sol(object):
         # header
         h     = 0
         h    |= SolDefines.SOL_HDR_V<<SolDefines.SOL_HDR_V_OFFSET
-        h    |= SolDefines.SOL_HDR_H_START<<SolDefines.SOL_HDR_H_OFFSET
-        h    |= SolDefines.SOL_HDR_START_M_8BMAC<<SolDefines.SOL_HDR_START_M_OFFSET
-        h    |= SolDefines.SOL_HDR_START_S_EPOCH<<SolDefines.SOL_HDR_START_S_OFFSET
-        h    |= SolDefines.SOL_HDR_START_Y_1B<<SolDefines.SOL_HDR_START_Y_OFFSET
-        h    |= SolDefines.SOL_HDR_START_L_WK<<SolDefines.SOL_HDR_START_L_OFFSET
+        h    |= SolDefines.SOL_HDR_T_SINGLE<<SolDefines.SOL_HDR_T_OFFSET
+        h    |= SolDefines.SOL_HDR_M_8BMAC<<SolDefines.SOL_HDR_M_OFFSET
+        h    |= SolDefines.SOL_HDR_S_EPOCH<<SolDefines.SOL_HDR_S_OFFSET
+        h    |= SolDefines.SOL_HDR_Y_1B<<SolDefines.SOL_HDR_Y_OFFSET
+        h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
         bin_obj  += [h]
 
         # mac
@@ -153,8 +153,6 @@ class Sol(object):
         bin_obj  += json_obj['value']
 
         return bin_obj
-
-        return json_m_obj
 
     def bin_to_json(self,o_bin,mac=None):
         '''
@@ -174,21 +172,21 @@ class Sol(object):
         h     = o_bin[0]
         h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
         assert h_V==SolDefines.SOL_HDR_V
-        h_H   = (h>>SolDefines.SOL_HDR_H_OFFSET)&0x01
-        assert h_H==SolDefines.SOL_HDR_H_START
-        h_M   = (h>>SolDefines.SOL_HDR_START_M_OFFSET)&0x01
-        h_S   = (h>>SolDefines.SOL_HDR_START_S_OFFSET)&0x01
-        assert h_S==SolDefines.SOL_HDR_START_S_EPOCH
-        h_Y   = (h>>SolDefines.SOL_HDR_START_Y_OFFSET)&0x01
-        assert h_Y==SolDefines.SOL_HDR_START_Y_1B
-        h_L   = (h>>SolDefines.SOL_HDR_START_L_OFFSET)&0x03
-        assert h_L==SolDefines.SOL_HDR_START_L_WK
+        h_H   = (h>>SolDefines.SOL_HDR_T_OFFSET)&0x01
+        assert h_H==SolDefines.SOL_HDR_T_SINGLE
+        h_M   = (h>>SolDefines.SOL_HDR_M_OFFSET)&0x01
+        h_S   = (h>>SolDefines.SOL_HDR_S_OFFSET)&0x01
+        assert h_S==SolDefines.SOL_HDR_S_EPOCH
+        h_Y   = (h>>SolDefines.SOL_HDR_Y_OFFSET)&0x01
+        assert h_Y==SolDefines.SOL_HDR_Y_1B
+        h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
+        assert h_L==SolDefines.SOL_HDR_L_WK
 
         o_bin = o_bin[1:]
 
         # mac
 
-        if h_M==SolDefines.SOL_HDR_START_M_NOMAC:
+        if h_M==SolDefines.SOL_HDR_M_NOMAC:
             assert mac is not None
             return_val['mac'] = mac
         else:
@@ -252,7 +250,7 @@ class Sol(object):
                 o_bin = base64.b64decode(obj)
                 o_bin = [ord(b) for b in o_bin]
 
-                thisDict = self.bin_to_dict(o_bin)
+                thisDict = self.bin_to_json(o_bin)
             return_val += [thisDict]
 
         return return_val
@@ -264,7 +262,7 @@ class Sol(object):
         with self.fileLock:
             with open(file_name,'ab') as f:
                 for o_dict in dicts:
-                    o_bin = self.dict_to_bin(o_dict)
+                    o_bin = self.json_to_bin(o_dict)
                     o_bin = self.hdlc.hdlcify(o_bin)
                     o_bin = ''.join([chr(b) for b in o_bin])
                     f.write(o_bin)
@@ -280,7 +278,7 @@ class Sol(object):
             with self.fileLock:
                 (bins,_) = self.hdlc.dehdlcify(file_name)
 
-            dicts = [self.bin_to_dict(b) for b in bins]
+            dicts = [self.bin_to_json(b) for b in bins]
 
         else:
 
@@ -295,7 +293,7 @@ class Sol(object):
                     def oneObject(offset):
                         (o,idx) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
                         o = o[0]
-                        o = self.bin_to_dict(o)
+                        o = self.bin_to_json(o)
                         return o, idx
 
                     def oneTimestamp(offset):
