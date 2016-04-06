@@ -250,7 +250,7 @@ class Sol(object):
         with self.fileLock:
             with open(file_name,'ab') as f:
                 for o_dict in dicts:
-                    o_bin = self.json_to_bin(o_dict)
+                    o_bin = self.json_to_bin([o_dict])
                     o_bin = self.hdlc.hdlcify(o_bin)
                     o_bin = ''.join([chr(b) for b in o_bin])
                     f.write(o_bin)
@@ -713,7 +713,7 @@ class Sol(object):
         # get SOL type
         type_name = SolDefines.solTypeToString(SolDefines,type_id)
 
-        if type_id == SolDefines.SOL_TYPE_DUST_OAP:
+        if type_id == SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
 
             # convert into byte array (srcPort + destPort = 4 bytes)
