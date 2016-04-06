@@ -42,49 +42,127 @@ class Sol(object):
     def version(self):
         return ver.SOL_VERSION
 
-    #===== SOL Compound conversions
-    @staticmethod
-    def list_to_compound(obj_list):
-        '''
-        Converts a list of SOL Objects to a SOL Compound.
-        All the Objects in the list must be in minimal fomat
+    #===== Public functions
+    def json_to_bin(self, obj_list):
+        """
+        Converts a list of SOL Objects into a binary compound
 
-        :param list obj_list: a list of SOL Objects in minimal format
-        :return: A SOL Compound in JSON representation
-        :rtype: dict
-        '''
-
-        sol_comp = {
-            "v": SolDefines.SOL_HDR_V,
-            "o": obj_list,
-        }
-
-        return sol_comp
-
-    @staticmethod
-    def compound_to_list(sol_comp):
-        '''
-        Converts a SOL Compound Object into a list of SOL Objects
-        The returned Objects are in verbose format.
-
-        :param dict sol_comp: A SOL Compound in JSON representation
-        :return: A list of Objects in verbose format
+        :param list obj_list: a list of SOL Objects
+        :return: A SOL binary compound
         :rtype: list
-        '''
+        """
 
-        obj_list = sol_comp['o']
+        bin_comp = []
+
+        # header
+        h     = 0
+        h    |= SolDefines.SOL_HDR_V<<SolDefines.SOL_HDR_V_OFFSET
+        h    |= SolDefines.SOL_HDR_T_SINGLE<<SolDefines.SOL_HDR_T_OFFSET
+        h    |= SolDefines.SOL_HDR_M_8BMAC<<SolDefines.SOL_HDR_M_OFFSET
+        h    |= SolDefines.SOL_HDR_S_EPOCH<<SolDefines.SOL_HDR_S_OFFSET
+        h    |= SolDefines.SOL_HDR_Y_1B<<SolDefines.SOL_HDR_Y_OFFSET
+
+        if 'length' in obj_list[0]:
+            #TODO implement other length field
+            h    |= SolDefines.SOL_HDR_1B<<SolDefines.SOL_HDR_L_OFFSET
+        else:
+            h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
+
+        bin_comp  += [h]
+
+        for obj in obj_list:
+            # mac
+            bin_comp  += obj['mac']
+
+            # timestamp
+            bin_comp  += self._num_to_list(obj['timestamp'],4)
+
+            # type
+            bin_comp  += self._num_to_list(obj['type'],1)
+
+            # value
+            bin_comp  += obj['value']
+
+        return bin_comp
+
+    def bin_to_json(self, bin_comp):
+        """
+        Converts a binary compound into a list of SOL Objects
+
+        :param list bin_comp: A SOL binary compound
+        :return: A list of SOL Objects
+        :rtpe: list
+        """
+
+        obj_list = []
+        obj = {}
+
+        # header
+
+        assert len(bin_comp)>=1
+
+        h     = bin_comp[0]
+        h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
+        assert h_V==SolDefines.SOL_HDR_V
+        h_H   = (h>>SolDefines.SOL_HDR_T_OFFSET)&0x01
+        assert h_H==SolDefines.SOL_HDR_T_SINGLE
+        h_M   = (h>>SolDefines.SOL_HDR_M_OFFSET)&0x01
+        h_S   = (h>>SolDefines.SOL_HDR_S_OFFSET)&0x01
+        assert h_S==SolDefines.SOL_HDR_S_EPOCH
+        h_Y   = (h>>SolDefines.SOL_HDR_Y_OFFSET)&0x01
+        assert h_Y==SolDefines.SOL_HDR_Y_1B
+        h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
+
+        bin_comp = bin_comp[1:]
+
+        while len(bin_comp) >= 4:
+            # mac
+
+            if h_M==SolDefines.SOL_HDR_M_NOMAC:
+                assert mac is not None
+                obj['mac'] = mac #TODO: where does mac comes from ?
+            else:
+                assert len(bin_comp)>=8
+                obj['mac'] = bin_comp[:8]
+                bin_comp = bin_comp[8:]
+
+            # timestamp
+
+            assert len(bin_comp)>=4
+            obj['timestamp'] = self._list_to_num(bin_comp[:4])
+            bin_comp = bin_comp[4:]
+
+            # type
+
+            assert len(bin_comp)>=1
+            obj['type'] = bin_comp[0]
+            bin_comp = bin_comp[1:]
+
+            # length
+
+            if h_L==SolDefines.SOL_HDR_L_WK:
+                sol_item = SolDefines.solStructure(SolDefines,obj['type'])
+                obj_size = struct.calcsize(sol_item['structure'])
+            elif h_L==SolDefines.SOL_HDR_L_1B:
+                obj_size = bin_comp[0]
+                bin_comp = bin_comp[1:]
+            elif h_L==SolDefines.SOL_HDR_L_2B:
+                obj_size = bin_comp[:2]
+                bin_comp = bin_comp[2:]
+            else:
+                obj_size = 0    # elided length
+
+            # value
+
+            assert len(bin_comp)>=0
+            obj['value'] = bin_comp[:obj_size]
+            bin_comp = bin_comp[obj_size:]
+
+            # store object to returned list
+            obj_list.append(obj)
 
         return obj_list
 
-    @staticmethod
-    def comp_json_to_bin():
-        return NotImplementedError
-
-    @staticmethod
-    def comp_bin_to_json():
-        return NotImplementedError
-
-    #===== SOL Object conversion
     def dust_to_json(self, dust_obj):
         '''
         Convert DUST messages into SOL Objects in JSON format.
@@ -105,7 +183,8 @@ class Sol(object):
         if dstPort==SolDefines.SOL_PORT:
             raise NotImplementedError()
         elif dstPort==SolDefines.OAP_PORT:
-            obj_id = SolDefines.SOL_TYPE_DUST_OAP
+            #TODO implement other OAP messages
+            obj_id = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
         else:
             obj_id = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
 
@@ -119,115 +198,24 @@ class Sol(object):
 
         return json_obj
 
-    def json_to_bin(self, json_obj):
+    def list_to_compound(obj_list):
         '''
-        Converts a JSON represented object into a binary represented object
+        Converts a list of SOL Objects to a SOL Compound.
+        All the Objects in the list must be in minimal fomat
 
-        :param dict json_obj: The JSON represented object
-        :return bin_obj: The binary represented object
-        :rtype: list
-        '''
-
-        bin_obj = []
-
-        # header
-        h     = 0
-        h    |= SolDefines.SOL_HDR_V<<SolDefines.SOL_HDR_V_OFFSET
-        h    |= SolDefines.SOL_HDR_T_SINGLE<<SolDefines.SOL_HDR_T_OFFSET
-        h    |= SolDefines.SOL_HDR_M_8BMAC<<SolDefines.SOL_HDR_M_OFFSET
-        h    |= SolDefines.SOL_HDR_S_EPOCH<<SolDefines.SOL_HDR_S_OFFSET
-        h    |= SolDefines.SOL_HDR_Y_1B<<SolDefines.SOL_HDR_Y_OFFSET
-        h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
-        bin_obj  += [h]
-
-        # mac
-        bin_obj  += json_obj['mac']
-
-        # timestamp
-        bin_obj  += self._num_to_list(json_obj['timestamp'],4)
-
-        # type
-        bin_obj  += self._num_to_list(json_obj['type'],1)
-
-        # value
-        bin_obj  += json_obj['value']
-
-        return bin_obj
-
-    def bin_to_json(self,o_bin,mac=None):
-        '''
-        Converts a binary represented object into a JSON represented object
-
-        :param dict o_bin: The binary represented object
-        :return json_obj: The JSON represented object
+        :param list obj_list: a list of SOL Objects in minimal format
+        :return: A SOL Compound in JSON representation
         :rtype: dict
         '''
 
-        return_val = {}
+        sol_comp = {
+            "v": SolDefines.SOL_HDR_V,
+            "o": obj_list,
+        }
 
-        # header
-
-        assert len(o_bin)>=1
-
-        h     = o_bin[0]
-        h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
-        assert h_V==SolDefines.SOL_HDR_V
-        h_H   = (h>>SolDefines.SOL_HDR_T_OFFSET)&0x01
-        assert h_H==SolDefines.SOL_HDR_T_SINGLE
-        h_M   = (h>>SolDefines.SOL_HDR_M_OFFSET)&0x01
-        h_S   = (h>>SolDefines.SOL_HDR_S_OFFSET)&0x01
-        assert h_S==SolDefines.SOL_HDR_S_EPOCH
-        h_Y   = (h>>SolDefines.SOL_HDR_Y_OFFSET)&0x01
-        assert h_Y==SolDefines.SOL_HDR_Y_1B
-        h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
-        assert h_L==SolDefines.SOL_HDR_L_WK
-
-        o_bin = o_bin[1:]
-
-        # mac
-
-        if h_M==SolDefines.SOL_HDR_M_NOMAC:
-            assert mac is not None
-            return_val['mac'] = mac
-        else:
-            assert len(o_bin)>=8
-            return_val['mac'] = o_bin[:8]
-            o_bin = o_bin[8:]
-
-        # timestamp
-
-        assert len(o_bin)>=4
-        return_val['timestamp'] = self._list_to_num(o_bin[:4])
-        o_bin = o_bin[4:]
-
-        # type
-
-        assert len(o_bin)>=1
-        return_val['type'] = o_bin[0]
-        o_bin = o_bin[1:]
-
-        # value
-
-        assert len(o_bin)>=0
-        return_val['value'] = o_bin
-
-        return return_val
+        return sol_comp
 
     #===== JSON Object conversions
-    def json_verb_to_min(self, verb_obj):
-        '''
-        Converts a JSON Object from verbose format to minimal format.
-
-        :param dict json_obj: The JSON Object in verbose format
-        :return: The JSON Object in minimal format (bytes list)
-        :rtype: list
-        '''
-        return base64.b64encode(''.join(chr(b) for b in self.json_to_bin(verb_obj)))
-
-    def json_min_to_verb(self, min_obj):
-        bin_obj = base64.b64decode(min_obj)
-        bin_obj = [ord(b) for b in bin_obj]
-        return self.bin_to_json(bin_obj)
 
     def json_to_dicts(self,o_json):
         all_obj = json.loads(o_json)['o']
