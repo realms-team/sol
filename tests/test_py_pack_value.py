@@ -76,7 +76,7 @@ def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
     import Sol
     sol = Sol.Sol()
 
-    assert sol.pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(
+    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(
         uptime     = 0x00112233,
         utcSecs    = 0x44556677,
         utcUsecs   = 0x8899aabb,
@@ -90,7 +90,7 @@ def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
     import Sol
     sol = Sol.Sol()
 
-    assert sol.pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET()==[]
+    assert sol.create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET()==[]
 
 def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
     import Sol
@@ -154,12 +154,14 @@ def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
         0x55                                                    # rc
     )==[0x11,0x22,0x33,0x44,0x55]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(
-        hr         = {
+    assert sol.pack_obj_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_HR_DEVICE,
+        {
             'charge':             0x090a0b0c,    # INT32U
             'queueOcc':           0x0d,          # INT8U
             'temperature':        -1,            # INT8
@@ -190,12 +192,14 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE():
         0x1f,                                    # badLinkOffset
     ]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(
-        hr         = {
+    assert sol.pack_obj_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS,
+        {
             'numItems': 2,
             'neighbors': [
                 {
@@ -234,12 +238,14 @@ def test_create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS():
         0x18,0x19,                               # numRxPackets
     ]
 
-def test_create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
+def test_pack_obj_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
     import Sol
+    import SolDefines
     sol = Sol.Sol()
 
-    assert sol.create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(
-        hr         = {
+    assert sol.pack_obj_value(
+        SolDefines.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED,
+        {
             'numJoinParents': 0x55,              # INT8U
             'numItems':       2,
             'discoveredNeighbors': [
