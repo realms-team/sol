@@ -95,7 +95,6 @@ class Sol(object):
         """
 
         obj_list = []
-        obj = {}
 
         # header
 
@@ -116,6 +115,8 @@ class Sol(object):
         bin_comp = bin_comp[1:]
 
         while len(bin_comp) >= 4:
+            obj = {}
+
             # mac
 
             if h_M==SolDefines.SOL_HDR_M_NOMAC:
