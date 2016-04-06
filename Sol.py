@@ -173,17 +173,11 @@ class Sol(object):
         :rtype: dict
         '''
 
-        # extract the important data
-        #netTs      = self._calcNetTs(notifParams)
-        srcPort    = dust_obj['srcPort']
-        dstPort    = dust_obj['dstPort']
-        data       = dust_obj['data']
-
         # Find SOL type by port
         obj_id = 0
-        if dstPort==SolDefines.SOL_PORT:
+        if dust_obj['srcPort']==SolDefines.SOL_PORT:
             raise NotImplementedError()
-        elif dstPort==SolDefines.OAP_PORT:
+        elif dust_obj['dstPort']==SolDefines.OAP_PORT:
             #TODO implement other OAP messages
             obj_id = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
         else:
@@ -192,7 +186,7 @@ class Sol(object):
         # Create JSON Object
         json_obj = {
             "mac":          dust_obj['macAddress'],
-            "timestamp":    int(time.time()),
+            "timestamp":    dust_obj['netTs'],
             "type":         obj_id,
             "value":        dust_obj['data']
         }
@@ -243,6 +237,17 @@ class Sol(object):
             return_val += [thisDict]
 
         return return_val
+
+    #===== communication protocol functions
+    def bin_to_contenttype(bin_comp, content_type="json"):
+        '''
+        Wrap a bin compound into a JSON envelop to be sent through HTTP
+        '''
+
+        if (content_type=="json"):
+            content = { 'o' : base64.b64encode(bin_comp) }
+
+        return content
 
     #===== file manipulation
 
