@@ -62,6 +62,7 @@ class Sol(object):
         h    |= SolDefines.SOL_HDR_S_EPOCH<<SolDefines.SOL_HDR_S_OFFSET
         h    |= SolDefines.SOL_HDR_Y_1B<<SolDefines.SOL_HDR_Y_OFFSET
 
+        assert type(obj_list) == list
         if 'length' in obj_list[0]:
             #TODO implement other length field
             h    |= SolDefines.SOL_HDR_1B<<SolDefines.SOL_HDR_L_OFFSET
@@ -193,23 +194,6 @@ class Sol(object):
 
         return json_obj
 
-    def list_to_compound(obj_list):
-        '''
-        Converts a list of SOL Objects to a SOL Compound.
-        All the Objects in the list must be in minimal fomat
-
-        :param list obj_list: a list of SOL Objects in minimal format
-        :return: A SOL Compound in JSON representation
-        :rtype: dict
-        '''
-
-        sol_comp = {
-            "v": SolDefines.SOL_HDR_V,
-            "o": obj_list,
-        }
-
-        return sol_comp
-
     #===== JSON Object conversions
 
     def json_to_dicts(self,o_json):
@@ -239,15 +223,39 @@ class Sol(object):
         return return_val
 
     #===== communication protocol functions
-    def bin_to_contenttype(bin_comp, content_type="json"):
+    def bin_to_contenttype(self, json_list):
         '''
         Wrap a bin compound into a JSON envelop to be sent through HTTP
         '''
 
-        if (content_type=="json"):
-            content = { 'o' : base64.b64encode(bin_comp) }
+        enc_bin_list = []
+        for json_obj in json_list:
+            bin_obj = self.json_to_bin([json_obj])
+            enc_bin_list.append(base64.b64encode("".join(chr(b) for b in bin_obj)))
 
-        return content
+        content = {
+            "v":    SolDefines.SOL_HDR_V,
+            "o":    enc_bin_list,
+        }
+        print content
+
+        return json.dumps(content)
+
+    def contenttype_to_bin(self, content):
+        '''
+        :param dict content:
+        :rtype: list
+        '''
+
+        json_list = []
+        json_content = json.loads(content)
+
+        for bin_obj in json_content['o']:
+            dec_obj = base64.b64decode(bin_obj)
+            for json_obj in self.bin_to_json([ord(b) for b in dec_obj]):
+                json_list.append(json_obj)
+
+        return json_list
 
     #===== file manipulation
 
@@ -445,7 +453,7 @@ class Sol(object):
         '''
 
         return_val  = []
-        return_val += [chr(len(hr['neighbors']))] # num_neighbors
+        return_val += [chr(hr['numItems'])] # num_neighbors
         for n in hr['neighbors']:
             return_val += [struct.pack(
                 '>HBbHHH',
