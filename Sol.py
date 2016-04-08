@@ -756,6 +756,19 @@ class Sol(object):
             values = struct.unpack(sol_item['structure'],spayload)
             obj = dict(zip(sol_item['fields'], values))
 
+            # quick fix macAddrr parsing
+            if "macAddress" in obj:
+                mac_str = struct.pack('>Q', obj['macAddress'])
+                obj['macAddress'] = [ord(b) for b in mac_str]
+            if "dest" in obj:
+                mac_str = struct.pack('>Q', obj['dest'])
+                obj['dest'] = [ord(b) for b in mac_str]
+            if "source" in obj:
+                mac_str = struct.pack('>Q', obj['source'])
+                obj['source'] = [ord(b) for b in mac_str]
+            if "asn" in obj:
+                obj['asn'] = [ord(i) for i in obj['asn']]
+
         elif (type_id in [
                     SolDefines.SOL_TYPE_DUST_SNAPSHOT,
                     SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
