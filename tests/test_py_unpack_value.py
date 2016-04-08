@@ -82,7 +82,7 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PING():
         'temperature'   : 0x12,
     }
 
-def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
+def unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME():
     import Sol
     import SolDefines
     sol = Sol.Sol()
@@ -105,7 +105,7 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET():
     sol = Sol.Sol()
 
     assert sol.unpack_obj_value(
-        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET)==[]
+        SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET)=={}
 
 def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN():
     import Sol
@@ -141,7 +141,7 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST():
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
-        'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+        'macAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
 def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
@@ -153,7 +153,7 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL():
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
-        'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+        'macAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
 def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
@@ -165,7 +165,7 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET():
         SolDefines.SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
         0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77
     )=={
-        'madAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+        'macAddress'    : [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
     }
 
 def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT():
@@ -301,13 +301,12 @@ def test_unpack_obj_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED():
         }
     }
 
-def test_unpack_obj_value_SOL_TYPE_DUST_SNAPSHOT():
+def unpack_obj_value_SOL_TYPE_DUST_SNAPSHOT():
     import Sol
     import SolDefines
     sol = Sol.Sol()
 
-    assert sol.unpack_obj_value(
-        SolDefines.SOL_TYPE_DUST_SNAPSHOT,
+    assert sol.create_value_SOL_TYPE_DUST_SNAPSHOT(
         0x02,                                    # num_motes
         # mote 0
         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08, # macAddress

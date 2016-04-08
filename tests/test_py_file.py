@@ -70,12 +70,14 @@ def expectedRange(request):
 def getRandomObjects(num,startTs=0):
     returnVal = []
     for i in range(num):
+        obj_val = [random.randint(0x00,0xff) for _ in range(random.randint(0,25))]
         returnVal += [
             {
                 'mac':       EXAMPLE_MAC,
                 'timestamp': i+startTs,
                 'type':      random.randint(0x00,0xff),
-                'value':     [random.randint(0x00,0xff) for _ in range(random.randint(0,25))],
+                'length':    len(obj_val),
+                'value':     obj_val,
             }
         ]
     return returnVal
@@ -85,16 +87,16 @@ def getRandomObjects(num,startTs=0):
 def test_dump_load(removeFile):
     import Sol
     sol = Sol.Sol()
-    
+
     # prepare dicts to dump
     dictsToDump = getRandomObjects(1000)
-    
+
     # dump
     sol.dumpToFile(dictsToDump,FILENAME)
-    
+
     # load
     dictsLoaded = sol.loadFromFile(FILENAME)
-    
+
     # compare
     assert dictsLoaded==dictsToDump
 

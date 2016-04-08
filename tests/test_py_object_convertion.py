@@ -10,8 +10,7 @@ EXAMPLE_MAC = [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]
 SOL_EXAMPLE = [
     {
         "dust": {
-            "utcSecs":        1025665262,
-            "utcUsecs":       139750,
+            "netTs":          1459833262,
             "macAddress":     [1, 2, 3, 4, 5, 6, 7, 8],
             "srcPort":        61625,
             "dstPort":        61625,
