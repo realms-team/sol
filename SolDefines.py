@@ -214,6 +214,18 @@ sol_types = [
         'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
     },
     {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+        'description':  '',
+        'structure':    '>IQ5pH',
+        'fields':       ['uptime','utcTime', 'asn', 'asnOffset'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+        'description':  '',
+        'structure':    '>',
+        'fields':       [],
+    },
+    {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
         'description':  '',
         'structure':    '>Q',
@@ -258,8 +270,8 @@ sol_types = [
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
-        'structure':    '>HHBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-        'fields':       ['srcPort', 'dstPort', 'payload'],
+        'structure':    '>BBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        'fields':       ['payload'],
     },
 ]
 
