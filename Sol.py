@@ -65,7 +65,7 @@ class Sol(object):
         assert type(obj_list) == list
         if 'length' in obj_list[0]:
             #TODO implement other length field
-            h    |= SolDefines.SOL_HDR_1B<<SolDefines.SOL_HDR_L_OFFSET
+            h    |= SolDefines.SOL_HDR_L_1B<<SolDefines.SOL_HDR_L_OFFSET
         else:
             h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
 
@@ -81,12 +81,16 @@ class Sol(object):
             # type
             bin_comp  += self._num_to_list(obj['type'],1)
 
+            # length
+            if 'length' in obj:
+                bin_comp  += self._num_to_list(obj['length'],1)
+
             # value
             bin_comp  += obj['value']
 
         return bin_comp
 
-    def bin_to_json(self, bin_comp):
+    def bin_to_json(self, bin_comp, mac=None):
         """
         Converts a binary compound into a list of SOL Objects
 
@@ -122,7 +126,7 @@ class Sol(object):
 
             if h_M==SolDefines.SOL_HDR_M_NOMAC:
                 assert mac is not None
-                obj['mac'] = mac #TODO: where does mac comes from ?
+                obj['mac'] = mac
             else:
                 assert len(bin_comp)>=8
                 obj['mac'] = bin_comp[:8]
@@ -146,17 +150,18 @@ class Sol(object):
                 sol_item = SolDefines.solStructure(SolDefines,obj['type'])
                 obj_size = struct.calcsize(sol_item['structure'])
             elif h_L==SolDefines.SOL_HDR_L_1B:
+                obj['length'] = bin_comp[0]
                 obj_size = bin_comp[0]
                 bin_comp = bin_comp[1:]
             elif h_L==SolDefines.SOL_HDR_L_2B:
+                obj['length'] = bin_comp[:2]
                 obj_size = bin_comp[:2]
                 bin_comp = bin_comp[2:]
             else:
                 obj_size = 0    # elided length
 
             # value
-
-            assert len(bin_comp)>=0
+            assert len(bin_comp)>=obj_size
             obj['value'] = bin_comp[:obj_size]
             bin_comp = bin_comp[obj_size:]
 
@@ -194,34 +199,6 @@ class Sol(object):
 
         return json_obj
 
-    #===== JSON Object conversions
-
-    def json_to_dicts(self,o_json):
-        all_obj = json.loads(o_json)['o']
-
-        return_val = []
-        for obj in all_obj:
-
-            if type(obj)==dict:
-                # verbose
-
-                thisDict = {
-                    "mac": [int(b, 16) for b in obj['mac'].split('-')],
-                    "timestamp": obj['timestamp'],
-                    "type": obj['type'],
-                    "value": [ord(b) for b in base64.b64decode(obj['value'])]
-                }
-            else:
-                # minimal
-
-                o_bin = base64.b64decode(obj)
-                o_bin = [ord(b) for b in o_bin]
-
-                thisDict = self.bin_to_json(o_bin)
-            return_val += [thisDict]
-
-        return return_val
-
     #===== communication protocol functions
     def bin_to_contenttype(self, json_list):
         '''
@@ -237,7 +214,6 @@ class Sol(object):
             "v":    SolDefines.SOL_HDR_V,
             "o":    enc_bin_list,
         }
-        print content
 
         return json.dumps(content)
 
@@ -280,7 +256,9 @@ class Sol(object):
             with self.fileLock:
                 (bins,_) = self.hdlc.dehdlcify(file_name)
 
-            dicts = [self.bin_to_json(b) for b in bins]
+            dicts = []
+            for b in bins:
+                dicts.extend(self.bin_to_json(b))
 
         else:
 
@@ -295,7 +273,7 @@ class Sol(object):
                     def oneObject(offset):
                         (o,idx) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
                         o = o[0]
-                        o = self.bin_to_json(o)
+                        o = self.bin_to_json(o)[0]
                         return o, idx
 
                     def oneTimestamp(offset):
