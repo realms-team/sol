@@ -1,6 +1,17 @@
+#!/usr/bin/python
+
+# =========================== adjust path =====================================
+
 import sys
 import os
 
+here = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
+sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'external_libs'))
+
+# =========================== imports =========================================
+
+# from default Python
 import json
 import struct
 import base64
@@ -8,21 +19,26 @@ import threading
 import time
 import array
 import datetime
-import pdb
 
-import SolDefines
-import SolVersion as ver
-import OpenHdlc
+# third-party packages
 
-here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'external_libs'))
-
+# project-specific
+from SmartMeshSDK.utils                 import FormatUtils
 from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
 from SmartMeshSDK.IpMgrConnectorMux     import IpMgrConnectorMux
 from SmartMeshSDK.protocols.Hr          import HrParser
 from SmartMeshSDK.protocols.oap         import OAPMessage, \
                                                OAPNotif
+
+import SolDefines
+import SolVersion as ver
+import OpenHdlc
+
+#============================ defines =========================================
+
+#============================ helpers =========================================
+
+#============================ classes =========================================
 
 class Sol(object):
     '''
@@ -69,7 +85,7 @@ class Sol(object):
             sol_ts = timestamp
         
         # get sol_type and sol_value
-        (sol_type,sol_value) = self._get_sol_value(dust_notif)
+        (sol_type,sol_value) = self._get_sol_json_value(dust_notif)
         
         # create JSON Object
         sol_json = {
@@ -83,13 +99,12 @@ class Sol(object):
     
     def json_to_bin(self, sol_json):
         """
-        Convert a list of JSON SOL Objects into a single compound  binary SOL Object.
+        Convert a JSON SOL Object into a single binary SOL Object.
 
-        :param list sol_json: a list of JSON SOL Objects
-        :return: A single compound binary SOL Object
+        :param list sol_json: a JSON SOL Object
+        :return: A single binary SOL Object
         :rtype: list
         """
-
         sol_bin = []
 
         # header
@@ -99,86 +114,76 @@ class Sol(object):
         h    |= SolDefines.SOL_HDR_M_8BMAC  << SolDefines.SOL_HDR_M_OFFSET
         h    |= SolDefines.SOL_HDR_S_EPOCH  << SolDefines.SOL_HDR_S_OFFSET
         h    |= SolDefines.SOL_HDR_Y_1B     << SolDefines.SOL_HDR_Y_OFFSET
+        h    |= SolDefines.SOL_HDR_L_ELIDED << SolDefines.SOL_HDR_L_OFFSET
+        sol_bin        += [h]
 
-        assert type(sol_json) == list
-        if 'length' in sol_json[0]:
-            #TODO implement other length field
-            h    |= SolDefines.SOL_HDR_L_1B<<SolDefines.SOL_HDR_L_OFFSET
-        else:
-            h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
+        # mac
+        sol_bin        += sol_json['mac']
 
-        sol_bin  += [h]
+        # timestamp
+        sol_bin        += self._num_to_list(sol_json['timestamp'],4)
 
-        for obj in sol_json:
-            # mac
-            sol_bin         += obj['mac']
+        # type
+        sol_bin        += self._num_to_list(sol_json['type'],1)
 
-            # timestamp
-            sol_bin         += self._num_to_list(obj['timestamp'],4)
-
-            # type
-            sol_bin         += self._num_to_list(obj['type'],1)
-
-            # length
-            if 'length' in obj:
-                sol_bin     += self._num_to_list(obj['length'],1)
-
-            # value
-            sol_bin         += obj['value']
+        # value
+        sol_bin        += self._fields_to_binary_with_structure(
+            sol_json['type'],
+            sol_json['value']
+        )
+        
+        sol_json['value']
 
         return sol_bin
     
-    def bin_to_http(self, sol_bin):
+    def bin_to_http(self, sol_binl):
         """
-        Convert a list of binary SOL objects (compound or not) into a JSON string
-        to be sent as HTTP payload to the server.
+        Convert a list of binary SOL objects (compound or not)
+        into a JSON string to be sent as HTTP payload to the server.
         
-        :param list sol_bin: a list of binary SOL Objects
+        :param list sol_binl: a list of binary SOL Objects
         :return: A JSON string to be sent to the server over HTTP.
         :rtype: string
         """
         
-        base64_bin_list = []
-        for bin_obj in sol_bin:
-            base64_bin_list.append(base64.b64encode("".join(chr(b) for b in bin_obj)))
-
-        content = {
+        returnVal = {
             "v":    SolDefines.SOL_HDR_V,
-            "o":    base64_bin_list,
+            "o":    [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
         }
-
-        return json.dumps(content)
+        
+        returnVal = json.dumps(returnVal)
+        
+        return returnVal
     
     def http_to_bin(self, sol_http):
         """
-        :param dict sol_http:
+        Convert the JSON string contained in an HTTP request
+        into a list of binary SOL objects (compound or not).
+        
+        :param string sol_http: JSON string contained in an HTTP request
+        :return: list of binary SOL objects (compound or not)
         :rtype: list
         """
 
-        sol_bin = []
-        json_content = json.loads(sol_http)
-
-        for bin_obj in json_content['o']:
-            dec_obj = base64.b64decode(bin_obj)
-            for json_obj in self.bin_to_json([ord(b) for b in dec_obj]):
-                sol_bin.append(json_obj)
-
-        return sol_bin
+        sol_http = json.loads(sol_http)
+        
+        assert sol_http['v']==SolDefines.SOL_HDR_V
+        sol_binl = [[ord(b) for b in base64.b64decode(o)] for o in sol_http['o']]
+        
+        return sol_binl
     
     def bin_to_json(self, sol_bin, mac=None):
         """
-        Converts a binary compound into a list of SOL Objects
+        Convert a binary SOL object into a JSON SOL Object.
 
-        :param list sol_bin: A SOL binary compound
-        :return: A list of SOL Objects
+        :param list sol_bin: binary SOL object
+        :return: JSON SOL Objects
         :rtpe: list
         """
-
-        obj_list = []
+        
+        sol_json = {}
 
         # header
-
-        assert len(sol_bin)>=1
 
         h     = sol_bin[0]
         h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
@@ -187,121 +192,92 @@ class Sol(object):
         assert h_H==SolDefines.SOL_HDR_T_SINGLE
         h_M   = (h>>SolDefines.SOL_HDR_M_OFFSET)&0x01
         h_S   = (h>>SolDefines.SOL_HDR_S_OFFSET)&0x01
-        assert h_S==SolDefines.SOL_HDR_S_EPOCH
         h_Y   = (h>>SolDefines.SOL_HDR_Y_OFFSET)&0x01
-        assert h_Y==SolDefines.SOL_HDR_Y_1B
         h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
 
         sol_bin = sol_bin[1:]
+        
+        # mac
 
-        while len(sol_bin) >= 4:
-            obj = {}
+        if h_M==SolDefines.SOL_HDR_M_NOMAC:
+            assert mac is not None
+            sol_json['mac']  = mac
+        else:
+            assert len(sol_bin)>=8
+            sol_json['mac']  = sol_bin[:8]
+            sol_bin          = sol_bin[8:]
+        
+        # timestamp
+        
+        assert h_S==SolDefines.SOL_HDR_S_EPOCH
+        assert len(sol_bin)>=4
+        sol_json['timestamp'] = self._list_to_num(sol_bin[:4])
+        sol_bin = sol_bin[4:]
+        
+        # type
 
-            # mac
+        assert h_Y==SolDefines.SOL_HDR_Y_1B
+        assert len(sol_bin)>=1
+        sol_json['type'] = sol_bin[0]
+        sol_bin = sol_bin[1:]
+        
+        # length
 
-            if h_M==SolDefines.SOL_HDR_M_NOMAC:
-                assert mac is not None
-                obj['mac'] = mac
-            else:
-                assert len(sol_bin)>=8
-                obj['mac'] = sol_bin[:8]
-                sol_bin = sol_bin[8:]
+        if h_L==SolDefines.SOL_HDR_L_WK:
+            sol_item              = SolDefines.solStructure(sol_json['type'])
+            obj_size              = struct.calcsize(sol_item['structure'])
+        elif h_L==SolDefines.SOL_HDR_L_1B:
+            sol_json['length']    = sol_bin[0]
+            obj_size              = sol_bin[0]
+            sol_bin               = sol_bin[1:]
+        elif h_L==SolDefines.SOL_HDR_L_2B:
+            sol_json['length']    = sol_bin[:2]
+            obj_size              = sol_bin[:2]
+            sol_bin               = sol_bin[2:]
+        elif h_L==SolDefines.SOL_HDR_L_ELIDED:
+            obj_size              = len(sol_bin)
 
-            # timestamp
-
-            assert len(sol_bin)>=4
-            obj['timestamp'] = self._list_to_num(sol_bin[:4])
-            sol_bin = sol_bin[4:]
-
-            # type
-
-            assert len(sol_bin)>=1
-            obj['type'] = sol_bin[0]
-            sol_bin = sol_bin[1:]
-
-            # length
-
-            if h_L==SolDefines.SOL_HDR_L_WK:
-                sol_item = SolDefines.solStructure(SolDefines,obj['type'])
-                obj_size = struct.calcsize(sol_item['structure'])
-            elif h_L==SolDefines.SOL_HDR_L_1B:
-                obj['length'] = sol_bin[0]
-                obj_size = sol_bin[0]
-                sol_bin = sol_bin[1:]
-            elif h_L==SolDefines.SOL_HDR_L_2B:
-                obj['length'] = sol_bin[:2]
-                obj_size = sol_bin[:2]
-                sol_bin = sol_bin[2:]
-            else:
-                obj_size = 0    # elided length
-
-            # value
-            assert len(sol_bin)>=obj_size
-            obj['value'] = sol_bin[:obj_size]
-            sol_bin = sol_bin[obj_size:]
-
-            # store object to returned list
-            obj_list.append(obj)
-
-        return obj_list
+        # value
+        assert len(sol_bin)==obj_size
+        sol_json['value'] = self._binary_to_fields_with_structure(sol_json['type'],sol_bin)
+        
+        return sol_json
     
-    def json_to_influx(self,sol_json):
+    def json_to_influxdb(self,sol_json):
         """
-        Transform list of Sol Objects to list of InfluxDB points
-        Args: sol_json (list) list of dictionaries
-        Returns: idicts (list) list of converted dictionaries
-        Example:
-            sol_json = {
-                "timestamp" : 1455202067
-                "mac" : [ 0, 23, 13, 0, 0, 56, 0, 99 ]
-                "type" 14
-                "value" : [ 240, 185, 240, 185, 0, 0 ]
-            }
+        Convert a JSON SOL object into a InfluxDB point
+        
+        :param list sol_json: JSON SOL object
+        :return: InfluxDB point
+        :rtpe: list
         """
         
-        idicts = []
+        sol_influxdb = {
+            "timestamp"  : sol_json["timestamp"],
+            "tag"        : {
+                'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
+            },
+            "measurement": SolDefines.solTypeToString(SolDefines,sol_json['type']),
+            "fields"     : sol_json["value"],
+        }
+        
+        for (k,v) in sol_influxdb['fields'].items():
+            if type(v)==list:
+                sol_influxdb['fields'][k] = FormatUtils.formatBuffer(v)
+        
+        return sol_influxdb
 
-        for obj in sol_json:
-            iobj = {}
-
-            # get SOL type name
-            type_name = SolDefines.solTypeToString(SolDefines,obj['type'])
-
-            # (temporary) only keep DUST types
-            if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==obj['type']:
-
-                iobj = {
-                    # convert timestamp to UTC
-                    "time" : datetime.datetime.utcfromtimestamp(obj['timestamp']),
-
-                    # change type name
-                    "measurement" : SolDefines.solTypeToString(SolDefines,obj['type']),
-
-                    # tags
-                    "tags" : {
-                        "mac" : '-'.join(["{0:02x}".format(i) for i in obj['mac']])
-                    },
-
-                    # populate fields
-                    "fields" : flatdict.FlatDict(obj['value'])
-                }
-
-                # append element to list
-                idicts.append(iobj)
-
-        return idicts
-    
     #===== file manipulation
 
-    def dumpToFile(self, dicts, file_name):
+    def dumpToFile(self, sol_jsonl, file_name):
 
         with self.fileLock:
             with open(file_name,'ab') as f:
-                for o_dict in dicts:
-                    o_bin = self.json_to_bin([o_dict])
-                    o_bin = self.hdlc.hdlcify(o_bin)
-                    o_bin = ''.join([chr(b) for b in o_bin])
-                    f.write(o_bin)
+                for sol_json in sol_jsonl:
+                    sol_bin = self.json_to_bin(sol_json)
+                    sol_bin = self.hdlc.hdlcify(sol_bin)
+                    sol_bin = ''.join([chr(b) for b in sol_bin])
+                    f.write(sol_bin)
 
     def loadFromFile(self,file_name,startTimestamp=None,endTimestamp=None):
 
@@ -314,9 +290,11 @@ class Sol(object):
             with self.fileLock:
                 (bins,_) = self.hdlc.dehdlcify(file_name)
 
-            dicts = []
+            sol_jsonl = []
             for b in bins:
-                dicts.extend(self.bin_to_json(b))
+                print b
+                print self.bin_to_json(b)
+                sol_jsonl += [self.bin_to_json(b)]
 
         else:
 
@@ -329,14 +307,14 @@ class Sol(object):
                     startOffset = None
 
                     def oneObject(offset):
-                        (o,idx) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
-                        o = o[0]
-                        o = self.bin_to_json(o)[0]
-                        return o, idx
+                        (sol,offs) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
+                        sol = sol[0]
+                        sol = self.bin_to_json(sol)
+                        return (sol, offs)
 
                     def oneTimestamp(offset):
-                        (o,idx) = oneObject(offset)
-                        return o['timestamp'], idx
+                        (osol,offs) = oneObject(offset)
+                        return (osol['timestamp'], offs)
 
                     #=== get boundaries
 
@@ -391,7 +369,7 @@ class Sol(object):
 
                 #=== read objects
 
-                dicts = []
+                sol_jsonl = []
 
                 curOffset = startOffset
                 while True:
@@ -402,18 +380,84 @@ class Sol(object):
                         break
                     if o['timestamp']>endTimestamp:
                         break
-                    dicts += [o]
+                    sol_jsonl += [o]
 
-        return dicts
+        return sol_jsonl
 
     #===== create value
     
-    def _get_sol_value(self,dust_notif):
+    def _get_sol_json_value(self,dust_notif):
         
-        notifName = [k for (k,v) in self.mux.notifTupleTable.items() if v==type(dust_notif)][0]
+        sol_type   = None
+        sol_value  = None
         
-        print dust_notif
-        print notifName
+        if type(dust_notif)==self.mux.Tuple_notifData:
+            (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
+        
+        if (sol_type==None or sol_value==None):
+            raise NotImplementedError()
+        
+        return (sol_type,sol_value)
+    
+    def _get_sol_json_value_dust_notifData(self,dust_notif):
+        
+        if getattr(dust_notif,'dstPort')==SolDefines.OAP_PORT:
+            pass
+        else:
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
+            sol_value   = self._fields_to_json_with_structure(
+                SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                dust_notif._asdict(),
+            )
+        
+        return (sol_type,sol_value)
+    
+    def _fields_to_json_with_structure(self,sol_type,fields):
+        
+        sol_struct          = SolDefines.solStructure(sol_type)
+        
+        returnVal       = {}
+        for name in sol_struct['fields']:
+            returnVal[name] = fields[name]
+        if 'extrafields' in sol_struct:
+            returnVal[sol_struct['extrafields']] = fields[sol_struct['extrafields']]
+        
+        for (k,v) in returnVal.items():
+            if type(v)==tuple:
+                returnVal[k] = [b for b in v]
+        
+        return returnVal
+    
+    def _fields_to_binary_with_structure(self,sol_type,fields):
+        
+        sol_struct      = SolDefines.solStructure(sol_type)
+        
+        pack_format     = sol_struct['structure']
+        pack_values     = [fields[name] for name in sol_struct['fields']]
+        
+        returnVal       = [ord(b) for b in struct.pack(pack_format,*pack_values)]
+        if 'extrafields' in sol_struct:
+            returnVal  += fields[sol_struct['extrafields']]
+        
+        return returnVal
+    
+    def _binary_to_fields_with_structure(self,sol_type,binary):
+        
+        sol_struct      = SolDefines.solStructure(sol_type)
+        
+        pack_format     = sol_struct['structure']
+        pack_length     = struct.calcsize(pack_format)
+        
+        t = struct.unpack(pack_format,''.join(chr(b) for b in binary[:pack_length]))
+        
+        returnVal = {}
+        for (k,v) in zip(sol_struct['fields'],t):
+            returnVal[k]= v
+        
+        if 'extrafields' in sol_struct:
+            returnVal[sol_struct['extrafields']] = binary[pack_length:]
+        
+        return returnVal
     
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \

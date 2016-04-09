@@ -37,20 +37,19 @@ SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 
-
 def solTypeToString(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
         if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
             return n
     raise ValueError("SOL type %s does not exist" % type_id)
 
-def solStructure(solDefinesClass,type_id):
+def solStructure(type_id):
     '''
     Return the SOL structure according to the given type id
-    If the element is not found, it raises a ValueError
+    If the element is not found, it raises a ValueError.
 
-    :return: a dictionnary that contains the following keys:
-        type, description, structure and fields
+    :return: a dictionary that contains the following keys:
+        type, description, structure, fields
     '''
     sol_item = {}
     for item in sol_types:
@@ -76,29 +75,29 @@ SOL_HDR_T_MULTI         = 1
 
 # MAC
 
-SOL_HDR_M_OFFSET  = 4
-SOL_HDR_M_NOMAC   = 0
-SOL_HDR_M_8BMAC   = 1
+SOL_HDR_M_OFFSET        = 4
+SOL_HDR_M_NOMAC         = 0
+SOL_HDR_M_8BMAC         = 1
 
 # timestamp encoding
 
-SOL_HDR_S_OFFSET  = 3
-SOL_HDR_S_EPOCH   = 0
-SOL_HDR_S_ELIDED  = 1
+SOL_HDR_S_OFFSET        = 3
+SOL_HDR_S_EPOCH         = 0
+SOL_HDR_S_ELIDED        = 1
 
 # Type encoding
 
-SOL_HDR_Y_OFFSET  = 2
-SOL_HDR_Y_1B      = 0
-SOL_HDR_Y_2B      = 1
+SOL_HDR_Y_OFFSET        = 2
+SOL_HDR_Y_1B            = 0
+SOL_HDR_Y_2B            = 1
 
 # Length encoding
 
-SOL_HDR_L_OFFSET  = 0
-SOL_HDR_L_WK      = 0
-SOL_HDR_L_1B      = 1
-SOL_HDR_L_2B      = 2
-SOL_HDR_L_ELIDED  = 3
+SOL_HDR_L_OFFSET        = 0
+SOL_HDR_L_WK            = 0
+SOL_HDR_L_1B            = 1
+SOL_HDR_L_2B            = 2
+SOL_HDR_L_ELIDED        = 3
 
 # Number of objects
 
@@ -186,8 +185,9 @@ sol_types = [
     {
         'type':         SOL_TYPE_DUST_NOTIF_DATA_RAW,
         'description':  '',
-        'structure':    '>HH?',
-        'fields':       ['srcPort', 'dstPort', 'payload'],
+        'structure':    '>HH',
+        'fields':       ['srcPort', 'dstPort'],
+        'extrafields':  'data',
     },
     {
         'type':         SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
@@ -274,10 +274,3 @@ sol_types = [
         'fields':       ['payload'],
     },
 ]
-
-
-
-
-
-
-

@@ -67,19 +67,19 @@ def expectedRange(request):
 
 #============================ helpers ===============================
 
-def getRandomObjects(num,startTs=0):
-    returnVal = []
-    for i in range(num):
-        obj_val = [random.randint(0x00,0xff) for _ in range(random.randint(0,25))]
-        returnVal += [
-            {
-                'mac':       EXAMPLE_MAC,
-                'timestamp': i+startTs,
-                'type':      random.randint(0x00,0xff),
-                'length':    len(obj_val),
-                'value':     obj_val,
-            }
-        ]
+def random_sol_json(timestamp=0):
+    
+    returnVal = {
+        "timestamp"  : timestamp,
+        "mac"        : [random.randint(0x00,0xff)]*8,
+        "type"       : 0x0e,
+        "value"      : {
+            'srcPort': random.randint(0x0000,0xffff),
+            'dstPort': random.randint(0x0000,0xffff),
+            'data'   : [random.randint(0x00,0xff)]*random.randint(10,30),
+        },
+    }
+    
     return returnVal
 
 #============================ tests =================================
@@ -89,16 +89,18 @@ def test_dump_load(removeFile):
     sol = Sol.Sol()
 
     # prepare dicts to dump
-    dictsToDump = getRandomObjects(1000)
+    sol_jsonl_toDump = [random_sol_json() for _ in range(1000)]
 
     # dump
-    sol.dumpToFile(dictsToDump,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump,FILENAME)
 
     # load
-    dictsLoaded = sol.loadFromFile(FILENAME)
+    sol_jsonl_loaded = sol.loadFromFile(FILENAME)
 
     # compare
-    assert dictsLoaded==dictsToDump
+    print sol_jsonl_loaded
+    print sol_jsonl_toDump
+    assert sol_jsonl_loaded==sol_jsonl_toDump
 
 def test_dump_corrupt_load(removeFile):
     
@@ -106,11 +108,11 @@ def test_dump_corrupt_load(removeFile):
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump1 = getRandomObjects(500)
-    dictsToDump2 = getRandomObjects(500)
+    sol_jsonl_toDump1 = [random_sol_json() for _ in range(500)]
+    sol_jsonl_toDump2 = [random_sol_json() for _ in range(500)]
     
     # write first set of valid data
-    sol.dumpToFile(dictsToDump1,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump1,FILENAME)
     # write HDLC frame with corrupt CRC
     with open(FILENAME,'ab') as f:
         bin_data = ''.join([chr(b) for b in [0x7E,0x10,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x00,0x00,0x00,0x00,0x75,0x94,0xE8,0x0B,0x6B,0xAE,0xE1,0x19,0x54,0x74,0xF3,0x00,0x00,0x7E]])
@@ -119,36 +121,34 @@ def test_dump_corrupt_load(removeFile):
     with open(FILENAME,'ab') as f:
         f.write("############################## garbage ##############################")
     # write second set of valid data
-    sol.dumpToFile(dictsToDump2,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump2,FILENAME)
     
     # load
-    dictsLoaded = sol.loadFromFile(FILENAME)
+    sol_jsonl_loaded = sol.loadFromFile(FILENAME)
     
     # compare
-    assert dictsLoaded==dictsToDump1+dictsToDump2
+    assert sol_jsonl_loaded==sol_jsonl_toDump1+sol_jsonl_toDump2
 
-def test_retrieve_range(removeFile,expectedRange):
-    
-    (startTimestamp,endTimestamp,idxMin,idxMax) = expectedRange
+def test_retrieve_range(removeFile):
     
     import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump = getRandomObjects(1000)
+    sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
     
     # dump
-    sol.dumpToFile(dictsToDump,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump,FILENAME)
     
     # load
-    dictsLoaded = sol.loadFromFile(
+    sol_jsonl_loaded = sol.loadFromFile(
         FILENAME,
-        startTimestamp=100,
-        endTimestamp=1900
+        startTimestamp = 100,
+        endTimestamp   = 1900,
     )
     
     # compare
-    assert dictsLoaded==dictsToDump[100:]
+    assert sol_jsonl_loaded==sol_jsonl_toDump[100:]
 
 def test_retrieve_range_corrupt_beginning(removeFile):
     
@@ -156,22 +156,22 @@ def test_retrieve_range_corrupt_beginning(removeFile):
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump = getRandomObjects(1000)
+    sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
     
     # dump
     with open(FILENAME,'ab') as f:
         f.write("garbage")
-    sol.dumpToFile(dictsToDump,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump,FILENAME)
     
     # load
-    dictsLoaded = sol.loadFromFile(
+    sol_jsonl_loaded = sol.loadFromFile(
         FILENAME,
-        startTimestamp=100,
-        endTimestamp=800
+        startTimestamp  = 100,
+        endTimestamp    = 800
     )
     
     # compare
-    assert dictsLoaded==dictsToDump[100:801]
+    assert sol_jsonl_loaded==sol_jsonl_toDump[100:801]
 
 def test_retrieve_range_corrupt_middle(removeFile):
     
@@ -179,24 +179,24 @@ def test_retrieve_range_corrupt_middle(removeFile):
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump1 = getRandomObjects(500)
-    dictsToDump2 = getRandomObjects(500,startTs=500)
+    sol_jsonl_toDump1 = [random_sol_json(timestamp=    ts) for ts in range(500)]
+    sol_jsonl_toDump2 = [random_sol_json(timestamp=500+ts) for ts in range(500)]
     
     # dump
-    sol.dumpToFile(dictsToDump1,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump1,FILENAME)
     with open(FILENAME,'ab') as f:
         f.write("garbage")
-    sol.dumpToFile(dictsToDump2,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump2,FILENAME)
     
     # load
-    dictsLoaded = sol.loadFromFile(
+    sol_jsonl_loaded = sol.loadFromFile(
         FILENAME,
-        startTimestamp=100,
-        endTimestamp=800
+        startTimestamp  = 100,
+        endTimestamp    = 800,
     )
     
     # compare
-    assert dictsLoaded==(dictsToDump1+dictsToDump2)[100:801]
+    assert sol_jsonl_loaded==(sol_jsonl_toDump1+sol_jsonl_toDump2)[100:801]
 
 def test_retrieve_range_corrupt_end(removeFile):
     
@@ -204,22 +204,22 @@ def test_retrieve_range_corrupt_end(removeFile):
     sol = Sol.Sol()
     
     # prepare dicts to dump
-    dictsToDump = getRandomObjects(1000)
+    sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
     
     # dump
-    sol.dumpToFile(dictsToDump,FILENAME)
+    sol.dumpToFile(sol_jsonl_toDump,FILENAME)
     with open(FILENAME,'ab') as f:
         f.write("garbage")
     
     # load
-    dictsLoaded = sol.loadFromFile(
+    sol_jsonl_loaded = sol.loadFromFile(
         FILENAME,
         startTimestamp=100,
         endTimestamp=800
     )
     
     # compare
-    assert dictsLoaded==dictsToDump[100:801]
+    assert sol_jsonl_loaded==sol_jsonl_toDump[100:801]
 
 def test_retrieve_range_corrupt_all(removeFile):
     
@@ -232,11 +232,11 @@ def test_retrieve_range_corrupt_all(removeFile):
             f.write("garbage")
     
     # load
-    dictsLoaded = sol.loadFromFile(
+    sol_jsonl_loaded = sol.loadFromFile(
         FILENAME,
-        startTimestamp=100,
-        endTimestamp=800
+        startTimestamp  = 100,
+        endTimestamp    = 800,
     )
     
     # compare
-    assert dictsLoaded==[]
+    assert sol_jsonl_loaded==[]
