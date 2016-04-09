@@ -1,25 +1,34 @@
 import pytest
 import json
 
+
+import sys
+print sys.path
+
+from   SmartMeshSDK.IpMgrConnectorMux  import IpMgrConnectorMux
+
 #============================ defines ===============================
+
 
 #============================ fixtures ==============================
 
 SOL_CHAIN_EXAMPLE = [
     {
-        "dust": {
-            "netTs":          1459833262,
-            "macAddress":     [1, 2, 3, 4, 5, 6, 7, 8],
-            "srcPort":        61625,
-                "dstPort":        61625,
-            "data":           [0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 104, 238, 0, 2, 56, 160, 0, 0, 117, 48, 1, 16, 9, 25]
-        },
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifData(    \
+                utcSecs      = 1111,                                 \
+                utcUsecs     = 222,                                  \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],             \
+                srcPort      = 0x1234,                               \
+                dstPort      = 0x5678,                               \
+                data         = (0x33,0x44,0x55,0x66),                \
+            )",
         "json":
             {
-                "timestamp"     : 1459833262,
-                "mac"           : [1, 2, 3, 4, 5, 6, 7, 8],
-                "type"          : 39,
-                "value"         : [0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 104, 238, 0, 2, 56, 160, 0, 0, 117, 48, 1, 16, 9, 25]
+                "timestamp"  : 0,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x0e,
+                "value"      : [0x12,0x34,0x56,0x78,0x33,0x44,0x55,0x66],
             },
         "bin":
             [
@@ -54,9 +63,9 @@ def test_dust_json_bin_http_bin_json_influx(sol_chain_example):
     sol = Sol.Sol()
 
     # dust->json
-    sol_json  = sol.dust_to_json(sol_chain_example["dust"])
+    sol_json  = sol.dust_to_json(eval(sol_chain_example["dust"]))
     assert sol_json==sol_chain_example["json"]
-    
+    '''
     # json->bin
     sol_bin   = sol.json_to_bin(sol_json)
     assert sol_bin==sol_chain_example["bin"]
@@ -76,3 +85,4 @@ def test_dust_json_bin_http_bin_json_influx(sol_chain_example):
     # json->influx
     sol_inlux  = sol.bin_to_json(sol_json)
     assert sol_influx==sol_chain_example["influx"]
+    '''

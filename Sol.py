@@ -18,21 +18,23 @@ here = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
 sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'external_libs'))
 
-from SmartMeshSDK.protocols.Hr          import  HrParser
-
-from SmartMeshSDK.protocols.oap         import  OAPMessage, \
-                                                OAPNotif
-
+from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
+from SmartMeshSDK.IpMgrConnectorMux     import IpMgrConnectorMux
+from SmartMeshSDK.protocols.Hr          import HrParser
+from SmartMeshSDK.protocols.oap         import OAPMessage, \
+                                               OAPNotif
 
 class Sol(object):
     '''
-    Sensor Object Library.
+    Sensor Object Library
     '''
 
     def __init__(self):
         self.fileLock = threading.RLock()
         self.hdlc     = OpenHdlc.OpenHdlc()
         self.hrParser = HrParser.HrParser()
+        self.api      = IpMgrDefinition.IpMgrDefinition()
+        self.mux      = IpMgrConnectorMux.IpMgrConnectorMux()
 
     #======================== public ==========================================
 
@@ -42,59 +44,132 @@ class Sol(object):
     def version(self):
         return ver.SOL_VERSION
 
-    #===== Public functions
-    def json_to_bin(self, obj_list):
+    #===== "chain" of communication from the Dust manager to the server
+    
+    def dust_to_json(self, dust_notif, macManager=None, timestamp=None):
         """
-        Converts a list of SOL Objects into a binary compound
+        Convert a single Dust serial API notification into a single JSON SOL Object.
+        
+        :param dict dust_notif: The Dust serial API notification as
+            created by the SmartMesh SDK
+        :return: A SOL Object in JSON format
+        :rtype: dict
+        """
+        
+        # get sol_mac
+        if 'macAddress' in dust_notif._asdict():
+            sol_mac = getattr(dust_notif,'macAddress')
+        else:
+            sol_mac = macManager
+        
+        # get sol_ts
+        if timestamp==None:
+            sol_ts = time.time()
+        else:
+            sol_ts = timestamp
+        
+        # get sol_type and sol_value
+        (sol_type,sol_value) = self._get_sol_value(dust_notif)
+        
+        # create JSON Object
+        sol_json = {
+            "mac":          sol_mac,
+            "timestamp":    sol_ts,
+            "type":         sol_type,
+            "value":        sol_value,
+        }
 
-        :param list obj_list: a list of SOL Objects
-        :return: A SOL binary compound
+        return sol_json
+    
+    def json_to_bin(self, sol_json):
+        """
+        Convert a list of JSON SOL Objects into a single compound  binary SOL Object.
+
+        :param list sol_json: a list of JSON SOL Objects
+        :return: A single compound binary SOL Object
         :rtype: list
         """
 
-        bin_comp = []
+        sol_bin = []
 
         # header
         h     = 0
-        h    |= SolDefines.SOL_HDR_V<<SolDefines.SOL_HDR_V_OFFSET
-        h    |= SolDefines.SOL_HDR_T_SINGLE<<SolDefines.SOL_HDR_T_OFFSET
-        h    |= SolDefines.SOL_HDR_M_8BMAC<<SolDefines.SOL_HDR_M_OFFSET
-        h    |= SolDefines.SOL_HDR_S_EPOCH<<SolDefines.SOL_HDR_S_OFFSET
-        h    |= SolDefines.SOL_HDR_Y_1B<<SolDefines.SOL_HDR_Y_OFFSET
+        h    |= SolDefines.SOL_HDR_V        << SolDefines.SOL_HDR_V_OFFSET
+        h    |= SolDefines.SOL_HDR_T_SINGLE << SolDefines.SOL_HDR_T_OFFSET
+        h    |= SolDefines.SOL_HDR_M_8BMAC  << SolDefines.SOL_HDR_M_OFFSET
+        h    |= SolDefines.SOL_HDR_S_EPOCH  << SolDefines.SOL_HDR_S_OFFSET
+        h    |= SolDefines.SOL_HDR_Y_1B     << SolDefines.SOL_HDR_Y_OFFSET
 
-        assert type(obj_list) == list
-        if 'length' in obj_list[0]:
+        assert type(sol_json) == list
+        if 'length' in sol_json[0]:
             #TODO implement other length field
             h    |= SolDefines.SOL_HDR_L_1B<<SolDefines.SOL_HDR_L_OFFSET
         else:
             h    |= SolDefines.SOL_HDR_L_WK<<SolDefines.SOL_HDR_L_OFFSET
 
-        bin_comp  += [h]
+        sol_bin  += [h]
 
-        for obj in obj_list:
+        for obj in sol_json:
             # mac
-            bin_comp  += obj['mac']
+            sol_bin         += obj['mac']
 
             # timestamp
-            bin_comp  += self._num_to_list(obj['timestamp'],4)
+            sol_bin         += self._num_to_list(obj['timestamp'],4)
 
             # type
-            bin_comp  += self._num_to_list(obj['type'],1)
+            sol_bin         += self._num_to_list(obj['type'],1)
 
             # length
             if 'length' in obj:
-                bin_comp  += self._num_to_list(obj['length'],1)
+                sol_bin     += self._num_to_list(obj['length'],1)
 
             # value
-            bin_comp  += obj['value']
+            sol_bin         += obj['value']
 
-        return bin_comp
+        return sol_bin
+    
+    def bin_to_http(self, sol_bin):
+        """
+        Convert a list of binary SOL objects (compound or not) into a JSON string
+        to be sent as HTTP payload to the server.
+        
+        :param list sol_bin: a list of binary SOL Objects
+        :return: A JSON string to be sent to the server over HTTP.
+        :rtype: string
+        """
+        
+        base64_bin_list = []
+        for bin_obj in sol_bin:
+            base64_bin_list.append(base64.b64encode("".join(chr(b) for b in bin_obj)))
 
-    def bin_to_json(self, bin_comp, mac=None):
+        content = {
+            "v":    SolDefines.SOL_HDR_V,
+            "o":    base64_bin_list,
+        }
+
+        return json.dumps(content)
+    
+    def http_to_bin(self, sol_http):
+        """
+        :param dict sol_http:
+        :rtype: list
+        """
+
+        sol_bin = []
+        json_content = json.loads(sol_http)
+
+        for bin_obj in json_content['o']:
+            dec_obj = base64.b64decode(bin_obj)
+            for json_obj in self.bin_to_json([ord(b) for b in dec_obj]):
+                sol_bin.append(json_obj)
+
+        return sol_bin
+    
+    def bin_to_json(self, sol_bin, mac=None):
         """
         Converts a binary compound into a list of SOL Objects
 
-        :param list bin_comp: A SOL binary compound
+        :param list sol_bin: A SOL binary compound
         :return: A list of SOL Objects
         :rtpe: list
         """
@@ -103,9 +178,9 @@ class Sol(object):
 
         # header
 
-        assert len(bin_comp)>=1
+        assert len(sol_bin)>=1
 
-        h     = bin_comp[0]
+        h     = sol_bin[0]
         h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
         assert h_V==SolDefines.SOL_HDR_V
         h_H   = (h>>SolDefines.SOL_HDR_T_OFFSET)&0x01
@@ -117,9 +192,9 @@ class Sol(object):
         assert h_Y==SolDefines.SOL_HDR_Y_1B
         h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
 
-        bin_comp = bin_comp[1:]
+        sol_bin = sol_bin[1:]
 
-        while len(bin_comp) >= 4:
+        while len(sol_bin) >= 4:
             obj = {}
 
             # mac
@@ -128,21 +203,21 @@ class Sol(object):
                 assert mac is not None
                 obj['mac'] = mac
             else:
-                assert len(bin_comp)>=8
-                obj['mac'] = bin_comp[:8]
-                bin_comp = bin_comp[8:]
+                assert len(sol_bin)>=8
+                obj['mac'] = sol_bin[:8]
+                sol_bin = sol_bin[8:]
 
             # timestamp
 
-            assert len(bin_comp)>=4
-            obj['timestamp'] = self._list_to_num(bin_comp[:4])
-            bin_comp = bin_comp[4:]
+            assert len(sol_bin)>=4
+            obj['timestamp'] = self._list_to_num(sol_bin[:4])
+            sol_bin = sol_bin[4:]
 
             # type
 
-            assert len(bin_comp)>=1
-            obj['type'] = bin_comp[0]
-            bin_comp = bin_comp[1:]
+            assert len(sol_bin)>=1
+            obj['type'] = sol_bin[0]
+            sol_bin = sol_bin[1:]
 
             # length
 
@@ -150,92 +225,75 @@ class Sol(object):
                 sol_item = SolDefines.solStructure(SolDefines,obj['type'])
                 obj_size = struct.calcsize(sol_item['structure'])
             elif h_L==SolDefines.SOL_HDR_L_1B:
-                obj['length'] = bin_comp[0]
-                obj_size = bin_comp[0]
-                bin_comp = bin_comp[1:]
+                obj['length'] = sol_bin[0]
+                obj_size = sol_bin[0]
+                sol_bin = sol_bin[1:]
             elif h_L==SolDefines.SOL_HDR_L_2B:
-                obj['length'] = bin_comp[:2]
-                obj_size = bin_comp[:2]
-                bin_comp = bin_comp[2:]
+                obj['length'] = sol_bin[:2]
+                obj_size = sol_bin[:2]
+                sol_bin = sol_bin[2:]
             else:
                 obj_size = 0    # elided length
 
             # value
-            assert len(bin_comp)>=obj_size
-            obj['value'] = bin_comp[:obj_size]
-            bin_comp = bin_comp[obj_size:]
+            assert len(sol_bin)>=obj_size
+            obj['value'] = sol_bin[:obj_size]
+            sol_bin = sol_bin[obj_size:]
 
             # store object to returned list
             obj_list.append(obj)
 
         return obj_list
+    
+    def json_to_influx(self,sol_json):
+        """
+        Transform list of Sol Objects to list of InfluxDB points
+        Args: sol_json (list) list of dictionaries
+        Returns: idicts (list) list of converted dictionaries
+        Example:
+            sol_json = {
+                "timestamp" : 1455202067
+                "mac" : [ 0, 23, 13, 0, 0, 56, 0, 99 ]
+                "type" 14
+                "value" : [ 240, 185, 240, 185, 0, 0 ]
+            }
+        """
+        
+        idicts = []
 
-    def dust_to_json(self, dust_obj):
-        '''
-        Convert DUST messages into SOL Objects in JSON format.
+        for obj in sol_json:
+            iobj = {}
 
-        :param dict dust_obj: The DUST Object
-        :return: A SOL Object in verbose format
-        :rtype: dict
-        '''
+            # get SOL type name
+            type_name = SolDefines.solTypeToString(SolDefines,obj['type'])
 
-        # Find SOL type by port
-        obj_id = 0
-        if dust_obj['srcPort']==SolDefines.SOL_PORT:
-            raise NotImplementedError()
-        elif dust_obj['dstPort']==SolDefines.OAP_PORT:
-            #TODO implement other OAP messages
-            obj_id = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
-        else:
-            obj_id = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
+            # (temporary) only keep DUST types
+            if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==obj['type']:
 
-        # Create JSON Object
-        json_obj = {
-            "mac":          dust_obj['macAddress'],
-            "timestamp":    dust_obj['netTs'],
-            "type":         obj_id,
-            "value":        dust_obj['data']
-        }
+                iobj = {
+                    # convert timestamp to UTC
+                    "time" : datetime.datetime.utcfromtimestamp(obj['timestamp']),
 
-        return json_obj
+                    # change type name
+                    "measurement" : SolDefines.solTypeToString(SolDefines,obj['type']),
 
-    #===== communication protocol functions
-    def bin_to_contenttype(self, json_list):
-        '''
-        Wrap a bin compound into a JSON envelop to be sent through HTTP
-        '''
+                    # tags
+                    "tags" : {
+                        "mac" : '-'.join(["{0:02x}".format(i) for i in obj['mac']])
+                    },
 
-        enc_bin_list = []
-        for json_obj in json_list:
-            bin_obj = self.json_to_bin([json_obj])
-            enc_bin_list.append(base64.b64encode("".join(chr(b) for b in bin_obj)))
+                    # populate fields
+                    "fields" : flatdict.FlatDict(obj['value'])
+                }
 
-        content = {
-            "v":    SolDefines.SOL_HDR_V,
-            "o":    enc_bin_list,
-        }
+                # append element to list
+                idicts.append(iobj)
 
-        return json.dumps(content)
-
-    def contenttype_to_bin(self, content):
-        '''
-        :param dict content:
-        :rtype: list
-        '''
-
-        json_list = []
-        json_content = json.loads(content)
-
-        for bin_obj in json_content['o']:
-            dec_obj = base64.b64decode(bin_obj)
-            for json_obj in self.bin_to_json([ord(b) for b in dec_obj]):
-                json_list.append(json_obj)
-
-        return json_list
-
+        return idicts
+    
     #===== file manipulation
 
-    def dumpToFile(self,dicts,file_name):
+    def dumpToFile(self, dicts, file_name):
 
         with self.fileLock:
             with open(file_name,'ab') as f:
@@ -349,7 +407,14 @@ class Sol(object):
         return dicts
 
     #===== create value
-
+    
+    def _get_sol_value(self,dust_notif):
+        
+        notifName = [k for (k,v) in self.mux.notifTupleTable.items() if v==type(dust_notif)][0]
+        
+        print dust_notif
+        print notifName
+    
     def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
         return self._num_to_list(uptime,4)+      \
                self._num_to_list(utcSecs,4)+     \
@@ -588,77 +653,6 @@ class Sol(object):
 
         return return_val
 
-    def pack_obj_value(self, type_id, *args):
-        '''
-        Create a formated object value
-
-        :param int type_id: the SOL type ID (see registry.md)
-        :param dict kwargs: a dictionary of values
-        :return: An list of bytes
-        :rtype: list
-
-        Example::
-
-            create_value(SolDefines.SOL_TYPE_DUST_NOTIF_SOMETHING,
-                    srcPort = 61625,
-                    dstPort = 61625,
-                    payload = [0, 0, 5, 0, 255])
-            Will return:
-                [240, 185, 240, 185, 0, 0, 5, 0, 255]
-        '''
-        ret_val = []
-
-        # get SOL type name
-        type_name = SolDefines.solTypeToString(SolDefines,type_id)
-
-        # call corresponding DUST methods
-        if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==type_id:
-            if hasattr(self,"create_value_%s" % type_name):
-                ret_val = getattr(self,"create_value_%s" % type_name)(*args)
-            else:
-                # get SOL structure
-                sol_item = SolDefines.solStructure(SolDefines,type_id)
-
-                # change each args to a list if not already a list
-                count = 0
-                for a in args:
-                    count += 1
-                    if not isinstance(a, list):
-                        size = struct.calcsize(sol_item['structure'][count])
-                        item = self._num_to_list(a, size)
-                    else:
-                        item = a
-                    # add list to return value
-                    ret_val += item
-
-        else:
-            raise NotImplementedError
-
-        return ret_val
-
-    def unpack_obj_value(self, type_id,*payload):
-        ''' Parsed the given sensor object value
-            Returns parsed value as Dictionary object
-        '''
-        obj = {}
-        type_name = SolDefines.solTypeToString(SolDefines,type_id)
-
-        if type_name.startswith('SOL_TYPE_DUST') and getattr(SolDefines,type_name)==type_id:
-            obj = self._parse_specific_DUST(type_id,payload)
-        else:
-            raise NotImplementedError
-
-            # get SOL structure by type
-            sol_item = SolDefines.solStructure(SolDefines,type_id)
-
-            # verify enough bytes
-            numBytes = struct.calcsize(sol_item['structure'])
-
-            if len(payload)<numBytes:
-                raise ValueError("not enough bytes for %s", type_id)
-
-        return obj
-
     #======================== private =========================================
 
     def _backUpUntilStartFrame(self,file_name,curOffset):
@@ -781,7 +775,6 @@ class Sol(object):
             raise ValueError("Sol type "+str(type_id)+" does not exist.")
 
         return obj
-
 
 #============================ main ============================================
 
