@@ -358,7 +358,49 @@ SOL_CHAIN_EXAMPLE = [
             },
     },
     # SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
-    # TODO
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteOperational(     \
+                eventId      = 0x11223344,                                \
+                macAddress   = [1,1,1,1,1,1,1,1],                         \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : MACMANAGER,
+                "type"       : 0x1d,
+                "value"      : {
+                    'macAddress'  : [1,1,1,1,1,1,1,1],
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x1d,                                      # type
+                0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+            ],
+        "http":
+            '{                                                       \
+                "v" : 0,                                             \
+                "o" : [                                              \
+                    "EwMDAwMDAwMDBQUFBR0BAQEBAQEBAQ=="   \
+                ]                                                    \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '03-03-03-03-03-03-03-03',
+                },
+                "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
+                "fields"     : {
+                    'macAddress'  : '01-01-01-01-01-01-01-01',
+                },
+            },
+    },
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE
     # TODO
 ]
