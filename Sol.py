@@ -383,7 +383,9 @@ class Sol(object):
                     sol_jsonl += [o]
 
         return sol_jsonl
-
+    
+    #======================== private =========================================
+    
     #===== create value
     
     def _get_sol_json_value(self,dust_notif):
@@ -391,8 +393,10 @@ class Sol(object):
         sol_type   = None
         sol_value  = None
         
-        if type(dust_notif)==self.mux.Tuple_notifData:
+        if   type(dust_notif)==self.mux.Tuple_notifData:
             (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
+        else:
+            (sol_type,sol_value) = self._get_sol_json_value_generic(dust_notif)
         
         if (sol_type==None or sol_value==None):
             raise NotImplementedError()
@@ -412,6 +416,9 @@ class Sol(object):
         
         return (sol_type,sol_value)
     
+    def _get_sol_json_value_generic(self,dust_notif):
+        return (None,None)
+        
     def _fields_to_json_with_structure(self,sol_type,fields):
         
         sol_struct          = SolDefines.solStructure(sol_type)
