@@ -27,7 +27,8 @@ from SmartMeshSDK.utils                 import FormatUtils
 from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
 from SmartMeshSDK.IpMgrConnectorMux     import IpMgrConnectorMux
 from SmartMeshSDK.protocols.Hr          import HrParser
-from SmartMeshSDK.protocols.oap         import OAPMessage, \
+from SmartMeshSDK.protocols.oap         import OAPDispatcher, \
+                                               OAPMessage,    \
                                                OAPNotif
 
 import SolDefines
@@ -51,6 +52,9 @@ class Sol(object):
         self.hrParser = HrParser.HrParser()
         self.api      = IpMgrDefinition.IpMgrDefinition()
         self.mux      = IpMgrConnectorMux.IpMgrConnectorMux()
+        self.oapLock  = threading.RLock()
+        self.oap      = OAPDispatcher.OAPDispatcher()
+        self.oap.register_notif_handler(self._handle_oap_notif)
 
     #======================== public ==========================================
 
@@ -484,9 +488,13 @@ class Sol(object):
     
     def _get_sol_json_value_dust_notifData(self,dust_notif):
         
-        if getattr(dust_notif,'dstPort')==SolDefines.OAP_PORT:
-            pass
-        else:
+        sol_type   = None
+        sol_value  = None
+        
+        if getattr(dust_notif,'dstPort')==OAPMessage.OAP_PORT:
+            (sol_type,sol_value) = self._get_sol_json_value_OAP(dust_notif)
+        
+        if sol_type==None and sol_value==None:
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
             sol_value   = self._fields_to_json_with_structure(
                 SolDefines.SOL_TYPE_DUST_NOTIFDATA,
@@ -494,6 +502,32 @@ class Sol(object):
             )
         
         return (sol_type,sol_value)
+    
+    def _get_sol_json_value_OAP(self,dust_notif):
+        sol_type   = None
+        sol_value  = None
+        with self.oapLock:
+            self.oap_mac   = None
+            self.oap_notif = None
+            self.oap.dispatch_pkt(
+                self.mux.NOTIFDATA,
+                dust_notif
+            )
+            if self.oap_mac!=None and self.oap_notif!=None:
+                if type(self.oap_notif)==OAPNotif.OAPTempSample:
+                    sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
+                    sol_value = self._fields_to_json_with_structure(
+                        SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE,
+                        {
+                            'temperature': self.oap_notif.samples[0],
+                        },
+                    )
+        
+        return (sol_type,sol_value)
+    
+    def _handle_oap_notif(self,mac,notif):
+        self.oap_mac    = mac
+        self.oap_notif  = notif
     
     def create_value_SOL_TYPE_DUST_NOTIF_HRDEVICE(self,hr):
         '''
@@ -514,7 +548,7 @@ class Sol(object):
                 'badLinkSlot':        0x1b1c1d1e,    # INT32U
                 'badLinkOffset':      0x1f,          # INT8U
             }
-       '''
+        '''
 
         return_val  = []
         return_val += [struct.pack(

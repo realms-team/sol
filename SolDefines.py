@@ -1,5 +1,4 @@
 SOL_PORT                = 0xf0ba
-OAP_PORT                = 0xf0b9
 
 # type names
 
@@ -270,7 +269,7 @@ sol_types = [
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
-        'structure':    '>BBBBBBBBBBBBBBBBBBBBBBBBBBB',
-        'fields':       ['payload'],
+        'structure':    '>H',
+        'fields':       ['temperature'],
     },
 ]
