@@ -63,7 +63,7 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_NOTIF_HR_DEVICE
+    # SOL_TYPE_DUST_NOTIF_HRDEVICE
     {
         "dust":
             "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
@@ -131,9 +131,91 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS
-    # TODO
-    # SOL_TYPE_DUST_NOTIF_HR_DISCOVERED
+    # SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
+                payload      = [129, 31, 3, 0, 3, 0, 223, 0, 0, 0, 0, 0, 47, 0, 1, 0, 209, 0, 76, 0, 1, 0, 2, 0, 4, 0, 211, 0, 30, 0, 0, 0, 1],            \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x11,
+                "value"      : [
+                    {
+                        'neighborId':       3,
+                        'neighborFlag':     0,
+                        'rssi':             -33,
+                        'numTxPackets':     0,
+                        'numTxFailures':    0,
+                        'numRxPackets':     47,
+                    },
+                    {
+                        'neighborId':       1,
+                        'neighborFlag':     0,
+                        'rssi':             -47,
+                        'numTxPackets':     76,
+                        'numTxFailures':    1,
+                        'numRxPackets':     2,
+                    },
+                    {
+                         'neighborId':      4,
+                         'neighborFlag':    0,
+                         'rssi':            -45,
+                         'numTxPackets':    30,
+                         'numTxFailures':   0,
+                         'numRxPackets':    1,
+                     },
+                ],
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x11,                                      # type
+                3, 0, 3, 0, 223, 0, 0, 0, 0, 0, 47, 0, 1, 0, 209, 0, 76, 0, 1, 0, 2, 0, 4, 0, 211, 0, 30, 0, 0, 0, 1,   # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBREDAAMA3wAAAAAALwABANEATAABAAIABADTAB4AAAAB"     \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                },
+                "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
+                "fields"     : {
+                    '3:neighborId':         3,
+                    '3:neighborFlag':       0,
+                    '3:rssi':               -33,
+                    '3:numTxPackets':       0,
+                    '3:numTxFailures':      0,
+                    '3:numRxPackets':       47,
+                    '1:neighborId':         1,
+                    '1:neighborFlag':       0,
+                    '1:rssi':               -47,
+                    '1:numTxPackets':       76,
+                    '1:numTxFailures':      1,
+                    '1:numRxPackets':       2,
+                    '4:neighborId':         4,
+                    '4:neighborFlag':       0,
+                    '4:rssi':               -45,
+                    '4:numTxPackets':       30,
+                    '4:numTxFailures':      0,
+                    '4:numRxPackets':       1,
+                },
+            },
+    },
+    # SOL_TYPE_DUST_NOTIF_HRDISCOVERED
     # TODO
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
@@ -571,7 +653,7 @@ def test_chain(sol_chain_example):
     print sol_chain_example["json"]
     assert sol_json==sol_chain_example["json"]
     
-    # json->influxbd
+    # json->influxdb
     sol_influxdb  = sol.json_to_influxdb(sol_json)
     print sol_influxdb
     print sol_chain_example["influxdb"]

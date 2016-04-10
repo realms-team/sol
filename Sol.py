@@ -21,6 +21,7 @@ import array
 import datetime
 
 # third-party packages
+import flatdict
 
 # project-specific
 from SmartMeshSDK.utils                 import FormatUtils
@@ -135,10 +136,15 @@ class Sol(object):
         sol_bin        += self._num_to_list(sol_json['type'],1)
 
         # value
-        sol_bin        += self._fields_to_binary_with_structure(
-            sol_json['type'],
-            sol_json['value']
-        )
+        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+            sol_bin    += self._get_sol_binary_value_dust_hr_neighbors(
+                sol_json['value']
+            )
+        else:
+            sol_bin    += self._fields_to_binary_with_structure(
+                sol_json['type'],
+                sol_json['value']
+            )
         
         sol_json['value']
 
@@ -247,7 +253,15 @@ class Sol(object):
 
         # value
         assert len(sol_bin)==obj_size
-        sol_json['value'] = self._binary_to_fields_with_structure(sol_json['type'],sol_bin)
+        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+            sol_json['value'] = self.hrParser.parseHr(
+                [self.hrParser.HR_ID_NEIGHBORS,len(sol_bin)]+sol_bin,
+            )['Neighbors']['neighbors']
+        else:
+            sol_json['value'] = self._binary_to_fields_with_structure(
+                sol_json['type'],
+                sol_bin,
+            )
         
         return sol_json
     
@@ -260,18 +274,29 @@ class Sol(object):
         :rtpe: list
         """
         
+        # fields
+        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+            fields = {}
+            for n in sol_json["value"]:
+                fields[str(n['neighborId'])] = n
+        else:
+            fields = sol_json["value"]
+            for (k,v) in fields.items():
+                if type(v)==list:
+                    fields[k] = FormatUtils.formatBuffer(v)
+        f = flatdict.FlatDict(fields)
+        fields = {}
+        for (k,v) in f.items():
+            fields[k] = v
+        
         sol_influxdb = {
             "timestamp"  : sol_json["timestamp"],
             "tag"        : {
                 'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
             },
             "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
-            "fields"     : sol_json["value"],
+            "fields"     : fields,
         }
-        
-        for (k,v) in sol_influxdb['fields'].items():
-            if type(v)==list:
-                sol_influxdb['fields'][k] = FormatUtils.formatBuffer(v)
         
         return sol_influxdb
 
@@ -535,65 +560,21 @@ class Sol(object):
         hr = self.hrParser.parseHr(dust_notif.payload)
         sol_type   = None
         sol_value  = None
-        print hr
         if 'Device' in hr:
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
             sol_value   = self._fields_to_json_with_structure(
                 SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE,
                 hr['Device'],
             )
+        if 'Neighbors' in hr:
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
+            sol_value   = hr['Neighbors']['neighbors']
         return (sol_type,sol_value)
     
-    def _get_sol_json_value_dust_hr_device(self,hr):
+    def _get_sol_binary_value_dust_hr_neighbors(self,hr):
         '''
         Example ::
-
-            {
-                'charge':             0x090a0b0c,    # INT32U
-                'queueOcc':           0x0d,          # INT8U
-                'temperature':        -1,            # INT8
-                'batteryVoltage':     0x0e0f,        # INT16U
-                'numTxOk':            0x1011,        # INT16U
-                'numTxFail':          0x1213,        # INT16U
-                'numRxOk':            0x1415,        # INT16U
-                'numRxLost':          0x1617,        # INT16U
-                'numMacDropped':      0x18,          # INT8U
-                'numTxBad':           0x19,          # INT8U
-                'badLinkFrameId':     0x1a,          # INT8U
-                'badLinkSlot':        0x1b1c1d1e,    # INT32U
-                'badLinkOffset':      0x1f,          # INT8U
-            }
-        '''
-
-        return_val  = []
-        return_val += [struct.pack(
-            '>IBbHHHHHBBBIB',
-            hr['charge'],         # INT32U  I
-            hr['queueOcc'],       # INT8U   B
-            hr['temperature'],    # INT8    b
-            hr['batteryVoltage'], # INT16U  H
-            hr['numTxOk'],        # INT16U  H
-            hr['numTxFail'],      # INT16U  H
-            hr['numRxOk'],        # INT16U  H
-            hr['numRxLost'],      # INT16U  H
-            hr['numMacDropped'],  # INT8U   B
-            hr['numTxBad'],       # INT8U   B
-            hr['badLinkFrameId'], # INT8U   B
-            hr['badLinkSlot'],    # INT32U  I
-            hr['badLinkOffset'],  # INT8U   B
-        )]
-        return_val  = ''.join(return_val)
-        return_val  = [ord(c) for c in return_val]
-
-        return return_val
-
-    def create_value_SOL_TYPE_DUST_NOTIF_HRNEIGHBORS(self,hr):
-        '''
-        Example ::
-
-            {
-            'numItems': 2,
-            'neighbors': [
+            [
                 {
                     'neighborId':         0x0102,     # INT16U
                     'neighborFlag':       0x03,       # INT8U
@@ -610,13 +591,12 @@ class Sol(object):
                     'numTxFailures':      0x1617,     # INT16U
                     'numRxPackets':       0x1819,     # INT16U
                 },
-            ],
-            }
+            ]
         '''
 
         return_val  = []
-        return_val += [chr(hr['numItems'])] # num_neighbors
-        for n in hr['neighbors']:
+        return_val += [chr(len(hr))] # num_neighbors
+        for n in hr:
             return_val += [struct.pack(
                 '>HBbHHH',
                 n['neighborId'],       # INT16U  H
@@ -732,13 +712,13 @@ class Sol(object):
                     ).total_seconds()
 
         # Health Reports
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_DEVICE:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE:
             hr = [self.hrParser.HR_ID_DEVICE,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             hr = [self.hrParser.HR_ID_NEIGHBORS,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HR_DISCOVERED:
+        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
             obj = self.hrParser.parseHr(hr)
 
