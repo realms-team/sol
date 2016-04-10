@@ -401,6 +401,8 @@ class Sol(object):
         
         if   type(dust_notif)==self.mux.Tuple_notifData:
             (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
+        elif type(dust_notif)==self.mux.Tuple_notifHealthReport:
+            (sol_type,sol_value) = self._get_sol_json_value_dust_hr(dust_notif)
         else:
             (sol_type,sol_value) = self._get_sol_json_value_generic(dust_notif)
         
@@ -529,7 +531,20 @@ class Sol(object):
         self.oap_mac    = mac
         self.oap_notif  = notif
     
-    def create_value_SOL_TYPE_DUST_NOTIF_HRDEVICE(self,hr):
+    def _get_sol_json_value_dust_hr(self,dust_notif):
+        hr = self.hrParser.parseHr(dust_notif.payload)
+        sol_type   = None
+        sol_value  = None
+        print hr
+        if 'Device' in hr:
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
+            sol_value   = self._fields_to_json_with_structure(
+                SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE,
+                hr['Device'],
+            )
+        return (sol_type,sol_value)
+    
+    def _get_sol_json_value_dust_hr_device(self,hr):
         '''
         Example ::
 

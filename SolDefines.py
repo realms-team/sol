@@ -189,6 +189,12 @@ sol_types = [
         'extrafields':  'data',
     },
     {
+        'type':         SOL_TYPE_DUST_NOTIF_HRDEVICE,
+        'description':  '',
+        'structure':    '>IBbHHHHHBBBIB',
+        'fields':       ['charge','queueOcc','temperature','batteryVoltage','numTxOk','numTxFail','numRxOk','numRxLost','numMacDropped','numTxBad','badLinkFrameId','badLinkSlot','badLinkOffset'],
+    },
+    {
         'type':         SOL_TYPE_DUST_EVENTCOMMANDFINISHED,
         'description':  '',
         'structure':    '>IB',

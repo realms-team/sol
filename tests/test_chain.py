@@ -64,7 +64,73 @@ SOL_CHAIN_EXAMPLE = [
             },
     },
     # SOL_TYPE_DUST_NOTIF_HR_DEVICE
-    # TODO
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
+                payload      = [128, 24, 0, 0, 0, 40, 49, 25, 11,119, 0, 26, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],            \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x10,
+                "value"      : {
+                    'charge':             40,
+                    'queueOcc':           49,
+                    'temperature':        25,
+                    'batteryVoltage':     2935,
+                    'numTxOk':            26,
+                    'numTxFail':          0,
+                    'numRxOk':            9,
+                    'numRxLost':          0,
+                    'numMacDropped':      0,
+                    'numTxBad':           0,
+                    'badLinkFrameId':     0,
+                    'badLinkSlot':        0,
+                    'badLinkOffset':      0,
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x10,                                      # type
+                0, 0, 0, 40, 49, 25, 11,119, 0, 26, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBRAAAAAoMRkLdwAaAAAACQAAAAAAAAAAAAA="     \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                },
+                "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
+                "fields"     : {
+                    'charge':             40,
+                    'queueOcc':           49,
+                    'temperature':        25,
+                    'batteryVoltage':     2935,
+                    'numTxOk':            26,
+                    'numTxFail':          0,
+                    'numRxOk':            9,
+                    'numRxLost':          0,
+                    'numMacDropped':      0,
+                    'numTxBad':           0,
+                    'badLinkFrameId':     0,
+                    'badLinkSlot':        0,
+                    'badLinkOffset':      0,
+                },
+            },
+    },
     # SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS
     # TODO
     # SOL_TYPE_DUST_NOTIF_HR_DISCOVERED
