@@ -122,7 +122,57 @@ SOL_CHAIN_EXAMPLE = [
             },
     },
     # SOL_TYPE_DUST_EVENTPATHDELETE
-    # TODO
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventPathDelete(   \
+                eventId      = 0x11223344,                                \
+                source       = [1,1,1,1,1,1,1,1],                         \
+                dest         = [2,2,2,2,2,2,2,2],                         \
+                direction    = 3,                                         \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : MACMANAGER,
+                "type"       : 0x15,
+                "value"      : {
+                    'source'      : [1,1,1,1,1,1,1,1],
+                    'dest'        : [2,2,2,2,2,2,2,2],
+                    'direction'   : 3,
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x15,                                      # type
+                0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
+                0x03,
+            ],
+        "http":
+            '{                                                       \
+                "v" : 0,                                             \
+                "o" : [                                              \
+                    "EwMDAwMDAwMDBQUFBRUBAQEBAQEBAQICAgICAgICAw=="   \
+                ]                                                    \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '03-03-03-03-03-03-03-03',
+                },
+                "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
+                "fields"     : {
+                    'source'      : '01-01-01-01-01-01-01-01',
+                    'dest'        : '02-02-02-02-02-02-02-02',
+                    'direction'   : 3,
+                },
+            },
+    },
     # SOL_TYPE_DUST_EVENTMOTEJOIN
     # TODO
     # SOL_TYPE_DUST_EVENTMOTECREATE
@@ -157,24 +207,34 @@ def test_chain(sol_chain_example):
        macManager  = MACMANAGER,
        timestamp   = TIMESTAMP,
     )
+    print sol_json
+    print sol_chain_example["json"]
     assert sol_json==sol_chain_example["json"]
     
     # json->bin
     sol_bin   = sol.json_to_bin(sol_json)
+    print sol_bin
+    print sol_chain_example["bin"]
     assert sol_bin==sol_chain_example["bin"]
     
     # bin->http
     sol_http  = sol.bin_to_http([sol_bin])
+    print sol_http
+    print sol_chain_example["http"]
     assert json.loads(sol_http)==json.loads(sol_chain_example["http"])
     
     # http->bin
     sol_binl  = sol.http_to_bin(sol_http)
     assert len(sol_binl)==1
     sol_bin = sol_binl[0]
+    print sol_bin
+    print sol_chain_example["bin"]
     assert sol_bin==sol_chain_example["bin"]
     
     # bin->json
     sol_json  = sol.bin_to_json(sol_bin)
+    print sol_json
+    print sol_chain_example["json"]
     assert sol_json==sol_chain_example["json"]
     
     # json->influxbd
