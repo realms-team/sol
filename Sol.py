@@ -561,14 +561,22 @@ class Sol(object):
         sol_type   = None
         sol_value  = None
         if 'Device' in hr:
+            assert 'Neighbors'  not in hr
+            assert 'Discovered' not in hr
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
             sol_value   = self._fields_to_json_with_structure(
                 SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE,
                 hr['Device'],
             )
         if 'Neighbors' in hr:
+            assert 'Device'  not in hr
+            assert 'Discovered' not in hr
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
             sol_value   = hr['Neighbors']['neighbors']
+        if 'Discovered' in hr:
+            assert 'Device'  not in hr
+            assert 'Neighbors' not in hr
+            raise NotImplementedError()
         return (sol_type,sol_value)
     
     def _get_sol_binary_value_dust_hr_neighbors(self,hr):
