@@ -73,7 +73,11 @@ class Sol(object):
         """
         
         # get sol_mac
-        if 'macAddress' in dust_notif._asdict():
+        if type(dust_notif) in [
+                self.mux.Tuple_notifData,
+                self.mux.Tuple_notifIpData,
+                self.mux.Tuple_notifHealthReport,
+            ]:
             sol_mac = getattr(dust_notif,'macAddress')
         else:
             sol_mac = macManager
