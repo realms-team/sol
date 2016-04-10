@@ -15,25 +15,25 @@ SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_RAW        = 0x09
 SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_STATS      = 0x0a
 SOL_TYPE_SOIL_DECAGON_GS3_RS232_RAW         = 0x0b
 SOL_TYPE_SOIL_DECAGON_GS3_RS232_STATS       = 0x0c
-SOL_TYPE_DUST_NOTIF_LOG                     = 0x0d
-SOL_TYPE_DUST_NOTIF_DATA_RAW                = 0x0e
-SOL_TYPE_DUST_NOTIF_IPDATA                  = 0x0f
-SOL_TYPE_DUST_NOTIF_HR_DEVICE               = 0x10
-SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS            = 0x11
-SOL_TYPE_DUST_NOTIF_HR_DISCOVERED           = 0x12
-SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED   = 0x13
-SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE        = 0x14
-SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE        = 0x15
-SOL_TYPE_DUST_NOTIF_EVENT_PING              = 0x16
-SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME       = 0x17
-SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET      = 0x18
-SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN          = 0x19
-SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE        = 0x1a
-SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE        = 0x1b
-SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST          = 0x1c
-SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL   = 0x1d
-SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET         = 0x1e
-SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT        = 0x1f
+SOL_TYPE_DUST_NOTIFLOG                      = 0x0d
+SOL_TYPE_DUST_NOTIFDATA                     = 0x0e
+SOL_TYPE_DUST_NOTIFIPDATA                   = 0x0f
+SOL_TYPE_DUST_NOTIF_HRDEVICE                = 0x10
+SOL_TYPE_DUST_NOTIF_HRNEIGHBORS             = 0x11
+SOL_TYPE_DUST_NOTIF_HRDISCOVERED            = 0x12
+SOL_TYPE_DUST_EVENTCOMMANDFINISHED          = 0x13
+SOL_TYPE_DUST_EVENTPATHCREATE               = 0x14
+SOL_TYPE_DUST_EVENTPATHDELETE               = 0x15
+SOL_TYPE_DUST_EVENTPING                     = 0x16
+SOL_TYPE_DUST_EVENTNETWORKTIME              = 0x17
+SOL_TYPE_DUST_EVENTNETWORKRESET             = 0x18
+SOL_TYPE_DUST_EVENTMOTEJOIN                 = 0x19
+SOL_TYPE_DUST_EVENTMOTECREATE               = 0x1a
+SOL_TYPE_DUST_EVENTMOTEDELETE               = 0x1b
+SOL_TYPE_DUST_EVENTMOTELOST                 = 0x1c
+SOL_TYPE_DUST_EVENTMOTEOPERATIONAL          = 0x1d
+SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
+SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 
@@ -183,86 +183,86 @@ sol_types = [
         'fields':       ['moisture', 'soil_temp', 'soil_ec', 'count', 'std'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_DATA_RAW,
+        'type':         SOL_TYPE_DUST_NOTIFDATA,
         'description':  '',
         'structure':    '>HH',
         'fields':       ['srcPort', 'dstPort'],
         'extrafields':  'data',
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_COMMANDFINISHED,
+        'type':         SOL_TYPE_DUST_EVENTCOMMANDFINISHED,
         'description':  '',
         'structure':    '>IB',
         'fields':       ['callbackId', 'rc'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE,
+        'type':         SOL_TYPE_DUST_EVENTPATHCREATE,
         'description':  '',
         'structure':    '>QQB',
         'fields':       ['source', 'dest', 'direction'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE,
+        'type':         SOL_TYPE_DUST_EVENTPATHDELETE,
         'description':  '',
         'structure':    '>QQB',
         'fields':       ['source', 'dest', 'direction'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PING,
+        'type':         SOL_TYPE_DUST_EVENTPING,
         'description':  '',
         'structure':    '>IQIHB',
         'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME,
+        'type':         SOL_TYPE_DUST_EVENTNETWORKTIME,
         'description':  '',
         'structure':    '>IQ5pH',
         'fields':       ['uptime','utcTime', 'asn', 'asnOffset'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET,
+        'type':         SOL_TYPE_DUST_EVENTNETWORKRESET,
         'description':  '',
         'structure':    '>',
         'fields':       [],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN,
+        'type':         SOL_TYPE_DUST_EVENTMOTEJOIN,
         'description':  '',
         'structure':    '>Q',
         'fields':       ['macAddress'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE,
+        'type':         SOL_TYPE_DUST_EVENTMOTECREATE,
         'description':  '',
         'structure':    '>QH',
         'fields':       ['macAddress', 'moteId'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE,
+        'type':         SOL_TYPE_DUST_EVENTMOTEDELETE,
         'description':  '',
         'structure':    '>QH',
         'fields':       ['macAddress', 'moteId'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST,
+        'type':         SOL_TYPE_DUST_EVENTMOTELOST,
         'description':  '',
         'structure':    '>Q',
         'fields':       ['macAddress'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL,
+        'type':         SOL_TYPE_DUST_EVENTMOTEOPERATIONAL,
         'description':  '',
         'structure':    '>Q',
         'fields':       ['macAddress'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_MOTERESET,
+        'type':         SOL_TYPE_DUST_EVENTMOTERESET,
         'description':  '',
         'structure':    '>Q',
         'fields':       ['macAddress'],
     },
     {
-        'type':         SOL_TYPE_DUST_NOTIF_EVENT_PACKETSENT,
+        'type':         SOL_TYPE_DUST_EVENTPACKETSENT,
         'description':  '',
         'structure':    '>IB',
         'fields':       ['callbackId', 'rc'],

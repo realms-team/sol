@@ -408,16 +408,24 @@ class Sol(object):
         if getattr(dust_notif,'dstPort')==SolDefines.OAP_PORT:
             pass
         else:
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
             sol_value   = self._fields_to_json_with_structure(
-                SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW,
+                SolDefines.SOL_TYPE_DUST_NOTIFDATA,
                 dust_notif._asdict(),
             )
         
         return (sol_type,sol_value)
     
     def _get_sol_json_value_generic(self,dust_notif):
+        sol_type = self._dust_notifName_to_sol_type(str(type(dust_notif)))
+        print sol_type
+        
         return (None,None)
+    
+    def _dust_notifName_to_sol_type(self,notifName):
+        print notifName
+        n = notifName.split('.')[-1][:-2]
+        return n
         
     def _fields_to_json_with_structure(self,sol_type,fields):
         
@@ -466,17 +474,7 @@ class Sol(object):
         
         return returnVal
     
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKTIME(self,uptime,utcSecs,utcUsecs,asn,asnOffset):
-        return self._num_to_list(uptime,4)+      \
-               self._num_to_list(utcSecs,4)+     \
-               self._num_to_list(utcUsecs,4)+    \
-               list(asn)+                        \
-               self._num_to_list(asnOffset,2)
-
-    def create_value_SOL_TYPE_DUST_NOTIF_EVENT_NETWORKRESET(self):
-        return []
-
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_DEVICE(self,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HRDEVICE(self,hr):
         '''
         Example ::
 
@@ -519,7 +517,7 @@ class Sol(object):
 
         return return_val
 
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_NEIGHBORS(self,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HRNEIGHBORS(self,hr):
         '''
         Example ::
 
@@ -563,7 +561,7 @@ class Sol(object):
 
         return return_val
 
-    def create_value_SOL_TYPE_DUST_NOTIF_HR_DISCOVERED(self,hr):
+    def create_value_SOL_TYPE_DUST_NOTIF_HRDISCOVERED(self,hr):
         '''
         Example ::
 
@@ -601,109 +599,6 @@ class Sol(object):
 
         return return_val
 
-    def create_value_SOL_TYPE_DUST_SNAPSHOT(self,summary):
-        '''
-        Example ::
-
-            [
-                {
-                    'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
-                    'moteId':              0x090a,        # INT16U  H
-                    'isAP':                0x0b,          # BOOL    B
-                    'state':               0x0c,          # INT8U   B
-                    'isRouting':           0x0d,          # BOOL    B
-                    'numNbrs':             0x0e,          # INT8U   B
-                    'numGoodNbrs':         0x0f,          # INT8U   B
-                    'requestedBw':         0x10111213,    # INT32U  I
-                    'totalNeededBw':       0x14151617,    # INT32U  I
-                    'assignedBw':          0x18191a1b,    # INT32U  I
-                    'packetsReceived':     0x1c1d1e1f,    # INT32U  I
-                    'packetsLost':         0x20212223,    # INT32U  I
-                    'avgLatency':          0x24252627,    # INT32U  I
-                    'stateTime':           0x28292a2b,    # INT32U  I
-                    'paths': [
-                        {
-                            'dest':        (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
-                            'direction':   0x2c,          # INT8U   B
-                            'numLinks':    0x2d,          # INT8U   B
-                            'quality':     0x2e,          # INT8U   B
-                            'rssiSrcDest': -1,            # INT8    b
-                            'rssiDestSrc': -2,            # INT8    b
-                        },
-                        {
-                            'dest':        (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
-                            'direction':   0x2c,          # INT8U  B
-                            'numLinks':    0x2d,          # INT8U  B
-                            'quality':     0x2e,          # INT8U  B
-                            'rssiSrcDest': -1,            # INT8   b
-                            'rssiDestSrc': -2,            # INT8   b
-                        },
-                    ],
-                },
-                {
-                    'macAddress':          (0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38),
-                    'moteId':              0x090a,        # INT16U
-                    'isAP':                0x0b,          # BOOL
-                    'state':               0x0c,          # INT8U
-                    'isRouting':           0x0d,          # BOOL
-                    'numNbrs':             0x0e,          # INT8U
-                    'numGoodNbrs':         0x0f,          # INT8U
-                    'requestedBw':         0x10111213,    # INT32U
-                    'totalNeededBw':       0x14151617,    # INT32U
-                    'assignedBw':          0x18191a1b,    # INT32U
-                    'packetsReceived':     0x1c1d1e1f,    # INT32U
-                    'packetsLost':         0x20212223,    # INT32U
-                    'avgLatency':          0x24252627,    # INT32U
-                    'stateTime':           0x28292a2b,    # INT32U
-                    'paths': [
-                        {
-                            'dest':        (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
-                            'direction':   0x2c,          # INT8U
-                            'numLinks':    0x2d,          # INT8U
-                            'quality':     0x2e,          # INT8U
-                            'rssiSrcDest': -1,            # INT8
-                            'rssiDestSrc': -2,            # INT8
-                        },
-                    ],
-                },
-            ]
-        '''
-
-        return_val  = []
-        return_val += [chr(len(summary))] # num_motes
-        for m in summary:
-            return_val += [''.join([chr(b) for b in m['macAddress']])] # macAddress
-            return_val += [struct.pack(
-                '>HBBBBBIIIIII',
-                m['moteId'],           # INT16U  H
-                m['isAP'],             # BOOL    B
-                m['state'],            # INT8U   B
-                m['isRouting'],        # BOOL    B
-                m['numNbrs'],          # INT8U   B
-                m['numGoodNbrs'],      # INT8U   B
-                m['requestedBw'],      # INT32U  I
-                m['totalNeededBw'],    # INT32U  I
-                m['assignedBw'],       # INT32U  I
-                m['packetsReceived'],  # INT32U  I
-                m['packetsLost'],      # INT32U  I
-                m['avgLatency'],       # INT32U  I
-            )]
-            return_val += [chr(len(m['paths']))] # num_paths
-            for p in m['paths']:
-                return_val += [''.join([chr(b) for b in p['dest']])] # dest
-                return_val += [struct.pack(
-                    '>BBBbb',
-                    p['direction'],    # INT8U   B
-                    p['numLinks'],     # INT8U   B
-                    p['quality'],      # INT8U   B
-                    p['rssiSrcDest'],  # INT8    b
-                    p['rssiDestSrc'],  # INT8    b
-                )]
-        return_val  = ''.join(return_val)
-        return_val  = [ord(c) for c in return_val]
-
-        return return_val
-
     #======================== private =========================================
 
     def _backUpUntilStartFrame(self,file_name,curOffset):
@@ -729,22 +624,8 @@ class Sol(object):
             output += l[i]<<(8*(len(l)-i-1))
         return output
 
+''' TO BE REMOVED
     def _parse_specific_DUST(self,type_id,payload):
-        '''
-        Args:
-            type_id (int): The SOL type ID
-            payload (array of byte): The data to parse
-        Description: Prepare the data and call corresponding DUST parser.
-        Returns: a dict element with the parsed data
-        Example:
-            _parse_specific_DUST(
-                    SOL_TYPE_DUST_NOTIF_DATA_RAW,
-                    (240, 185, 240, 185, 0, 0, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, ...)
-                )
-            output =    {'packet_timestamp': (262572558848, 246301952),
-                         'received_timestamp': 1454335765.694352,
-                         'raw_data': ...}
-        '''
         obj = {}
 
         # get SOL type
@@ -816,7 +697,7 @@ class Sol(object):
 
         elif (type_id in [
                     SolDefines.SOL_TYPE_DUST_SNAPSHOT,
-                    SolDefines.SOL_TYPE_DUST_NOTIF_DATA_RAW
+                    SolDefines.SOL_TYPE_DUST_NOTIFDATA
                 ]
         ):
             # Return raw object (TODO: parse)
@@ -826,6 +707,7 @@ class Sol(object):
             raise ValueError("Sol type "+str(type_id)+" does not exist.")
 
         return obj
+'''
 
 #============================ main ============================================
 

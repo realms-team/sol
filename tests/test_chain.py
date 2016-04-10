@@ -46,7 +46,7 @@ SOL_CHAIN_EXAMPLE = [
             '{                                             \
                 "v" : 0,                                   \
                 "o" : [                                    \
-                    "EwECAwQFBgcIESIzRA4BAgMEBQYHCA=="     \
+                    "EwECAwQFBgcI3f/d/w4BAgMEBQYHCA=="     \
                 ]                                          \
             }',
         "influxdb":
@@ -55,7 +55,7 @@ SOL_CHAIN_EXAMPLE = [
                 "tag"        : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
-                "measurement": 'SOL_TYPE_DUST_NOTIF_DATA_RAW',
+                "measurement": 'SOL_TYPE_DUST_NOTIFDATA',
                 "fields"     : {
                     'srcPort': 0x0102,
                     'dstPort': 0x0304,
@@ -70,57 +70,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_HR_DISCOVERED
     # TODO
     # SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE
-    {
-        "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventPathCreate(   \
-                eventId      = 0x11223344,                                \
-                source       = [1,1,1,1,1,1,1,1],                         \
-                dest         = [2,2,2,2,2,2,2,2],                         \
-                direction    = 3,                                         \
-            )",
-        "json":
-            {
-                "timestamp"  : TIMESTAMP,
-                "mac"        : MACMANAGER,
-                "type"       : 0x14,
-                "value"      : {
-                    'source'      : [1,1,1,1,1,1,1,1],
-                    'dest'        : [2,2,2,2,2,2,2,2],
-                    'direction'   : 3,
-                },
-            },
-        "bin":
-            [
-                #ver   type   MAC    ts    typelen length
-                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                0xaa,0xbb,0xcc,0xdd,0xaa,0xbb,0xcc,0xdd,   # mac
-                0xdd,0xff,0xdd,0xff,                       # timestamp
-                0x14,                                      # type
-                0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
-                0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
-                0x03,
-            ],
-        "http":
-            '{                                             \
-                "v" : 0,                                   \
-                "o" : [                                    \
-                    "EwECAwQFBgcIESIzRA4BAgMEBQYHCA=="     \
-                ]                                          \
-            }',
-        "influxdb":
-            {
-                "timestamp"  : TIMESTAMP,
-                "tag"        : {
-                    'mac'    : 'aa-bb-cc-dd-aa-bb-cc-dd',
-                },
-                "measurement": 'SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE',
-                "fields"     : {
-                    'source'      : '01-01-01-01-01-01-01-01',
-                    'dest'        : '02-02-02-02-02-02-02-02',
-                    'direction'   : 3,
-                },
-            },
-    },
+    # TODO
     # SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE
     # TODO
     # SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN
@@ -165,6 +115,7 @@ def test_chain(sol_chain_example):
     
     # bin->http
     sol_http  = sol.bin_to_http([sol_bin])
+    print sol_http
     assert json.loads(sol_http)==json.loads(sol_chain_example["http"])
     
     # http->bin
