@@ -136,8 +136,12 @@ class Sol(object):
         sol_bin        += self._num_to_list(sol_json['type'],1)
 
         # value
-        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_bin    += self._get_sol_binary_value_dust_hr_neighbors(
+                sol_json['value']
+            )
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+            sol_bin    += self._get_sol_binary_value_dust_hr_discovered(
                 sol_json['value']
             )
         else:
@@ -253,10 +257,14 @@ class Sol(object):
 
         # value
         assert len(sol_bin)==obj_size
-        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_NEIGHBORS,len(sol_bin)]+sol_bin,
             )['Neighbors']['neighbors']
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+            sol_json['value'] = self.hrParser.parseHr(
+                [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
+            )['Discovered']
         else:
             sol_json['value'] = self._binary_to_fields_with_structure(
                 sol_json['type'],
@@ -275,10 +283,12 @@ class Sol(object):
         """
         
         # fields
-        if sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             fields = {}
             for n in sol_json["value"]:
                 fields[str(n['neighborId'])] = n
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+            fields = sol_json["value"]
         else:
             fields = sol_json["value"]
             for (k,v) in fields.items():
@@ -576,32 +586,11 @@ class Sol(object):
         if 'Discovered' in hr:
             assert 'Device'  not in hr
             assert 'Neighbors' not in hr
-            raise NotImplementedError()
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED
+            sol_value   = hr['Discovered']
         return (sol_type,sol_value)
     
     def _get_sol_binary_value_dust_hr_neighbors(self,hr):
-        '''
-        Example ::
-            [
-                {
-                    'neighborId':         0x0102,     # INT16U
-                    'neighborFlag':       0x03,       # INT8U
-                    'rssi':               -1,         # INT8
-                    'numTxPackets':       0x0405,     # INT16U
-                    'numTxFailures':      0x0607,     # INT16U
-                    'numRxPackets':       0x0809,     # INT16U
-                },
-                {
-                    'neighborId':         0x1112,     # INT16U
-                    'neighborFlag':       0x13,       # INT8U
-                    'rssi':               -1,         # INT8
-                    'numTxPackets':       0x1415,     # INT16U
-                    'numTxFailures':      0x1617,     # INT16U
-                    'numRxPackets':       0x1819,     # INT16U
-                },
-            ]
-        '''
-
         return_val  = []
         return_val += [chr(len(hr))] # num_neighbors
         for n in hr:
@@ -619,38 +608,17 @@ class Sol(object):
 
         return return_val
 
-    def create_value_SOL_TYPE_DUST_NOTIF_HRDISCOVERED(self,hr):
-        '''
-        Example ::
-
-            {
-                'numJoinParents': 0x55,              # INT8U
-                'numItems':       2,
-                'discoveredNeighbors': [
-                    {
-                        'neighborId':     0x0102,    # INT16U
-                        'rssi':           -1,        # INT8
-                        'numRx':          0x03,      # INT8U
-                    },
-                    {
-                        'neighborId':     0x1112,    # INT16U
-                        'rssi':           -1,        # INT8
-                        'numRx':          0x13,      # INT8U
-                    },
-                ],
-            }
-        '''
-
+    def _get_sol_binary_value_dust_hr_discovered(self,hr):
+        print hr
         return_val  = []
-        return_val += [chr(hr['numJoinParents'])] # numJoinParents
-        return_val += [chr(len(hr['discoveredNeighbors']))] # num_neighbors
+        return_val += [chr(hr['numJoinParents'])]
+        return_val += [chr(hr['numItems'])]
         for n in hr['discoveredNeighbors']:
             return_val += [struct.pack(
                 '>HbB',
                 n['neighborId'],       # INT16U  H
                 n['rssi'],             # INT8    b
                 n['numRx'],            # INT8U   B
-
             )]
         return_val  = ''.join(return_val)
         return_val  = [ord(c) for c in return_val]

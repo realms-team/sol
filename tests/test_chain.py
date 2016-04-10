@@ -1,5 +1,6 @@
 import pytest
 import json
+import pprint
 
 from   SmartMeshSDK.IpMgrConnectorMux  import IpMgrConnectorMux
 
@@ -216,7 +217,79 @@ SOL_CHAIN_EXAMPLE = [
             },
     },
     # SOL_TYPE_DUST_NOTIF_HRDISCOVERED
-    # TODO
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
+                payload      = [130, 14, 3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1],            \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x12,
+                "value"      : {
+                    'numJoinParents': 3,
+                    'numItems': 3,
+                    'discoveredNeighbors': [
+                        {
+                            'neighborId': 6,
+                            'rssi': -78,
+                            'numRx': 2,
+                        },
+                        {
+                            'neighborId': 5,
+                            'rssi': -87,
+                            'numRx': 1,
+                        },
+                        {
+                            'neighborId': 7,
+                            'rssi': -71,
+                            'numRx': 1,
+                        },
+                    ]
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x12,                                      # type
+                3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1,   # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBRIDAwAGsgIABakBAAe5AQ=="     \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                },
+                "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
+                "fields"     : {
+                    'discoveredNeighbors:0:neighborId':    6,
+                    'discoveredNeighbors:0:numRx':         2,
+                    'discoveredNeighbors:0:rssi':          -78,
+                    'discoveredNeighbors:1:neighborId':    5,
+                    'discoveredNeighbors:1:numRx':         1,
+                    'discoveredNeighbors:1:rssi':          -87,
+                    'discoveredNeighbors:2:neighborId':    7,
+                    'discoveredNeighbors:2:numRx':         1,
+                    'discoveredNeighbors:2:rssi':          -71,
+                    'numItems':                            3,
+                    'numJoinParents':                      3,
+                },
+            },
+    },
+    # SOL_TYPE_DUST_NOTIF_HRDEVICE + SOL_TYPE_DUST_NOTIF_HRDISCOVERED
+    # TODO [128, 24, 0, 0, 0, 71, 49, 16, 10, 56, 1, 96, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 14, 3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1]
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust":
@@ -609,6 +682,8 @@ def sol_chain_example(request):
 
 #============================ helpers ===============================
 
+pp = pprint.PrettyPrinter(indent=4)
+
 #============================ tests =================================
 
 def test_chain(sol_chain_example):
@@ -623,18 +698,21 @@ def test_chain(sol_chain_example):
        macManager  = MACMANAGER,
        timestamp   = TIMESTAMP,
     )
+    print '=====\ndust->json'
     print sol_json
     print sol_chain_example["json"]
     assert sol_json==sol_chain_example["json"]
     
     # json->bin
     sol_bin   = sol.json_to_bin(sol_json)
+    print '=====\njson->bin'
     print sol_bin
     print sol_chain_example["bin"]
     assert sol_bin==sol_chain_example["bin"]
     
     # bin->http
     sol_http  = sol.bin_to_http([sol_bin])
+    print '=====\nbin->http'
     print sol_http
     print sol_chain_example["http"]
     assert json.loads(sol_http)==json.loads(sol_chain_example["http"])
@@ -643,18 +721,21 @@ def test_chain(sol_chain_example):
     sol_binl  = sol.http_to_bin(sol_http)
     assert len(sol_binl)==1
     sol_bin = sol_binl[0]
+    print '=====\nhttp->bin'
     print sol_bin
     print sol_chain_example["bin"]
     assert sol_bin==sol_chain_example["bin"]
     
     # bin->json
     sol_json  = sol.bin_to_json(sol_bin)
+    print '=====\nbin->json'
     print sol_json
     print sol_chain_example["json"]
     assert sol_json==sol_chain_example["json"]
     
     # json->influxdb
     sol_influxdb  = sol.json_to_influxdb(sol_json)
-    print sol_influxdb
+    print '=====\njson->influxdb'
+    pp.pprint(sol_influxdb)
     print sol_chain_example["influxdb"]
     assert sol_influxdb==sol_chain_example["influxdb"]
