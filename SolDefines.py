@@ -37,7 +37,7 @@ SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 
-def solTypeToString(solDefinesClass,type_id):
+def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
         if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
             return n

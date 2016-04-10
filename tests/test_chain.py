@@ -5,8 +5,8 @@ from   SmartMeshSDK.IpMgrConnectorMux  import IpMgrConnectorMux
 
 #============================ defines ===============================
 
-MACMANAGER = [0xaa,0xbb,0xcc,0xdd,0xaa,0xbb,0xcc,0xdd]
-TIMESTAMP   = 0xddffddff
+MACMANAGER = [3,3,3,3,3,3,3,3]
+TIMESTAMP   = 0x05050505
 
 #============================ fixtures ==============================
 
@@ -38,7 +38,7 @@ SOL_CHAIN_EXAMPLE = [
                 #ver   type   MAC    ts    typelen length
                 0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                0xdd,0xff,0xdd,0xff,                       # timestamp
+                0x05,0x05,0x05,0x05,                       # timestamp
                 0x0e,                                      # type
                 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # value
             ],
@@ -46,7 +46,7 @@ SOL_CHAIN_EXAMPLE = [
             '{                                             \
                 "v" : 0,                                   \
                 "o" : [                                    \
-                    "EwECAwQFBgcI3f/d/w4BAgMEBQYHCA=="     \
+                    "EwECAwQFBgcIBQUFBQ4BAgMEBQYHCA=="     \
                 ]                                          \
             }',
         "influxdb":
@@ -69,19 +69,69 @@ SOL_CHAIN_EXAMPLE = [
     # TODO
     # SOL_TYPE_DUST_NOTIF_HR_DISCOVERED
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_PATHCREATE
+    # SOL_TYPE_DUST_EVENTPATHCREATE
+    {
+        "dust":
+            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventPathCreate(   \
+                eventId      = 0x11223344,                                \
+                source       = [1,1,1,1,1,1,1,1],                         \
+                dest         = [2,2,2,2,2,2,2,2],                         \
+                direction    = 3,                                         \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : MACMANAGER,
+                "type"       : 0x14,
+                "value"      : {
+                    'source'      : [1,1,1,1,1,1,1,1],
+                    'dest'        : [2,2,2,2,2,2,2,2],
+                    'direction'   : 3,
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x14,                                      # type
+                0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
+                0x03,
+            ],
+        "http":
+            '{                                                       \
+                "v" : 0,                                             \
+                "o" : [                                              \
+                    "EwMDAwMDAwMDBQUFBRQBAQEBAQEBAQICAgICAgICAw=="   \
+                ]                                                    \
+            }',
+        "influxdb":
+            {
+                "timestamp"  : TIMESTAMP,
+                "tag"        : {
+                    'mac'    : '03-03-03-03-03-03-03-03',
+                },
+                "measurement": 'SOL_TYPE_DUST_EVENTPATHCREATE',
+                "fields"     : {
+                    'source'      : '01-01-01-01-01-01-01-01',
+                    'dest'        : '02-02-02-02-02-02-02-02',
+                    'direction'   : 3,
+                },
+            },
+    },
+    # SOL_TYPE_DUST_EVENTPATHDELETE
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_PATHDELETE
+    # SOL_TYPE_DUST_EVENTMOTEJOIN
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_MOTEJOIN
+    # SOL_TYPE_DUST_EVENTMOTECREATE
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_MOTECREATE
+    # SOL_TYPE_DUST_EVENTMOTEDELETE
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_MOTEDELETE
+    # SOL_TYPE_DUST_EVENTMOTELOST
     # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_MOTELOST
-    # TODO
-    # SOL_TYPE_DUST_NOTIF_EVENT_MOTEOPERATIONAL
+    # SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
     # TODO
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE
     # TODO
@@ -115,7 +165,6 @@ def test_chain(sol_chain_example):
     
     # bin->http
     sol_http  = sol.bin_to_http([sol_bin])
-    print sol_http
     assert json.loads(sol_http)==json.loads(sol_chain_example["http"])
     
     # http->bin
@@ -130,4 +179,6 @@ def test_chain(sol_chain_example):
     
     # json->influxbd
     sol_influxdb  = sol.json_to_influxdb(sol_json)
+    print sol_influxdb
+    print sol_chain_example["influxdb"]
     assert sol_influxdb==sol_chain_example["influxdb"]

@@ -257,7 +257,7 @@ class Sol(object):
             "tag"        : {
                 'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
             },
-            "measurement": SolDefines.solTypeToString(SolDefines,sol_json['type']),
+            "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
             "fields"     : sol_json["value"],
         }
         
@@ -292,8 +292,6 @@ class Sol(object):
 
             sol_jsonl = []
             for b in bins:
-                print b
-                print self.bin_to_json(b)
                 sol_jsonl += [self.bin_to_json(b)]
 
         else:
@@ -328,7 +326,7 @@ class Sol(object):
                         f.seek(0,os.SEEK_END)
                         right_offset_start = f.tell()
                     while True:
-                        right_offset_start = self._backUpUntilStartFrame(file_name,right_offset_start)
+                        right_offset_start = self._fileBackUpUntilStartFrame(file_name,right_offset_start)
                         try:
                            (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
                         except IndexError:
@@ -386,7 +384,7 @@ class Sol(object):
     
     #======================== private =========================================
     
-    #===== create value
+    #===== create value (generic code)
     
     def _get_sol_json_value(self,dust_notif):
         
@@ -403,28 +401,22 @@ class Sol(object):
         
         return (sol_type,sol_value)
     
-    def _get_sol_json_value_dust_notifData(self,dust_notif):
-        
-        if getattr(dust_notif,'dstPort')==SolDefines.OAP_PORT:
-            pass
-        else:
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
-            sol_value   = self._fields_to_json_with_structure(
-                SolDefines.SOL_TYPE_DUST_NOTIFDATA,
-                dust_notif._asdict(),
-            )
+    def _get_sol_json_value_generic(self,dust_notif):
+        sol_typeName    = self._dust_notifName_to_sol_typeName(str(type(dust_notif)))
+        sol_type        = getattr(SolDefines,sol_typeName)
+        sol_value       = self._fields_to_json_with_structure(
+            sol_type,
+            dust_notif._asdict(),
+        )
         
         return (sol_type,sol_value)
     
-    def _get_sol_json_value_generic(self,dust_notif):
-        sol_type = self._dust_notifName_to_sol_type(str(type(dust_notif)))
-        print sol_type
-        
-        return (None,None)
-    
-    def _dust_notifName_to_sol_type(self,notifName):
-        print notifName
+    def _dust_notifName_to_sol_typeName(self,notifName):
         n = notifName.split('.')[-1][:-2]
+        assert n.startswith('Tuple_')
+        n = n[len('Tuple_'):]
+        n = n.upper()
+        n = 'SOL_TYPE_DUST_{0}'.format(n)
         return n
         
     def _fields_to_json_with_structure(self,sol_type,fields):
@@ -447,8 +439,14 @@ class Sol(object):
         
         sol_struct      = SolDefines.solStructure(sol_type)
         
+        
         pack_format     = sol_struct['structure']
         pack_values     = [fields[name] for name in sol_struct['fields']]
+        
+        # convert [0x01,0x02,0x03] into 0x010203 to be packable
+        for i in range(len(pack_values)):
+            if type(pack_values[i])==list:
+                pack_values[i] = self._list_to_num(pack_values[i])
         
         returnVal       = [ord(b) for b in struct.pack(pack_format,*pack_values)]
         if 'extrafields' in sol_struct:
@@ -472,7 +470,26 @@ class Sol(object):
         if 'extrafields' in sol_struct:
             returnVal[sol_struct['extrafields']] = binary[pack_length:]
         
+        for (k,v) in returnVal.items():
+            if k in ['macAddress','source','dest']:
+                returnVal[k] = self._num_to_list(v,8)
+        
         return returnVal
+    
+    #===== create value (specific)
+    
+    def _get_sol_json_value_dust_notifData(self,dust_notif):
+        
+        if getattr(dust_notif,'dstPort')==SolDefines.OAP_PORT:
+            pass
+        else:
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
+            sol_value   = self._fields_to_json_with_structure(
+                SolDefines.SOL_TYPE_DUST_NOTIFDATA,
+                dust_notif._asdict(),
+            )
+        
+        return (sol_type,sol_value)
     
     def create_value_SOL_TYPE_DUST_NOTIF_HRDEVICE(self,hr):
         '''
@@ -598,10 +615,10 @@ class Sol(object):
         return_val  = [ord(c) for c in return_val]
 
         return return_val
+    
+    #===== file manipulation
 
-    #======================== private =========================================
-
-    def _backUpUntilStartFrame(self,file_name,curOffset):
+    def _fileBackUpUntilStartFrame(self,file_name,curOffset):
         with open(file_name,'rb') as f:
             f.seek(curOffset,os.SEEK_SET)
             while True:
@@ -609,12 +626,14 @@ class Sol(object):
                 if byte==self.hdlc.HDLC_FLAG:
                     return f.tell()-1
                 f.seek(-2,os.SEEK_CUR)
-
+    
+    #===== miscellaneous
+    
     @staticmethod
     def _num_to_list(num, length):
         output = []
         for l in range(length):
-            output = [(num>>8*l)&0xff]+output
+            output = [int((num>>8*l)&0xff)]+output
         return output
 
     @staticmethod
@@ -629,7 +648,7 @@ class Sol(object):
         obj = {}
 
         # get SOL type
-        type_name = SolDefines.solTypeToString(SolDefines,type_id)
+        type_name = SolDefines.solTypeToTypeName(SolDefines,type_id)
 
         if type_id == SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE:
             # TODO An OAP parser in the Smartmesh SDK should be used instead
