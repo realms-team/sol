@@ -89,7 +89,7 @@ class Sol(object):
         
         # get sol_ts
         if timestamp==None:
-            sol_ts = time.time()
+            sol_ts = int(time.time()) # timestamp in seconds
         else:
             sol_ts = timestamp
         
@@ -114,6 +114,7 @@ class Sol(object):
         :return: A single binary SOL Object
         :rtype: list
         """
+        
         sol_bin = []
 
         # header
@@ -433,8 +434,6 @@ class Sol(object):
         
         sol_type   = None
         sol_value  = None
-        
-        print type(dust_notif)
         
         if   type(dust_notif)==self.connSerial.Tuple_notifData:
             (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
