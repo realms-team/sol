@@ -1,2 +1,5 @@
 *.pyc
+
+# tests
 temp_test_file.sol
+.cache/
