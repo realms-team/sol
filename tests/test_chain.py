@@ -2,7 +2,7 @@ import pytest
 import json
 import pprint
 
-from   SmartMeshSDK.IpMgrConnectorMux  import IpMgrConnectorMux
+from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
 #============================ defines ===============================
 
@@ -15,7 +15,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_DATA_RAW
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifData(    \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(    \
                 utcSecs      = 1111,                                 \
                 utcUsecs     = 222,                                  \
                 macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],             \
@@ -67,7 +67,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_HRDEVICE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
                 macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
                 payload      = [128, 24, 0, 0, 0, 40, 49, 25, 11,119, 0, 26, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],            \
             )",
@@ -135,7 +135,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
                 macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
                 payload      = [129, 31, 3, 0, 3, 0, 223, 0, 0, 0, 0, 0, 47, 0, 1, 0, 209, 0, 76, 0, 1, 0, 2, 0, 4, 0, 211, 0, 30, 0, 0, 0, 1],            \
             )",
@@ -219,7 +219,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_HRDISCOVERED
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifHealthReport( \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
                 macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
                 payload      = [130, 14, 3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1],            \
             )",
@@ -293,7 +293,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventPathCreate(   \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventPathCreate(   \
                 eventId      = 0x11223344,                                \
                 source       = [1,1,1,1,1,1,1,1],                         \
                 dest         = [2,2,2,2,2,2,2,2],                         \
@@ -345,7 +345,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTPATHDELETE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventPathDelete(   \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventPathDelete(   \
                 eventId      = 0x11223344,                                \
                 source       = [1,1,1,1,1,1,1,1],                         \
                 dest         = [2,2,2,2,2,2,2,2],                         \
@@ -397,7 +397,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTEJOIN
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteJoin(     \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteJoin(     \
                 eventId      = 0x11223344,                                \
                 macAddress   = [1,1,1,1,1,1,1,1],                         \
             )",
@@ -441,7 +441,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTECREATE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteCreate(   \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteCreate(   \
                 eventId      = 0x11223344,                                \
                 macAddress   = [1,1,1,1,1,1,1,1],                         \
                 moteId       = 0x0202,                                    \
@@ -489,7 +489,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTEDELETE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteDelete(   \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteDelete(   \
                 eventId      = 0x11223344,                                \
                 macAddress   = [1,1,1,1,1,1,1,1],                         \
                 moteId       = 0x0202,                                    \
@@ -537,7 +537,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTELOST
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteLost(     \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteLost(     \
                 eventId      = 0x11223344,                                \
                 macAddress   = [1,1,1,1,1,1,1,1],                         \
             )",
@@ -581,7 +581,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_eventMoteOperational(     \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteOperational(     \
                 eventId      = 0x11223344,                                \
                 macAddress   = [1,1,1,1,1,1,1,1],                         \
             )",
@@ -625,7 +625,7 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE
     {
         "dust":
-            "IpMgrConnectorMux.IpMgrConnectorMux.Tuple_notifData(         \
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
                 utcSecs      = 1111,                                      \
                 utcUsecs     = 222,                                       \
                 macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \

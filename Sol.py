@@ -26,7 +26,7 @@ import flatdict
 # project-specific
 from SmartMeshSDK.utils                 import FormatUtils
 from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
-from SmartMeshSDK.IpMgrConnectorMux     import IpMgrConnectorMux
+from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 from SmartMeshSDK.protocols.Hr          import HrParser
 from SmartMeshSDK.protocols.oap         import OAPDispatcher, \
                                                OAPMessage,    \
@@ -48,13 +48,13 @@ class Sol(object):
     '''
 
     def __init__(self):
-        self.fileLock = threading.RLock()
-        self.hdlc     = OpenHdlc.OpenHdlc()
-        self.hrParser = HrParser.HrParser()
-        self.api      = IpMgrDefinition.IpMgrDefinition()
-        self.mux      = IpMgrConnectorMux.IpMgrConnectorMux()
-        self.oapLock  = threading.RLock()
-        self.oap      = OAPDispatcher.OAPDispatcher()
+        self.fileLock   = threading.RLock()
+        self.hdlc       = OpenHdlc.OpenHdlc()
+        self.hrParser   = HrParser.HrParser()
+        self.api        = IpMgrDefinition.IpMgrDefinition()
+        self.connSerial = IpMgrConnectorSerial.IpMgrConnectorSerial()
+        self.oapLock    = threading.RLock()
+        self.oap        = OAPDispatcher.OAPDispatcher()
         self.oap.register_notif_handler(self._handle_oap_notif)
 
     #======================== public ==========================================
@@ -79,9 +79,9 @@ class Sol(object):
         
         # get sol_mac
         if type(dust_notif) in [
-                self.mux.Tuple_notifData,
-                self.mux.Tuple_notifIpData,
-                self.mux.Tuple_notifHealthReport,
+                self.connSerial.Tuple_notifData,
+                self.connSerial.Tuple_notifIpData,
+                self.connSerial.Tuple_notifHealthReport,
             ]:
             sol_mac = getattr(dust_notif,'macAddress')
         else:
@@ -434,9 +434,11 @@ class Sol(object):
         sol_type   = None
         sol_value  = None
         
-        if   type(dust_notif)==self.mux.Tuple_notifData:
+        print type(dust_notif)
+        
+        if   type(dust_notif)==self.connSerial.Tuple_notifData:
             (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
-        elif type(dust_notif)==self.mux.Tuple_notifHealthReport:
+        elif type(dust_notif)==self.connSerial.Tuple_notifHealthReport:
             (sol_type,sol_value) = self._get_sol_json_value_dust_hr(dust_notif)
         else:
             (sol_type,sol_value) = self._get_sol_json_value_generic(dust_notif)
@@ -547,7 +549,7 @@ class Sol(object):
             self.oap_mac   = None
             self.oap_notif = None
             self.oap.dispatch_pkt(
-                self.mux.NOTIFDATA,
+                self.connSerial.NOTIFDATA,
                 dust_notif
             )
             if self.oap_mac!=None and self.oap_notif!=None:
