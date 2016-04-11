@@ -1,3 +1,7 @@
+Master branch (stable version):
+[![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=master)](https://travis-ci.org/realms-team/sol)
+[![Code Health](https://landscape.io/github/realms-team/sol/master/landscape.svg?style=flat)](https://landscape.io/github/realms-team/sol/master)
+Develop branch (cutting edge version):
 [![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=develop)](https://travis-ci.org/realms-team/sol)
 [![Code Health](https://landscape.io/github/realms-team/sol/develop/landscape.svg?style=flat)](https://landscape.io/github/realms-team/sol/develop)
 
