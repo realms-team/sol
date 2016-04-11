@@ -610,7 +610,6 @@ class Sol(object):
         return return_val
 
     def _get_sol_binary_value_dust_hr_discovered(self,hr):
-        print hr
         return_val  = []
         return_val += [chr(hr['numJoinParents'])]
         return_val += [chr(hr['numItems'])]
