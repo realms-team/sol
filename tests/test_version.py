@@ -11,7 +11,5 @@ def test_version():
     import Sol
     sol = Sol.Sol()
     
-    assert type(sol.version)==dict
+    assert type(sol.version)==tuple
     assert len(sol.version)==4
-    for (k,v) in sol.version.items():
-        assert type(v)==int

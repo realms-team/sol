@@ -63,7 +63,7 @@ class Sol(object):
 
     @property
     def version(self):
-        return ver.SOL_VERSION
+        return ver.VERSION
 
     #===== "chain" of communication from the Dust manager to the server
     
