@@ -302,7 +302,7 @@ class Sol(object):
         
         sol_influxdb = {
             "timestamp"  : sol_json["timestamp"],
-            "tag"        : {
+            "tags"       : {
                 'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
             },
             "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
