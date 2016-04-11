@@ -52,7 +52,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
@@ -110,7 +110,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
@@ -189,7 +189,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
@@ -268,7 +268,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
@@ -330,7 +330,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -382,7 +382,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -428,7 +428,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -475,7 +475,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -523,7 +523,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -568,7 +568,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -612,7 +612,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
@@ -664,7 +664,7 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "timestamp"  : TIMESTAMP,
+                "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
