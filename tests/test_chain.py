@@ -53,7 +53,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIFDATA',
@@ -111,7 +111,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
@@ -190,7 +190,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
@@ -269,7 +269,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
@@ -331,7 +331,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHCREATE',
@@ -383,7 +383,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
@@ -429,7 +429,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEJOIN',
@@ -476,7 +476,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTECREATE',
@@ -524,7 +524,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEDELETE',
@@ -569,7 +569,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
@@ -613,7 +613,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
@@ -665,7 +665,7 @@ SOL_CHAIN_EXAMPLE = [
         "influxdb":
             {
                 "timestamp"  : TIMESTAMP,
-                "tag"        : {
+                "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
                 },
                 "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
