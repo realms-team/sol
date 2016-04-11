@@ -301,7 +301,7 @@ class Sol(object):
             fields[k] = v
         
         sol_influxdb = {
-            "timestamp"  : sol_json["timestamp"],
+            "time"       : sol_json["timestamp"]*1000000000,
             "tags"       : {
                 'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
             },
