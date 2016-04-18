@@ -19,6 +19,8 @@ import threading
 import time
 import array
 import datetime
+import glob
+import csv
 
 # third-party packages
 import flatdict
@@ -299,16 +301,25 @@ class Sol(object):
         fields = {}
         for (k,v) in f.items():
             fields[k] = v
-        
+
+        # format mac
+        mac = FormatUtils.formatBuffer(sol_json["mac"])
+
+        # get device location
+        (site, latitude, longitude) = self.get_location(mac)
+
         sol_influxdb = {
-            "time"       : sol_json["timestamp"]*1000000000,
-            "tags"       : {
-                'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
+            "time"          : sol_json["timestamp"]*1000000000,
+            "tags"          : {
+                'mac'       : mac,
+                'site'      : site,
+                'latitude'  : latitude,
+                'longitude' : longitude,
             },
             "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
             "fields"     : fields,
         }
-        
+
         return sol_influxdb
 
     #===== file manipulation
@@ -425,6 +436,28 @@ class Sol(object):
                     sol_jsonl += [o]
 
         return sol_jsonl
+
+    def get_location(self, mac):
+        """
+        Search for the sites csv files to get device location
+
+        :param str mac: device MAC address
+        :return: device site and location as (site, lat, long)
+        :rtpe: tuple
+        """
+
+        # loop through sites files
+        file_list = glob.glob(os.path.join(here,"sites/") + "*.csv")
+        for site_file in file_list:
+            with open(site_file,'r') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    # if MAC is found, return filename and device coordinates
+                    if row[0] == mac:
+                        site_name = os.path.splitext(os.path.basename(f.name))[0]
+                        return site_name, row[1], row[2]
+        return "unknown", "0", "0"
+
     
     #======================== private =========================================
     
