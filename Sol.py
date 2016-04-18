@@ -305,20 +305,36 @@ class Sol(object):
         # format mac
         mac = FormatUtils.formatBuffer(sol_json["mac"])
 
+        # get SOL type
+        measurement = SolDefines.solTypeToTypeName(SolDefines,sol_json['type'])
+
         # get device location
         (site, latitude, longitude) = self.get_location(mac)
 
-        sol_influxdb = {
-            "time"          : sol_json["timestamp"]*1000000000,
-            "tags"          : {
-                'mac'       : mac,
-                'site'      : site,
-                'latitude'  : latitude,
-                'longitude' : longitude,
-            },
-            "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
-            "fields"     : fields,
-        }
+        # convert SOL timestamp to UTC
+        utc_time = sol_json["timestamp"]*1000000000
+
+        if site == "unknown":
+            sol_influxdb = {
+                    "time"          : utc_time,
+                    "tags"          : {
+                        'mac'       : mac,
+                        },
+                    "measurement": measurement,
+                    "fields"     : fields,
+                    }
+        else:
+            sol_influxdb = {
+                    "time"          : utc_time,
+                    "tags"          : {
+                        'mac'       : mac,
+                        'site'      : site,
+                        'latitude'  : latitude,
+                        'longitude' : longitude,
+                        },
+                    "measurement": measurement,
+                    "fields"     : fields,
+                    }
 
         return sol_influxdb
 
