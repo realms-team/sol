@@ -24,7 +24,6 @@ import csv
 
 # third-party packages
 import flatdict
-import pdb
 
 # project-specific
 from SmartMeshSDK.utils                 import FormatUtils
@@ -340,36 +339,51 @@ class Sol(object):
         return sol_influxdb
 
     def influxdb_to_json(self, sol_influxdb):
+        """
+        Converts an Influxdb query reply into a list of dicts.
+
+        :param sol_influxdb dict: the result of a database query (sush as SELECT * FROM)
+        :return: a list of JSON SOL objects
+        :rtype: list
+
+        """
+
+        # verify influxdb data
+        if not ("results" in sol_influxdb and "series" in sol_influxdb["results"][0]):
+            raise ValueError("Influxdb data not recognized")
+
+        # init
         json_list = []
-        sol_influxdb = sol_influxdb["series"][0]
+
+        # remove unused headers
+        sol_influxdb = sol_influxdb["results"][0]["series"][0]
+
         for val in sol_influxdb['values']:
-                # convert to dict
-                d_val = dict(zip(sol_influxdb['columns'], val))
+            # convert to dict
+            d_val = dict(zip(sol_influxdb['columns'], val))
 
-                # convert to flatdict
-                f_val = flatdict.FlatDict(d_val).as_dict()
+            # parse specific HR_NEIGHBORS
+            f_val = flatdict.FlatDict(d_val).as_dict()
+            type_name = SolDefines.solTypeToTypeName(
+                            SolDefines,
+                            SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
+            neighbors = []
+            if sol_influxdb['name'] == type_name:
+                for item in f_val:
+                    if item.isdigit():
+                        node_id = str(item)
+                        if f_val[node_id]["rssi"] is not None:
+                            neighbors.append(f_val[node_id])
+                d_val["neighbors"] = neighbors
 
-                # parse HR_NEIGHBORS
-                type_name = SolDefines.solTypeToTypeName(SolDefines, SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
-                neighbors = []
-                if sol_influxdb['name'] == type_name:
-                    for i in range(0,23):
-                        node_id = str(i)
-                        if node_id in f_val.keys():
-                            if f_val[node_id]["rssi"] is not None:
-                                neighbors.append(f_val[node_id])
-                                f_val.pop(node_id)
-                    f_val["neighbors"] = neighbors
-                print f_val
-
-                # create final dict
-                jdic = {
-                        'type'      : sol_influxdb['name'],
-                        'mac'       : [int(b, 16) for b in d_val['mac'].split('-')],
-                        'value'     : f_val,
-                        'timestamp' : d_val['time'],
-                        }
-                json_list.append(jdic)
+            # create final dict
+            jdic = {
+                    'type'      : sol_influxdb['name'],
+                    'mac'       : d_val['mac'],
+                    'value'     : d_val,
+                    'timestamp' : d_val['time'],
+                    }
+            json_list.append(jdic)
         return json_list
 
     #===== file manipulation
