@@ -360,28 +360,35 @@ class Sol(object):
 
         for val in sol_influxdb['values']:
             # convert to dict
-            d_val = dict(zip(sol_influxdb['columns'], val))
+            d_influxdb = dict(zip(sol_influxdb['columns'], val))
+
+            # unflat dict
+            obj_value = flatdict.FlatDict(d_influxdb).as_dict()
 
             # parse specific HR_NEIGHBORS
-            f_val = flatdict.FlatDict(d_val).as_dict()
             type_name = SolDefines.solTypeToTypeName(
                             SolDefines,
                             SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
             neighbors = []
             if sol_influxdb['name'] == type_name:
-                for item in f_val:
-                    if item.isdigit():
-                        node_id = str(item)
-                        if f_val[node_id]["rssi"] is not None:
-                            neighbors.append(f_val[node_id])
-                d_val["neighbors"] = neighbors
+                for i in range(0,len(obj_value)): # DANGEROUS
+                    ngbr_id = str(i)
+                    if ngbr_id in obj_value:
+                        if obj_value[ngbr_id]["rssi"] is not None:
+                            neighbors.append(obj_value[ngbr_id])
+                            del obj_value[ngbr_id]
+                obj_value["neighbors"] = neighbors
+
+            # mac and time are not passed in the "value" field
+            del obj_value["mac"]
+            del obj_value["time"]
 
             # create final dict
             jdic = {
                     'type'      : sol_influxdb['name'],
-                    'mac'       : d_val['mac'],
-                    'value'     : d_val,
-                    'timestamp' : d_val['time'],
+                    'mac'       : d_influxdb['mac'],
+                    'value'     : obj_value,
+                    'timestamp' : d_influxdb['time'],
                     }
             json_list.append(jdic)
         return json_list
