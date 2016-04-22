@@ -19,6 +19,8 @@ import threading
 import time
 import array
 import datetime
+import glob
+import csv
 
 # third-party packages
 import flatdict
@@ -299,16 +301,41 @@ class Sol(object):
         fields = {}
         for (k,v) in f.items():
             fields[k] = v
-        
-        sol_influxdb = {
-            "timestamp"  : sol_json["timestamp"],
-            "tags"       : {
-                'mac'    : FormatUtils.formatBuffer(sol_json["mac"]),
-            },
-            "measurement": SolDefines.solTypeToTypeName(SolDefines,sol_json['type']),
-            "fields"     : fields,
-        }
-        
+
+        # format mac
+        mac = FormatUtils.formatBuffer(sol_json["mac"])
+
+        # get SOL type
+        measurement = SolDefines.solTypeToTypeName(SolDefines,sol_json['type'])
+
+        # get device location
+        (site, latitude, longitude) = self.get_location(mac)
+
+        # convert SOL timestamp to UTC
+        utc_time = sol_json["timestamp"]*1000000000
+
+        if site == "unknown":
+            sol_influxdb = {
+                    "time"          : utc_time,
+                    "tags"          : {
+                        'mac'       : mac,
+                        },
+                    "measurement": measurement,
+                    "fields"     : fields,
+                    }
+        else:
+            sol_influxdb = {
+                    "time"          : utc_time,
+                    "tags"          : {
+                        'mac'       : mac,
+                        'site'      : site,
+                        'latitude'  : latitude,
+                        'longitude' : longitude,
+                        },
+                    "measurement": measurement,
+                    "fields"     : fields,
+                    }
+
         return sol_influxdb
 
     #===== file manipulation
@@ -425,6 +452,28 @@ class Sol(object):
                     sol_jsonl += [o]
 
         return sol_jsonl
+
+    def get_location(self, mac):
+        """
+        Search for the sites csv files to get device location
+
+        :param str mac: device MAC address
+        :return: device site and location as (site, lat, long)
+        :rtpe: tuple
+        """
+
+        # loop through sites files
+        file_list = glob.glob(os.path.join(here,"sites/") + "*.csv")
+        for site_file in file_list:
+            with open(site_file,'r') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    # if MAC is found, return filename and device coordinates
+                    if row[0] == mac:
+                        site_name = os.path.splitext(os.path.basename(f.name))[0]
+                        return site_name, row[1], row[2]
+        return "unknown", "0", "0"
+
     
     #======================== private =========================================
     
