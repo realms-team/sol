@@ -376,7 +376,7 @@ class Sol(object):
                     if ngbr_id in obj_value:
                         if obj_value[ngbr_id]["rssi"] is not None:
                             neighbors.append(obj_value[ngbr_id])
-                            del obj_value[ngbr_id]
+                        del obj_value[ngbr_id]
                 obj_value["neighbors"] = neighbors
 
             # mac and time are not passed in the "value" field
