@@ -338,6 +338,61 @@ class Sol(object):
 
         return sol_influxdb
 
+    def influxdb_to_json(self, sol_influxdb):
+        """
+        Converts an Influxdb query reply into a list of dicts.
+
+        :param sol_influxdb dict: the result of a database query (sush as SELECT * FROM)
+        :return: a list of JSON SOL objects
+        :rtype: list
+
+        """
+
+        # verify influxdb data
+        if not ("results" in sol_influxdb and "series" in sol_influxdb["results"][0]):
+            raise ValueError("Influxdb data not recognized")
+
+        # init
+        json_list = []
+
+        # remove unused headers
+        sol_influxdb = sol_influxdb["results"][0]["series"][0]
+
+        for val in sol_influxdb['values']:
+            # convert to dict
+            d_influxdb = dict(zip(sol_influxdb['columns'], val))
+
+            # unflat dict
+            obj_value = flatdict.FlatDict(d_influxdb).as_dict()
+
+            # parse specific HR_NEIGHBORS
+            type_name = SolDefines.solTypeToTypeName(
+                            SolDefines,
+                            SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
+            neighbors = []
+            if sol_influxdb['name'] == type_name:
+                for i in range(0,len(obj_value)): # DANGEROUS
+                    ngbr_id = str(i)
+                    if ngbr_id in obj_value:
+                        if obj_value[ngbr_id]["rssi"] is not None:
+                            neighbors.append(obj_value[ngbr_id])
+                            del obj_value[ngbr_id]
+                obj_value["neighbors"] = neighbors
+
+            # mac and time are not passed in the "value" field
+            del obj_value["mac"]
+            del obj_value["time"]
+
+            # create final dict
+            jdic = {
+                    'type'      : sol_influxdb['name'],
+                    'mac'       : d_influxdb['mac'],
+                    'value'     : obj_value,
+                    'timestamp' : d_influxdb['time'],
+                    }
+            json_list.append(jdic)
+        return json_list
+
     #===== file manipulation
 
     def dumpToFile(self, sol_jsonl, file_name):
