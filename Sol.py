@@ -349,14 +349,14 @@ class Sol(object):
         """
 
         # verify influxdb data
-        if not ("results" in sol_influxdb and "series" in sol_influxdb["results"][0]):
+        if not ("series" in sol_influxdb):
             raise ValueError("Influxdb data not recognized")
 
         # init
         json_list = []
 
         # remove unused headers
-        sol_influxdb = sol_influxdb["results"][0]["series"][0]
+        sol_influxdb = sol_influxdb["series"][0]
 
         for val in sol_influxdb['values']:
             # convert to dict
