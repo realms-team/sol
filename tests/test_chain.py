@@ -687,13 +687,13 @@ SOL_CHAIN_EXAMPLE = [
                 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                 0x05,0x05,0x05,0x05,                       # timestamp
                 0x27,                                      # type
-                0x0a,0x03,                                 # value
+                0xff,0xff,                                 # value
             ],
         "http":
             '{                                             \
                 "v" : 0,                                   \
                 "o" : [                                    \
-                    "EwECAwQFBgcIBQUFBScKAw=="             \
+                    "EwECAwQFBgcIBQUFBSf//w=="             \
                 ]                                          \
             }',
         "influxdb":
