@@ -275,7 +275,7 @@ sol_types = [
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
-        'structure':    '>H',
+        'structure':    '>h',
         'fields':       ['temperature'],
     },
 ]
