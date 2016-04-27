@@ -668,7 +668,7 @@ SOL_CHAIN_EXAMPLE = [
                 data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
                                   0,   0,   0,  61,  34, 107,  74,   0,   \
                                  13, 104, 164,   0,   0, 117,  48,   1,   \
-                                 16,0x0a,0x03                             \
+                                 16,0xff,0xff                             \
                                ),                                         \
             )",
         "json":
@@ -677,7 +677,7 @@ SOL_CHAIN_EXAMPLE = [
                 "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                 "type"       : 0x27,
                 "value"      : {
-                    'temperature': 0x0a03,
+                    'temperature': -1,
                 },
             },
         "bin":
@@ -707,7 +707,7 @@ SOL_CHAIN_EXAMPLE = [
                 },
                 "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
                 "fields"     : {
-                    'temperature': 0x0a03,
+                    'temperature': -1,
                 },
             },
     },
