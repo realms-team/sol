@@ -711,6 +711,48 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
+    # SOL_TYPE_DUST_EVENTNETWORKRESET
+    {
+        "dust":
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventNetworkReset(         \
+                eventId      = 0x11223344,                                \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : MACMANAGER,
+                "type"       : 0x18,
+                "value"      : {},
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x18,                                      # type
+                                                           # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwMDAwMDAwMDBQUFBRg="                 \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "time"       : TIMESTAMP*1000000000,
+                "tags"       : {
+                    'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
+                },
+                "measurement": 'SOL_TYPE_DUST_EVENTNETWORKRESET',
+                "fields"     : {},
+            },
+    },
 ]
 
 @pytest.fixture(params=SOL_CHAIN_EXAMPLE)
