@@ -750,7 +750,7 @@ SOL_CHAIN_EXAMPLE = [
                     'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTNETWORKRESET',
-                "fields"     : {},
+                "fields"     : {'value': 'dummy'},
             },
     },
 ]
