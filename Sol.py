@@ -263,7 +263,7 @@ class Sol(object):
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_NEIGHBORS,len(sol_bin)]+sol_bin,
-            )['Neighbors']['neighbors']
+            )['Neighbors']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
@@ -288,8 +288,9 @@ class Sol(object):
         # fields
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             fields = {}
-            for n in sol_json["value"]:
+            for n in sol_json["value"]['neighbors']:
                 fields[str(n['neighborId'])] = n
+            fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
@@ -368,12 +369,12 @@ class Sol(object):
             obj_value = flatdict.FlatDict(d_influxdb).as_dict()
 
             # parse specific HR_NEIGHBORS
-            type_name = SolDefines.solTypeToTypeName(
-                            SolDefines,
-                            SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
+            hr_nghb_name    = SolDefines.solTypeToTypeName(
+                                SolDefines,
+                                SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
             neighbors = []
-            if sol_influxdb['name'] == type_name:
-                for i in range(0,len(obj_value)): # DANGEROUS
+            if sol_influxdb['name'] == hr_nghb_name:
+                for i in range(0,int(obj_value['numItems'])+1):
                     ngbr_id = str(i)
                     if ngbr_id in obj_value:
                         if obj_value[ngbr_id]["rssi"] is not None:
@@ -689,7 +690,7 @@ class Sol(object):
             assert 'Device'  not in hr
             assert 'Discovered' not in hr
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
-            sol_value   = hr['Neighbors']['neighbors']
+            sol_value   = hr['Neighbors']
         if 'Discovered' in hr:
             assert 'Device'  not in hr
             assert 'Neighbors' not in hr
@@ -699,8 +700,8 @@ class Sol(object):
     
     def _get_sol_binary_value_dust_hr_neighbors(self,hr):
         return_val  = []
-        return_val += [chr(len(hr))] # num_neighbors
-        for n in hr:
+        return_val += [chr(hr['numItems'])]
+        for n in hr['neighbors']:
             return_val += [struct.pack(
                 '>HBbHHH',
                 n['neighborId'],       # INT16U  H
