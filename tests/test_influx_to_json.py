@@ -20,6 +20,7 @@ SOL_CHAIN_EXAMPLE = [
                 "mac"        : "00-17-0d-00-00-58-32-36",
                 "type"       : "SOL_TYPE_DUST_NOTIF_HRNEIGHBORS",
                 "value"      : {
+                    "numItems"  : "2",
                     "latitude"  : "-33.11464",
                     "longitude" : "-68.48015",
                     "site"      : "ARG_junin",
@@ -40,7 +41,7 @@ SOL_CHAIN_EXAMPLE = [
                             'numTxFailures':    1,
                             'numRxPackets':     2,
                         },
-                    ]
+                    ],
                 },
             }],
         "influxdb_dump" : {
@@ -60,10 +61,11 @@ SOL_CHAIN_EXAMPLE = [
                     "2:numTxFailures",
                     "2:numTxPackets",
                     "2:rssi",
+                    "numItems",
                     "latitude",
                     "longitude",
                     "mac",
-                    "site"
+                    "site",
                     ],
                 "values"    : [[
                     TIMESTAMP,                      # time
@@ -79,6 +81,7 @@ SOL_CHAIN_EXAMPLE = [
                     1,                              # numTxFailures
                     76,                             # numTxPackets
                     -47,                            # rssi
+                    "2",                            # numItems
                     "-33.11464",                    # latitude
                     "-68.48015",                    # longitude
                     "00-17-0d-00-00-58-32-36",      # mac

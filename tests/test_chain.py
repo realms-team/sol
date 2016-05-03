@@ -151,32 +151,35 @@ SOL_CHAIN_EXAMPLE = [
                 "timestamp"  : TIMESTAMP,
                 "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                 "type"       : 0x11,
-                "value"      : [
-                    {
-                        'neighborId':       3,
-                        'neighborFlag':     0,
-                        'rssi':             -33,
-                        'numTxPackets':     0,
-                        'numTxFailures':    0,
-                        'numRxPackets':     47,
-                    },
-                    {
-                        'neighborId':       1,
-                        'neighborFlag':     0,
-                        'rssi':             -47,
-                        'numTxPackets':     76,
-                        'numTxFailures':    1,
-                        'numRxPackets':     2,
-                    },
-                    {
-                         'neighborId':      4,
-                         'neighborFlag':    0,
-                         'rssi':            -45,
-                         'numTxPackets':    30,
-                         'numTxFailures':   0,
-                         'numRxPackets':    1,
-                     },
-                ],
+                "value"      : {
+                    'numItems': 3,
+                    'neighbors': [
+                        {
+                            'neighborId':       3,
+                            'neighborFlag':     0,
+                            'rssi':             -33,
+                            'numTxPackets':     0,
+                            'numTxFailures':    0,
+                            'numRxPackets':     47,
+                        },
+                        {
+                            'neighborId':       1,
+                            'neighborFlag':     0,
+                            'rssi':             -47,
+                            'numTxPackets':     76,
+                            'numTxFailures':    1,
+                            'numRxPackets':     2,
+                        },
+                        {
+                            'neighborId':      4,
+                            'neighborFlag':    0,
+                            'rssi':            -45,
+                            'numTxPackets':    30,
+                            'numTxFailures':   0,
+                            'numRxPackets':    1,
+                        },
+                    ]
+                },
             },
         "bin":
             [
@@ -223,6 +226,7 @@ SOL_CHAIN_EXAMPLE = [
                     '4:numTxPackets':       30,
                     '4:numTxFailures':      0,
                     '4:numRxPackets':       1,
+                    'numItems':             3,
                 },
             },
     },
