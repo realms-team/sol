@@ -289,7 +289,7 @@ class Sol(object):
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             fields = {}
             for n in sol_json["value"]['neighbors']:
-                fields[str(n['neighborId'])] = n
+                fields["neighbors:" + str(n['neighborId'])] = n
             fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
