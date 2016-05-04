@@ -359,46 +359,41 @@ class Sol(object):
         json_list = []
 
         # remove unused headers
-        sol_influxdb = sol_influxdb["series"][0]
+        for serie in sol_influxdb["series"]:
+            for val in serie['values']:
+                # convert to dict
+                d_influxdb = dict(zip(serie['columns'], val))
 
-        for val in sol_influxdb['values']:
-            # convert to dict
-            d_influxdb = dict(zip(sol_influxdb['columns'], val))
+                # unflat dict
+                obj_value = flatdict.FlatDict(d_influxdb).as_dict()
 
-            # unflat dict
-            obj_value = flatdict.FlatDict(d_influxdb).as_dict()
+                # parse specific HR_NEIGHBORS
+                hr_nghb_name    = SolDefines.solTypeToTypeName(
+                                    SolDefines,
+                                    SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
+                if serie['name'] == hr_nghb_name:
+                    if "neighbors" not in sol_influxdb:
+                        neighbors = []
+                        num_neighbors = SolDefines.MAX_NUM_NEIGHBORS
+                        for i in range(0,num_neighbors+1):
+                            ngbr_id = str(i)
+                            if ngbr_id in obj_value:
+                                if obj_value[ngbr_id]["rssi"] is not None:
+                                    neighbors.append(obj_value[ngbr_id])
+                                del obj_value[ngbr_id]
+                        obj_value["neighbors"] = neighbors
 
-            # parse specific HR_NEIGHBORS
-            hr_nghb_name    = SolDefines.solTypeToTypeName(
-                                SolDefines,
-                                SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
-            neighbors = []
-            if sol_influxdb['name'] == hr_nghb_name:
-                num_neighbors = 0
-                if "numItems" in obj_value and obj_value['numItems'].isdigit():
-                    num_neighbors = int(obj_value['numItems'])
-                else:
-                    num_neighbors = SolDefines.MAX_NUM_NEIGHBORS
-                for i in range(0,num_neighbors+1):
-                    ngbr_id = str(i)
-                    if ngbr_id in obj_value:
-                        if obj_value[ngbr_id]["rssi"] is not None:
-                            neighbors.append(obj_value[ngbr_id])
-                        del obj_value[ngbr_id]
-                obj_value["neighbors"] = neighbors
+                # mac and time are not passed in the "value" field
+                del obj_value["time"]
 
-            # mac and time are not passed in the "value" field
-            del obj_value["mac"]
-            del obj_value["time"]
-
-            # create final dict
-            jdic = {
-                    'type'      : sol_influxdb['name'],
-                    'mac'       : d_influxdb['mac'],
-                    'value'     : obj_value,
-                    'timestamp' : d_influxdb['time'],
-                    }
-            json_list.append(jdic)
+                # create final dict
+                jdic = {
+                        'type'      : serie['name'],
+                        'mac'       : serie['tags']['mac'],
+                        'value'     : obj_value,
+                        'timestamp' : d_influxdb['time'],
+                        }
+                json_list.append(jdic)
         return json_list
 
     #===== file manipulation
