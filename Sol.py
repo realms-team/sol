@@ -374,7 +374,12 @@ class Sol(object):
                                 SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
             neighbors = []
             if sol_influxdb['name'] == hr_nghb_name:
-                for i in range(0,int(obj_value['numItems'])+1):
+                num_neighbors = 0
+                if "numItems" in obj_value:
+                    num_neighbors = int(obj_value['numItems'])
+                else:
+                    num_neighbors = SolDefines.MAX_NUM_NEIGHBORS
+                for i in range(0,num_neighbors+1):
                     ngbr_id = str(i)
                     if ngbr_id in obj_value:
                         if obj_value[ngbr_id]["rssi"] is not None:

@@ -59,6 +59,9 @@ def solStructure(type_id):
     else:
         raise ValueError("SOL structure not found for given id:%s" % type_id)
 
+### Dust Constants
+MAX_NUM_NEIGHBORS       = 100
+
 ### Header
 
 # version
