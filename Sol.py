@@ -375,7 +375,7 @@ class Sol(object):
             neighbors = []
             if sol_influxdb['name'] == hr_nghb_name:
                 num_neighbors = 0
-                if "numItems" in obj_value:
+                if "numItems" in obj_value and obj_value['numItems'].isdigit():
                     num_neighbors = int(obj_value['numItems'])
                 else:
                     num_neighbors = SolDefines.MAX_NUM_NEIGHBORS
