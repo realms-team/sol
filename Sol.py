@@ -372,18 +372,22 @@ class Sol(object):
                                     SolDefines,
                                     SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
                 if serie['name'] == hr_nghb_name:
-                    if "neighbors" not in sol_influxdb:
-                        neighbors = []
-                        num_neighbors = SolDefines.MAX_NUM_NEIGHBORS
-                        for i in range(0,num_neighbors+1):
-                            ngbr_id = str(i)
-                            if ngbr_id in obj_value:
-                                if obj_value[ngbr_id]["rssi"] is not None:
-                                    neighbors.append(obj_value[ngbr_id])
-                                del obj_value[ngbr_id]
-                        obj_value["neighbors"] = neighbors
+                    for i in range(0,len(obj_value["neighbors"])+1):
+                        ngbr_id = str(i)
 
-                # mac and time are not passed in the "value" field
+                        # old HR_NGBR parsing
+                        if ngbr_id in obj_value:
+                            if obj_value[ngbr_id]["neighborFlag"] is not None:
+                                obj_value["neighbors"][ngbr_id] = obj_value[ngbr_id]
+                            del obj_value[ngbr_id]
+
+                        # new HR_NGBR parsing
+                        if ngbr_id in obj_value["neighbors"]:
+                            neighbor = obj_value["neighbors"][ngbr_id]
+                            if obj_value["neighbors"][ngbr_id]["neighborFlag"] is None:
+                                del obj_value["neighbors"][ngbr_id]
+
+                # time is not passed in the "value" field
                 del obj_value["time"]
 
                 # create final dict
