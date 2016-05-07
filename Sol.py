@@ -375,17 +375,16 @@ class Sol(object):
                     for i in range(0,len(obj_value["neighbors"])+1):
                         ngbr_id = str(i)
 
+                        # new HR_NGBR parsing
+                        if ngbr_id in obj_value["neighbors"]:
+                            if obj_value["neighbors"][ngbr_id]["neighborFlag"] is None:
+                                del obj_value["neighbors"][ngbr_id]
+
                         # old HR_NGBR parsing
                         if ngbr_id in obj_value:
                             if obj_value[ngbr_id]["neighborFlag"] is not None:
                                 obj_value["neighbors"][ngbr_id] = obj_value[ngbr_id]
                             del obj_value[ngbr_id]
-
-                        # new HR_NGBR parsing
-                        if ngbr_id in obj_value["neighbors"]:
-                            neighbor = obj_value["neighbors"][ngbr_id]
-                            if obj_value["neighbors"][ngbr_id]["neighborFlag"] is None:
-                                del obj_value["neighbors"][ngbr_id]
 
                 # time is not passed in the "value" field
                 del obj_value["time"]
