@@ -660,7 +660,62 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_OAP_TEMPSAMPLE
+    # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with positive temperature value)
+    {
+        "dust":
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
+                utcSecs      = 1111,                                      \
+                utcUsecs     = 222,                                       \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
+                srcPort      = 0xf0b9,                                    \
+                dstPort      = 0xf0b9,                                    \
+                data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
+                                  0,   0,   0,  61,  34, 107,  74,   0,   \
+                                 13, 104, 164,   0,   0, 117,  48,   1,   \
+                                 16,0x0a,0x33                             \
+                               ),                                         \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x27,
+                "value"      : {
+                    'temperature': 0x0a33,
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x27,                                      # type
+                0x0a,0x33,                                 # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBScKMw=="             \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "time"       : TIMESTAMP*1000000000,
+                "tags"       : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
+                },
+                "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
+                "fields"     : {
+                    'temperature': 0x0a33,
+                },
+            },
+    },
+    # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with negative temperature value)
     {
         "dust":
             "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
