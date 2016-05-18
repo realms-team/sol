@@ -1,6 +1,7 @@
 import pytest
 import json
 import pprint
+import os
 
 from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
@@ -52,15 +53,18 @@ SOL_CHAIN_EXAMPLE = [
             }',
         "influxdb":
             {
-                "time"       : TIMESTAMP*1000000000,
-                "tags"       : {
-                    'mac'    : '01-02-03-04-05-06-07-08',
+                "time"          : TIMESTAMP*1000000000,
+                "tags"          : {
+                    'mac'       : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
                 },
-                "measurement": 'SOL_TYPE_DUST_NOTIFDATA',
-                "fields"     : {
-                    'srcPort': 0x0102,
-                    'dstPort': 0x0304,
-                    'data'   : '05-06-07-08',
+                "measurement"   : 'SOL_TYPE_DUST_NOTIFDATA',
+                "fields"        : {
+                    'srcPort'   : 0x0102,
+                    'dstPort'   : 0x0304,
+                    'data'      : '05-06-07-08',
                 },
             },
     },
@@ -113,6 +117,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
                 "fields"     : {
@@ -144,32 +151,35 @@ SOL_CHAIN_EXAMPLE = [
                 "timestamp"  : TIMESTAMP,
                 "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                 "type"       : 0x11,
-                "value"      : [
-                    {
-                        'neighborId':       3,
-                        'neighborFlag':     0,
-                        'rssi':             -33,
-                        'numTxPackets':     0,
-                        'numTxFailures':    0,
-                        'numRxPackets':     47,
-                    },
-                    {
-                        'neighborId':       1,
-                        'neighborFlag':     0,
-                        'rssi':             -47,
-                        'numTxPackets':     76,
-                        'numTxFailures':    1,
-                        'numRxPackets':     2,
-                    },
-                    {
-                         'neighborId':      4,
-                         'neighborFlag':    0,
-                         'rssi':            -45,
-                         'numTxPackets':    30,
-                         'numTxFailures':   0,
-                         'numRxPackets':    1,
-                     },
-                ],
+                "value"      : {
+                    'numItems': 3,
+                    'neighbors': [
+                        {
+                            'neighborId':       3,
+                            'neighborFlag':     0,
+                            'rssi':             -33,
+                            'numTxPackets':     0,
+                            'numTxFailures':    0,
+                            'numRxPackets':     47,
+                        },
+                        {
+                            'neighborId':       1,
+                            'neighborFlag':     0,
+                            'rssi':             -47,
+                            'numTxPackets':     76,
+                            'numTxFailures':    1,
+                            'numRxPackets':     2,
+                        },
+                        {
+                            'neighborId':      4,
+                            'neighborFlag':    0,
+                            'rssi':            -45,
+                            'numTxPackets':    30,
+                            'numTxFailures':   0,
+                            'numRxPackets':    1,
+                        },
+                    ]
+                },
             },
         "bin":
             [
@@ -192,27 +202,31 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
                 "fields"     : {
-                    '3:neighborId':         3,
-                    '3:neighborFlag':       0,
-                    '3:rssi':               -33,
-                    '3:numTxPackets':       0,
-                    '3:numTxFailures':      0,
-                    '3:numRxPackets':       47,
-                    '1:neighborId':         1,
-                    '1:neighborFlag':       0,
-                    '1:rssi':               -47,
-                    '1:numTxPackets':       76,
-                    '1:numTxFailures':      1,
-                    '1:numRxPackets':       2,
-                    '4:neighborId':         4,
-                    '4:neighborFlag':       0,
-                    '4:rssi':               -45,
-                    '4:numTxPackets':       30,
-                    '4:numTxFailures':      0,
-                    '4:numRxPackets':       1,
+                    'neighbors:3:neighborId':           3,
+                    'neighbors:3:neighborFlag':       0,
+                    'neighbors:3:rssi':               -33,
+                    'neighbors:3:numTxPackets':       0,
+                    'neighbors:3:numTxFailures':      0,
+                    'neighbors:3:numRxPackets':       47,
+                    'neighbors:1:neighborId':         1,
+                    'neighbors:1:neighborFlag':       0,
+                    'neighbors:1:rssi':               -47,
+                    'neighbors:1:numTxPackets':       76,
+                    'neighbors:1:numTxFailures':      1,
+                    'neighbors:1:numRxPackets':       2,
+                    'neighbors:4:neighborId':         4,
+                    'neighbors:4:neighborFlag':       0,
+                    'neighbors:4:rssi':               -45,
+                    'neighbors:4:numTxPackets':       30,
+                    'neighbors:4:numTxFailures':      0,
+                    'neighbors:4:numRxPackets':       1,
+                    'numItems':             3,
                 },
             },
     },
@@ -271,6 +285,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
                 "fields"     : {
@@ -333,6 +350,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHCREATE',
                 "fields"     : {
@@ -385,6 +405,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
                 "fields"     : {
@@ -431,6 +454,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEJOIN',
                 "fields"     : {
@@ -478,6 +504,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTECREATE',
                 "fields"     : {
@@ -526,6 +555,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEDELETE',
                 "fields"     : {
@@ -571,6 +603,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
                 "fields"     : {
@@ -615,6 +650,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
                 "fields"     : {
@@ -622,7 +660,7 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_OAP_TEMPSAMPLE
+    # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with positive temperature value)
     {
         "dust":
             "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
@@ -634,7 +672,7 @@ SOL_CHAIN_EXAMPLE = [
                 data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
                                   0,   0,   0,  61,  34, 107,  74,   0,   \
                                  13, 104, 164,   0,   0, 117,  48,   1,   \
-                                 16,0x0a,0x03                             \
+                                 16,0x0a,0x33                             \
                                ),                                         \
             )",
         "json":
@@ -643,7 +681,7 @@ SOL_CHAIN_EXAMPLE = [
                 "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                 "type"       : 0x27,
                 "value"      : {
-                    'temperature': 0x0a03,
+                    'temperature': 0x0a33,
                 },
             },
         "bin":
@@ -653,13 +691,13 @@ SOL_CHAIN_EXAMPLE = [
                 0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                 0x05,0x05,0x05,0x05,                       # timestamp
                 0x27,                                      # type
-                0x0a,0x03,                                 # value
+                0x0a,0x33,                                 # value
             ],
         "http":
             '{                                             \
                 "v" : 0,                                   \
                 "o" : [                                    \
-                    "EwECAwQFBgcIBQUFBScKAw=="             \
+                    "EwECAwQFBgcIBQUFBScKMw=="             \
                 ]                                          \
             }',
         "influxdb":
@@ -667,11 +705,111 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
                 },
                 "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
                 "fields"     : {
-                    'temperature': 0x0a03,
+                    'temperature': 0x0a33,
                 },
+            },
+    },
+    # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with negative temperature value)
+    {
+        "dust":
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
+                utcSecs      = 1111,                                      \
+                utcUsecs     = 222,                                       \
+                macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
+                srcPort      = 0xf0b9,                                    \
+                dstPort      = 0xf0b9,                                    \
+                data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
+                                  0,   0,   0,  61,  34, 107,  74,   0,   \
+                                 13, 104, 164,   0,   0, 117,  48,   1,   \
+                                 16,0xff,0xff                             \
+                               ),                                         \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x27,
+                "value"      : {
+                    'temperature': -1,
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x27,                                      # type
+                0xff,0xff,                                 # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBSf//w=="             \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "time"       : TIMESTAMP*1000000000,
+                "tags"       : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
+                },
+                "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
+                "fields"     : {
+                    'temperature': -1,
+                },
+            },
+    },
+    # SOL_TYPE_DUST_EVENTNETWORKRESET
+    {
+        "dust":
+            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventNetworkReset(         \
+                eventId      = 0x11223344,                                \
+            )",
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : MACMANAGER,
+                "type"       : 0x18,
+                "value"      : {},
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x18,                                      # type
+                                                           # value
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwMDAwMDAwMDBQUFBRg="                 \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "time"       : TIMESTAMP*1000000000,
+                "tags"       : {
+                    'mac'    : '03-03-03-03-03-03-03-03',
+                    'site'      : 'test1',
+                    'latitude'  : '-11.1111',
+                    'longitude' : '-22.2222',
+                },
+                "measurement": 'SOL_TYPE_DUST_EVENTNETWORKRESET',
+                "fields"     : {'value': 'dummy'},
             },
     },
 ]
@@ -680,13 +818,43 @@ SOL_CHAIN_EXAMPLE = [
 def sol_chain_example(request):
     return json.dumps(request.param)
 
+FILES = [
+    {
+        "file_name"     : "sites/test1.csv",
+        "file_content"  : (
+                        "03-03-03-03-03-03-03-03,-11.1111,-22.2222\n"
+                        "00-11-22-33-44-55-66-77,-33.3333,-44.4444\n"
+                    ),
+    },
+    {
+        "file_name"     : "sites/test2.csv",
+        "file_content"  : (
+                        "11-11-11-11-11-11-11-11,-11.1111,-22.2222\n"
+                        "01-02-03-04-05-06-07-08,-55.5555,-44.4444\n"
+                    ),
+    }
+]
+
+@pytest.fixture()
+def write_test_file(request):
+    for param in FILES:
+        test_file = open(param['file_name'], 'w')
+        test_file.write(param['file_content'])
+        test_file.close()
+
+    def remove_file():
+        for param in FILES:
+            os.remove(param['file_name'])
+
+    request.addfinalizer(remove_file)
+
 #============================ helpers ===============================
 
 pp = pprint.PrettyPrinter(indent=4)
 
 #============================ tests =================================
 
-def test_chain(sol_chain_example):
+def test_chain(sol_chain_example, write_test_file):
     sol_chain_example = json.loads(sol_chain_example)
 
     import Sol

@@ -263,7 +263,7 @@ class Sol(object):
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_NEIGHBORS,len(sol_bin)]+sol_bin,
-            )['Neighbors']['neighbors']
+            )['Neighbors']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
@@ -288,10 +288,13 @@ class Sol(object):
         # fields
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             fields = {}
-            for n in sol_json["value"]:
-                fields[str(n['neighborId'])] = n
+            for n in sol_json["value"]['neighbors']:
+                fields["neighbors:" + str(n['neighborId'])] = n
+            fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
+            fields = {'value':'dummy'}
         else:
             fields = sol_json["value"]
             for (k,v) in fields.items():
@@ -337,6 +340,64 @@ class Sol(object):
                     }
 
         return sol_influxdb
+
+    def influxdb_to_json(self, sol_influxdb):
+        """
+        Converts an Influxdb query reply into a list of dicts.
+
+        :param sol_influxdb dict: the result of a database query (sush as SELECT * FROM)
+        :return: a list of JSON SOL objects
+        :rtype: list
+
+        """
+
+        # verify influxdb data
+        if not ("series" in sol_influxdb):
+            raise ValueError("Influxdb data not recognized")
+
+        # init
+        json_list = []
+
+        # remove unused headers
+        for serie in sol_influxdb["series"]:
+            for val in serie['values']:
+                # convert to dict
+                d_influxdb = dict(zip(serie['columns'], val))
+
+                # unflat dict
+                obj_value = flatdict.FlatDict(d_influxdb).as_dict()
+
+                # parse specific HR_NEIGHBORS
+                hr_nghb_name    = SolDefines.solTypeToTypeName(
+                                    SolDefines,
+                                    SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
+                if serie['name'] == hr_nghb_name:
+                    for i in range(0,len(obj_value["neighbors"])+1):
+                        ngbr_id = str(i)
+
+                        # new HR_NGBR parsing
+                        if ngbr_id in obj_value["neighbors"]:
+                            if obj_value["neighbors"][ngbr_id]["neighborFlag"] is None:
+                                del obj_value["neighbors"][ngbr_id]
+
+                        # old HR_NGBR parsing
+                        if ngbr_id in obj_value:
+                            if obj_value[ngbr_id]["neighborFlag"] is not None:
+                                obj_value["neighbors"][ngbr_id] = obj_value[ngbr_id]
+                            del obj_value[ngbr_id]
+
+                # time is not passed in the "value" field
+                del obj_value["time"]
+
+                # create final dict
+                jdic = {
+                        'type'      : serie['name'],
+                        'mac'       : serie['tags']['mac'],
+                        'value'     : obj_value,
+                        'timestamp' : d_influxdb['time'],
+                        }
+                json_list.append(jdic)
+        return json_list
 
     #===== file manipulation
 
@@ -632,7 +693,7 @@ class Sol(object):
             assert 'Device'  not in hr
             assert 'Discovered' not in hr
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
-            sol_value   = hr['Neighbors']['neighbors']
+            sol_value   = hr['Neighbors']
         if 'Discovered' in hr:
             assert 'Device'  not in hr
             assert 'Neighbors' not in hr
@@ -642,8 +703,8 @@ class Sol(object):
     
     def _get_sol_binary_value_dust_hr_neighbors(self,hr):
         return_val  = []
-        return_val += [chr(len(hr))] # num_neighbors
-        for n in hr:
+        return_val += [chr(hr['numItems'])]
+        for n in hr['neighbors']:
             return_val += [struct.pack(
                 '>HBbHHH',
                 n['neighborId'],       # INT16U  H
