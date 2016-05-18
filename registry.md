@@ -44,9 +44,15 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
 |   `0x27` | [`DUST_OAP`]()                                                              |
-|   `0x28` | [`SENS_MB7636_D2S2N1L1G1`]()                                                |
+|   `0x28` | [`SENS_MB7636_D2S2N1L1G1`](#sens_mb7636_d2s2n1l1g1)                         |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
+
+#### SENS_MB7636_D2S2N1L1G1
+
+| distance | stdDev | count | count< | count> |
+|----------|--------|-------|--------|--------|
+|  INT16U  | INT16U | INT8U | INT8U  | INT8U  |
 
 #### DISTANCE_JUDD_RS232_RAW
 
