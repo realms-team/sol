@@ -147,6 +147,10 @@ class Sol(object):
             sol_bin    += self._get_sol_binary_value_dust_hr_discovered(
                 sol_json['value']
             )
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            sol_bin    += self._get_sol_binary_value_snapshot(
+                sol_json['value']
+            )
         else:
             sol_bin    += self._fields_to_binary_with_structure(
                 sol_json['type'],
@@ -268,6 +272,8 @@ class Sol(object):
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
             )['Discovered']
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            sol_json['value'] = self._binary_to_fields_snapshot(sol_bin)
         else:
             sol_json['value'] = self._binary_to_fields_with_structure(
                 sol_json['type'],
@@ -293,6 +299,14 @@ class Sol(object):
             fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            fields = {}
+            fields["mote"] = []
+            for mote in sol_json["value"]:
+                mote["macAddress"] = FormatUtils.formatBuffer(mote["macAddress"])
+                for path in mote["paths"]:
+                    path["macAddress"] = FormatUtils.formatBuffer(path["macAddress"])
+                fields["mote"].append(mote)
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
             fields = {'value':'dummy'}
         else:
@@ -632,6 +646,64 @@ class Sol(object):
         
         return returnVal
     
+    def _binary_to_fields_snapshot(self,binary):
+        return_val      = []
+
+        # set SNAPSHOT structure
+        mote_structure  = ">QHBBBBBIIIIII"
+        mote_fields     = [
+                    'macAddress','moteId','isAP','state','isRouting','numNbrs',
+                    'numGoodNbrs','requestedBw','totalNeededBw','assignedBw',
+                    'packetsReceived','packetsLost','avgLatency'
+                ]
+        mote_size       = struct.calcsize(mote_structure)
+        path_structure  = ">QBBBbb"
+        path_fields     = [
+                    'macAddress','direction','numLinks','quality',
+                    'rssiSrcDest','rssiDestSrc'
+                ]
+        path_size       = struct.calcsize(path_structure)
+
+        # get number of motes in snapshot
+        num_motes       = struct.unpack('>B',chr(binary[0]))[0]
+        binary          = binary[1:]
+
+        # parse SNAPSHOT
+        for i in range(0,num_motes):
+            # create mote dict
+            mote = {}
+            m = struct.unpack(mote_structure, ''.join(chr(b) for b in binary[:mote_size]))
+            binary          = binary[mote_size:]
+            for (k,v) in zip(mote_fields,m):
+                mote[k]= v
+
+            # format mac address
+            mote["macAddress"] = self._num_to_list(mote["macAddress"],8)
+
+            # get number of paths in mote
+            num_paths       = struct.unpack('>B',chr(binary[0]))[0]
+            binary          = binary[1:]
+
+            # create path dict
+            path_list       = []
+            for j in range(0,num_paths):
+                path = {}
+                p = struct.unpack('>QBBBbb',''.join(chr(b) for b in binary[:path_size]))
+                binary = binary[path_size:]
+                for (k,v) in zip(path_fields,p):
+                    path[k] = v
+
+                # format mac address
+                path["macAddress"] = self._num_to_list(path["macAddress"],8)
+
+                path_list.append(path)
+
+            mote["paths"]   = path_list
+
+            return_val.append(mote)
+
+        return return_val
+
     #===== create value (specific)
     
     def _get_sol_json_value_dust_notifData(self,dust_notif):
@@ -734,7 +806,52 @@ class Sol(object):
         return_val  = [ord(c) for c in return_val]
 
         return return_val
-    
+
+    def _get_sol_binary_value_snapshot(self,snapshot):
+        return_val  = ""
+
+        # adding number of items
+        return_val  += struct.pack('>B', len(snapshot))
+
+        # converting json to bytes
+        for mote in snapshot:
+            m = struct.pack(
+                    '>QHBBBBBIIIIII',
+                self._list_to_num(mote['macAddress']),      # INT64U  Q
+                mote['moteId'],                             # INT16U  H
+                mote['isAP'],                               # BOOL    B
+                mote['state'],                              # INT8U   B
+                mote['isRouting'],                          # BOOL    B
+                mote['numNbrs'],                            # INT8U   B
+                mote['numGoodNbrs'],                        # INT8U   B
+                mote['requestedBw'],                        # INT32U  I
+                mote['totalNeededBw'],                      # INT32U  I
+                mote['assignedBw'],                         # INT32U  I
+                mote['packetsReceived'],                    # INT32U  I
+                mote['packetsLost'],                        # INT32U  I
+                mote['avgLatency'],                         # INT32U  I
+            )
+            return_val  += m
+
+            # adding paths list size
+            return_val  += struct.pack('B', len(mote['paths']))
+
+            p = ""
+            for path in mote['paths']:
+                p += struct.pack(
+                    '>QBBBbb',
+                    self._list_to_num(path['macAddress']),  # INT64U  Q
+                    path['direction'],                      # INT8U   B
+                    path['numLinks'],                       # INT8U   B
+                    path['quality'],                        # INT8U   B
+                    path['rssiSrcDest'],                    # INT8    b
+                    path['rssiDestSrc'],                    # INT8    b
+                )
+            return_val += p
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
+        return return_val
+
     #===== file manipulation
 
     def _fileBackUpUntilStartFrame(self,file_name,curOffset):
