@@ -298,7 +298,6 @@ _no payload_
         'packetsReceived':     0x1c1d1e1f,    # INT32U  I
         'packetsLost':         0x20212223,    # INT32U  I
         'avgLatency':          0x24252627,    # INT32U  I
-        'stateTime':           0x28292a2b,    # INT32U  I
         'paths': [
             {
                 'macAddress':    (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
@@ -332,7 +331,6 @@ _no payload_
         'packetsReceived':     0x1c1d1e1f,    # INT32U
         'packetsLost':         0x20212223,    # INT32U
         'avgLatency':          0x24252627,    # INT32U
-        'stateTime':           0x28292a2b,    # INT32U
         'paths': [
             {
                 'macAddress':     (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
