@@ -305,8 +305,6 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_NOTIF_HRDEVICE + SOL_TYPE_DUST_NOTIF_HRDISCOVERED
-    # TODO [128, 24, 0, 0, 0, 71, 49, 16, 10, 56, 1, 96, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 14, 3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1]
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust":
@@ -770,34 +768,116 @@ SOL_CHAIN_EXAMPLE = [
                 },
             },
     },
-    # SOL_TYPE_DUST_EVENTNETWORKRESET
+    # SOL_TYPE_DUST_SNAPSHOT
     {
-        "dust":
-            "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventNetworkReset(         \
-                eventId      = 0x11223344,                                \
-            )",
         "json":
             {
                 "timestamp"  : TIMESTAMP,
                 "mac"        : MACMANAGER,
-                "type"       : 0x18,
-                "value"      : {},
+                "type"       : 0x20,
+                "value"      : [
+                    {   'macAddress':          [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                        'moteId':              0x090a,      # INT16U  H
+                        'isAP':                0x0b,        # BOOL    B
+                        'state':               0x0c,        # INT8U   B
+                        'isRouting':           0x0d,        # BOOL    B
+                        'numNbrs':             0x0e,        # INT8U   B
+                        'numGoodNbrs':         0x0f,        # INT8U   B
+                        'requestedBw':         0x10111213,  # INT32U  I
+                        'totalNeededBw':       0x14151617,  # INT32U  I
+                        'assignedBw':          0x18191a1b,  # INT32U  I
+                        'packetsReceived':     0x1c1d1e1f,  # INT32U  I
+                        'packetsLost':         0x20212223,  # INT32U  I
+                        'avgLatency':          0x24252627,  # INT32U  I
+                        'paths': [
+                            {
+                                'macAddress':   [0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18],
+                                'direction':    0x2c,       # INT8U   B
+                                'numLinks':     0x2d,       # INT8U   B
+                                'quality':      0x2e,       # INT8U   B
+                                'rssiSrcDest':  -1,         # INT8    b
+                                'rssiDestSrc':  -2,         # INT8    b
+                            },
+                            {
+                                'macAddress':   [0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28],
+                                'direction':    0x2c,       # INT8U  B
+                                'numLinks':     0x2d,       # INT8U  B
+                                'quality':      0x2e,       # INT8U  B
+                                'rssiSrcDest':  -1,         # INT8   b
+                                'rssiDestSrc':  -2,         # INT8   b
+                            },
+                        ],
+                    },
+                    {
+                        'macAddress':           [0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38],
+                        'moteId':               0x090a,     # INT16U
+                        'isAP':                 0x0b,       # BOOL
+                        'state':                0x0c,       # INT8U
+                        'isRouting':            0x0d,       # BOOL
+                        'numNbrs':              0x0e,       # INT8U
+                        'numGoodNbrs':          0x0f,       # INT8U
+                        'requestedBw':          0x10111213, # INT32U
+                        'totalNeededBw':        0x14151617, # INT32U
+                        'assignedBw':           0x18191a1b, # INT32U
+                        'packetsReceived':      0x1c1d1e1f, # INT32U
+                        'packetsLost':          0x20212223, # INT32U
+                        'avgLatency':           0x24252627, # INT32U
+                        'paths': [
+                            {
+                                'macAddress':   [0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48],
+                                'direction':    0x2c,       # INT8U
+                                'numLinks':     0x2d,       # INT8U
+                                'quality':      0x2e,       # INT8U
+                                'rssiSrcDest':  -1,         # INT8
+                                'rssiDestSrc':  -2,         # INT8
+                            },
+                        ],
+                    },
+                ]
             },
         "bin":
             [
                 #ver   type   MAC    ts    typelen length
-                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                0x05,0x05,0x05,0x05,                       # timestamp
-                0x18,                                      # type
-                                                           # value
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,        # header
+                0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,        # mac
+                0x05,0x05,0x05,0x05,                            # timestamp
+                0x20,                                           # type
+
+                # value
+                0x02,                                           # number of motes
+                # -- first mote
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,        # value_macAddr
+                0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
+                0x10,0x11,0x12,0x13,                            # value_requestedBw
+                0x14,0x15,0x16,0x17,                            # value_totalNeededBw
+                0x18,0x19,0x1a,0x1b,                            # value_assignedBw
+                0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
+                0x20,0x21,0x22,0x23,                            # value_packetsLost
+                0x24,0x25,0x26,0x27,                            # value_avgLatency
+                0x02,                                           # number of paths
+                0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,        # value_path_macAddr
+                0x2c,0x2d,0x2e,0xff,0xfe,                       # --
+                0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,        # value_path_macAddr
+                0x2c,0x2d,0x2e,0xff,0xfe,                       # --
+                # -- second mote
+                0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,        # value_macAddr
+                0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
+                0x10,0x11,0x12,0x13,                            # value_requestedBw
+                0x14,0x15,0x16,0x17,                            # value_totalNeededBw
+                0x18,0x19,0x1a,0x1b,                            # value_assignedBw
+                0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
+                0x20,0x21,0x22,0x23,                            # value_packetsLost
+                0x24,0x25,0x26,0x27,                            # value_avgLatency
+                0x01,                                           # number of paths
+                0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,        # value_paths_macAddr
+                0x2c,0x2d,0x2e,0xff,0xfe,                       # --
             ],
         "http":
-            '{                                             \
-                "v" : 0,                                   \
-                "o" : [                                    \
-                    "EwMDAwMDAwMDBQUFBRg="                 \
-                ]                                          \
+            '{                                              \
+                "v" : 0,                                    \
+                "o" : [                                     \
+                "EwMDAwMDAwMDBQUFBSACAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAhESExQVFhcYLC0u//4hIiMkJSYnKCwtLv/+MTIzNDU2NzgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAUFCQ0RFRkdILC0u//4="\
+                ]                                           \
             }',
         "influxdb":
             {
@@ -807,11 +887,57 @@ SOL_CHAIN_EXAMPLE = [
                     'site'      : 'test1',
                     'latitude'  : '-11.1111',
                     'longitude' : '-22.2222',
-                },
-                "measurement": 'SOL_TYPE_DUST_EVENTNETWORKRESET',
-                "fields"     : {'value': 'dummy'},
+                    },
+                "measurement": 'SOL_TYPE_DUST_SNAPSHOT',
+                "fields"     : {
+                    'mote:0:macAddress':            '01-02-03-04-05-06-07-08',
+                    'mote:0:moteId':                0x090a,      # INT16U  H
+                    'mote:0:isAP':                  0x0b,        # BOOL    B
+                    'mote:0:state':                 0x0c,        # INT8U   B
+                    'mote:0:isRouting':             0x0d,        # BOOL    B
+                    'mote:0:numNbrs':               0x0e,        # INT8U   B
+                    'mote:0:numGoodNbrs':           0x0f,        # INT8U   B
+                    'mote:0:requestedBw':           0x10111213,  # INT32U  I
+                    'mote:0:totalNeededBw':         0x14151617,  # INT32U  I
+                    'mote:0:assignedBw':            0x18191a1b,  # INT32U  I
+                    'mote:0:packetsReceived':       0x1c1d1e1f,  # INT32U  I
+                    'mote:0:packetsLost':           0x20212223,  # INT32U  I
+                    'mote:0:avgLatency':            0x24252627,  # INT32U  I
+                    'mote:0:paths:0:macAddress':    '11-12-13-14-15-16-17-18',
+                    'mote:0:paths:0:direction':     0x2c,       # INT8U   B
+                    'mote:0:paths:0:numLinks':      0x2d,       # INT8U   B
+                    'mote:0:paths:0:quality':       0x2e,       # INT8U   B
+                    'mote:0:paths:0:rssiSrcDest':   -1,         # INT8    b
+                    'mote:0:paths:0:rssiDestSrc':   -2,         # INT8    b
+                    'mote:0:paths:1:macAddress':    '21-22-23-24-25-26-27-28',
+                    'mote:0:paths:1:direction':     0x2c,       # INT8U  B
+                    'mote:0:paths:1:numLinks':      0x2d,       # INT8U  B
+                    'mote:0:paths:1:quality':       0x2e,       # INT8U  B
+                    'mote:0:paths:1:rssiSrcDest':   -1,         # INT8   b
+                    'mote:0:paths:1:rssiDestSrc':   -2,         # INT8   b
+
+                    'mote:1:macAddress':            '31-32-33-34-35-36-37-38',
+                    'mote:1:moteId':                0x090a,     # INT16U
+                    'mote:1:isAP':                  0x0b,       # BOOL
+                    'mote:1:state':                 0x0c,       # INT8U
+                    'mote:1:isRouting':             0x0d,       # BOOL
+                    'mote:1:numNbrs':               0x0e,       # INT8U
+                    'mote:1:numGoodNbrs':           0x0f,       # INT8U
+                    'mote:1:requestedBw':           0x10111213, # INT32U
+                    'mote:1:totalNeededBw':         0x14151617, # INT32U
+                    'mote:1:assignedBw':            0x18191a1b, # INT32U
+                    'mote:1:packetsReceived':       0x1c1d1e1f, # INT32U
+                    'mote:1:packetsLost':           0x20212223, # INT32U
+                    'mote:1:avgLatency':            0x24252627, # INT32U
+                    'mote:1:paths:0:macAddress':    '41-42-43-44-45-46-47-48',
+                    'mote:1:paths:0:direction':     0x2c,       # INT8U
+                    'mote:1:paths:0:numLinks':      0x2d,       # INT8U
+                    'mote:1:paths:0:quality':       0x2e,       # INT8U
+                    'mote:1:paths:0:rssiSrcDest':   -1,         # INT8
+                    'mote:1:paths:0:rssiDestSrc':   -2,         # INT8
+                }
             },
-    },
+        },
 ]
 
 @pytest.fixture(params=SOL_CHAIN_EXAMPLE)
@@ -860,16 +986,20 @@ def test_chain(sol_chain_example, write_test_file):
     import Sol
     sol = Sol.Sol()
 
-    # dust->json
-    sol_json  = sol.dust_to_json(
-       eval(sol_chain_example["dust"]),
-       macManager  = MACMANAGER,
-       timestamp   = TIMESTAMP,
-    )
-    print '=====\ndust->json'
-    print sol_json
-    print sol_chain_example["json"]
-    assert sol_json==sol_chain_example["json"]
+    sol_json = None
+    if "dust" in sol_chain_example:
+        # dust->json
+        sol_json  = sol.dust_to_json(
+           eval(sol_chain_example["dust"]),
+           macManager  = MACMANAGER,
+           timestamp   = TIMESTAMP,
+        )
+        print '=====\ndust->json'
+        print sol_json
+        print sol_chain_example["json"]
+        assert sol_json==sol_chain_example["json"]
+    else:
+        sol_json = sol_chain_example["json"]
     
     # json->bin
     sol_bin   = sol.json_to_bin(sol_json)
