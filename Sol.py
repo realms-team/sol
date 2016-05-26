@@ -312,8 +312,12 @@ class Sol(object):
         else:
             fields = sol_json["value"]
             for (k,v) in fields.items():
-                if type(v)==list:
-                    fields[k] = FormatUtils.formatBuffer(v)
+                if type(v)==list: # mac
+                    if k in ['macAddress','source','dest']:
+                        fields[k] = FormatUtils.formatBuffer(v)
+                    elif k in ['sol_version','sdk_version','solmanager_version']:
+                        fields[k] = ".".join(str(i) for i in v)
+
         f = flatdict.FlatDict(fields)
         fields = {}
         for (k,v) in f.items():
@@ -643,6 +647,8 @@ class Sol(object):
         for (k,v) in returnVal.items():
             if k in ['macAddress','source','dest']:
                 returnVal[k] = self._num_to_list(v,8)
+            elif k in ['sol_version','sdk_version','solmanager_version']:
+                returnVal[k] = self._num_to_list(v,4)
         
         return returnVal
     

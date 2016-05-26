@@ -64,7 +64,10 @@ SOL_CHAIN_EXAMPLE = [
                 "fields"        : {
                     'srcPort'   : 0x0102,
                     'dstPort'   : 0x0304,
-                    'data'      : '05-06-07-08',
+                    'data:0'    : 0x05,
+                    'data:1'    : 0x06,
+                    'data:2'    : 0x07,
+                    'data:3'    : 0x08,
                 },
             },
     },
@@ -935,9 +938,57 @@ SOL_CHAIN_EXAMPLE = [
                     'mote:1:paths:0:quality':       0x2e,       # INT8U
                     'mote:1:paths:0:rssiSrcDest':   -1,         # INT8
                     'mote:1:paths:0:rssiDestSrc':   -2,         # INT8
-                }
-            },
+            }
         },
+    },
+    # SOL_TYPE_SOLMANAGER_STATS
+    {
+        "json":
+            {
+                "timestamp"  : TIMESTAMP,
+                "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                "type"       : 0x28,
+                "value"      : {
+                    "sol_version"           : [1,2,3,4],
+                    "solmanager_version"    : [5,6,7,8],
+                    "sdk_version"           : [9,1,2,3],
+                },
+            },
+        "bin":
+            [
+                #ver   type   MAC    ts    typelen length
+                0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                0x05,0x05,0x05,0x05,                       # timestamp
+                0x28,                                      # type
+                0x01,0x02,0x03,0x04,                       # value_solversion
+                0x05,0x06,0x07,0x08,                       # value_solmanagerversion
+                0x09,0x01,0x02,0x03,                       # value_sdkversion
+            ],
+        "http":
+            '{                                             \
+                "v" : 0,                                   \
+                "o" : [                                    \
+                    "EwECAwQFBgcIBQUFBSgBAgMEBQYHCAkBAgM=" \
+                ]                                          \
+            }',
+        "influxdb":
+            {
+                "time"       : TIMESTAMP*1000000000,
+                "tags"       : {
+                    'mac'    : '01-02-03-04-05-06-07-08',
+                    'site'      : 'test2',
+                    'latitude'  : '-55.5555',
+                    'longitude' : '-44.4444',
+                },
+                "measurement": 'SOL_TYPE_SOLMANAGER_STATS',
+                "fields"     : {
+                    "sol_version"           : "1.2.3.4",
+                    "solmanager_version"    : "5.6.7.8",
+                    "sdk_version"           : "9.1.2.3",
+                },
+            },
+    },
 ]
 
 @pytest.fixture(params=SOL_CHAIN_EXAMPLE)

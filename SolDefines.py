@@ -35,6 +35,7 @@ SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
+SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -280,5 +281,11 @@ sol_types = [
         'description':  '',
         'structure':    '>h',
         'fields':       ['temperature'],
+    },
+    {
+        'type':         SOL_TYPE_SOLMANAGER_STATS,
+        'description':  '',
+        'structure':    '>III',
+        'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
     },
 ]
