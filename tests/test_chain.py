@@ -7,8 +7,15 @@ from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
 #============================ defines ===============================
 
-MACMANAGER = [3,3,3,3,3,3,3,3]
-TIMESTAMP   = 0x05050505
+MACMANAGER   = [3,3,3,3,3,3,3,3]
+TIMESTAMP    = 0x05050505
+TAGS_DEFAULT = { "mac" : "03-03-03-03-03-03-03-03"}
+TAGS         = {
+    "mac"       : "01-02-03-04-05-06-07-08",
+    "site"      : "super_site",
+    "latitude"  : 55.5555,
+    "longitude" : -44.4444,
+}
 
 #============================ fixtures ==============================
 
@@ -56,9 +63,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"          : TIMESTAMP*1000000000,
                 "tags"          : {
                     'mac'       : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement"   : 'SOL_TYPE_DUST_NOTIFDATA',
                 "fields"        : {
@@ -120,9 +127,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
                 "fields"     : {
@@ -205,9 +212,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
                 "fields"     : {
@@ -288,9 +295,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
                 "fields"     : {
@@ -351,9 +358,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHCREATE',
                 "fields"     : {
@@ -406,9 +410,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
                 "fields"     : {
@@ -455,9 +456,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEJOIN',
                 "fields"     : {
@@ -505,9 +503,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTECREATE',
                 "fields"     : {
@@ -556,9 +551,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEDELETE',
                 "fields"     : {
@@ -604,9 +596,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
                 "fields"     : {
@@ -651,9 +640,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                 },
                 "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
                 "fields"     : {
@@ -706,9 +692,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
                 "fields"     : {
@@ -761,9 +747,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
                 "fields"     : {
@@ -887,9 +873,6 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '03-03-03-03-03-03-03-03',
-                    'site'      : 'test1',
-                    'latitude'  : '-11.1111',
-                    'longitude' : '-22.2222',
                     },
                 "measurement": 'SOL_TYPE_DUST_SNAPSHOT',
                 "fields"     : {
@@ -977,9 +960,9 @@ SOL_CHAIN_EXAMPLE = [
                 "time"       : TIMESTAMP*1000000000,
                 "tags"       : {
                     'mac'    : '01-02-03-04-05-06-07-08',
-                    'site'      : 'test2',
-                    'latitude'  : '-55.5555',
-                    'longitude' : '-44.4444',
+                    'site'      : 'super_site',
+                    'latitude'  : 55.5555,
+                    'longitude' : -44.4444,
                 },
                 "measurement": 'SOL_TYPE_SOLMANAGER_STATS',
                 "fields"     : {
@@ -995,43 +978,13 @@ SOL_CHAIN_EXAMPLE = [
 def sol_chain_example(request):
     return json.dumps(request.param)
 
-FILES = [
-    {
-        "file_name"     : "sites/test1.csv",
-        "file_content"  : (
-                        "03-03-03-03-03-03-03-03,-11.1111,-22.2222\n"
-                        "00-11-22-33-44-55-66-77,-33.3333,-44.4444\n"
-                    ),
-    },
-    {
-        "file_name"     : "sites/test2.csv",
-        "file_content"  : (
-                        "11-11-11-11-11-11-11-11,-11.1111,-22.2222\n"
-                        "01-02-03-04-05-06-07-08,-55.5555,-44.4444\n"
-                    ),
-    }
-]
-
-@pytest.fixture()
-def write_test_file(request):
-    for param in FILES:
-        test_file = open(param['file_name'], 'w')
-        test_file.write(param['file_content'])
-        test_file.close()
-
-    def remove_file():
-        for param in FILES:
-            os.remove(param['file_name'])
-
-    request.addfinalizer(remove_file)
-
 #============================ helpers ===============================
 
 pp = pprint.PrettyPrinter(indent=4)
 
 #============================ tests =================================
 
-def test_chain(sol_chain_example, write_test_file):
+def test_chain(sol_chain_example):
     sol_chain_example = json.loads(sol_chain_example)
 
     import Sol
@@ -1083,7 +1036,11 @@ def test_chain(sol_chain_example, write_test_file):
     assert sol_json==sol_chain_example["json"]
     
     # json->influxdb
-    sol_influxdb  = sol.json_to_influxdb(sol_json)
+    sol_influxdb = None
+    if MACMANAGER == sol_json['mac']:
+        sol_influxdb = sol.json_to_influxdb(sol_json,TAGS_DEFAULT)
+    else:
+        sol_influxdb = sol.json_to_influxdb(sol_json,TAGS)
     print '=====\njson->influxdb'
     pp.pprint(sol_influxdb)
     print sol_chain_example["influxdb"]
