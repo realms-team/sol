@@ -43,7 +43,8 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
 |   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
-|   `0x27` | [`DUST_OAP`]()                                                              |
+|   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
+|   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -362,3 +363,16 @@ Where each _path_:
 | macAddress | direction |  numLinks | quality | rssiSrcDest | rssiDestSrc |
 |------------|-----------|-----------|---------|-------------|-------------|
 |         8B |     INT8U |     INT8U |   INT8U |        INT8 |        INT8 |
+
+#### DUST_OAP_TEMPSAMPLE
+
+| temperature |
+|-------------|
+|       INT16 |
+
+#### SOLMANAGER_STATS
+
+| sol_version | solmanager_version | sdk_version |
+|-------------|--------------------|-------------|
+|      INT32U |             INT32U |      INT32U |
+
