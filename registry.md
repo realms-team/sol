@@ -44,17 +44,29 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
 |   `0x27` | [`DUST_OAP`]()                                                              |
-|   `0x28` | [`SENS_MB7636_D2S2N1L1G1`](#sens_mb7636_d2s2n1l1g1)                         |
+|   `0x28` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
 |   `0x29` | [`SENS_GS3_I1D2T2E2N1`](#sens_gs3_i1d2t2e2n1)                               |
 |   `0x30` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
-#### SENS_MB7636_D2S2N1L1G1
+#### SENS_MB7363_D2S2N1L1G1
 
 | distance | stdDev | count | count< | count> |
 |----------|--------|-------|--------|--------|
 |  INT16U  | INT16U | INT8U | INT8U  | INT8U  |
+
+#### SENS_GS3_I1D2T2E2N1
+
+| id       | dielectric | temp   | elec conduct | count  |
+|----------|------------|--------|--------------|--------|
+|  INT8U   | INT16U     | INT16U | INT16U       | INT8U  |
+
+#### SENS_SHT25_T2N1H2N1
+
+| temp_raw | tcount | rhumidity | rhcount  |
+|----------|--------|-----------|----------|
+|  INT16U  | INT16U | INT16U    | INT8U    |
 
 #### DISTANCE_JUDD_RS232_RAW
 
