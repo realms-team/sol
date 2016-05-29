@@ -43,10 +43,11 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
 |   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
-|   `0x27` | [`DUST_OAP`]()                                                              |
-|   `0x28` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
-|   `0x29` | [`SENS_GS3_I1D2T2E2N1`](#sens_gs3_i1d2t2e2n1)                               |
-|   `0x30` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
+|   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
+|   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
+|   `0x29` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
+|   `0x30` | [`SENS_GS3_I1D2T2E2N1`](#sens_gs3_i1d2t2e2n1)                               |
+|   `0x31` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -319,7 +320,6 @@ _no payload_
         'packetsReceived':     0x1c1d1e1f,    # INT32U  I
         'packetsLost':         0x20212223,    # INT32U  I
         'avgLatency':          0x24252627,    # INT32U  I
-        'stateTime':           0x28292a2b,    # INT32U  I
         'paths': [
             {
                 'macAddress':    (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
@@ -353,7 +353,6 @@ _no payload_
         'packetsReceived':     0x1c1d1e1f,    # INT32U
         'packetsLost':         0x20212223,    # INT32U
         'avgLatency':          0x24252627,    # INT32U
-        'stateTime':           0x28292a2b,    # INT32U
         'paths': [
             {
                 'macAddress':     (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
@@ -385,3 +384,16 @@ Where each _path_:
 | macAddress | direction |  numLinks | quality | rssiSrcDest | rssiDestSrc |
 |------------|-----------|-----------|---------|-------------|-------------|
 |         8B |     INT8U |     INT8U |   INT8U |        INT8 |        INT8 |
+
+#### DUST_OAP_TEMPSAMPLE
+
+| temperature |
+|-------------|
+|       INT16 |
+
+#### SOLMANAGER_STATS
+
+| sol_version | solmanager_version | sdk_version |
+|-------------|--------------------|-------------|
+|      INT32U |             INT32U |      INT32U |
+

@@ -19,8 +19,6 @@ import threading
 import time
 import array
 import datetime
-import glob
-import csv
 
 # third-party packages
 import flatdict
@@ -147,6 +145,10 @@ class Sol(object):
             sol_bin    += self._get_sol_binary_value_dust_hr_discovered(
                 sol_json['value']
             )
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            sol_bin    += self._get_sol_binary_value_snapshot(
+                sol_json['value']
+            )
         else:
             sol_bin    += self._fields_to_binary_with_structure(
                 sol_json['type'],
@@ -268,6 +270,8 @@ class Sol(object):
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
             )['Discovered']
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            sol_json['value'] = self._binary_to_fields_snapshot(sol_bin)
         else:
             sol_json['value'] = self._binary_to_fields_with_structure(
                 sol_json['type'],
@@ -276,7 +280,7 @@ class Sol(object):
         
         return sol_json
     
-    def json_to_influxdb(self,sol_json):
+    def json_to_influxdb(self,sol_json,tags):
         """
         Convert a JSON SOL object into a InfluxDB point
         
@@ -293,51 +297,42 @@ class Sol(object):
             fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
+        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            fields = {}
+            fields["mote"] = []
+            for mote in sol_json["value"]:
+                mote["macAddress"] = FormatUtils.formatBuffer(mote["macAddress"])
+                for path in mote["paths"]:
+                    path["macAddress"] = FormatUtils.formatBuffer(path["macAddress"])
+                fields["mote"].append(mote)
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
             fields = {'value':'dummy'}
         else:
             fields = sol_json["value"]
             for (k,v) in fields.items():
-                if type(v)==list:
-                    fields[k] = FormatUtils.formatBuffer(v)
+                if type(v)==list: # mac
+                    if k in ['macAddress','source','dest']:
+                        fields[k] = FormatUtils.formatBuffer(v)
+                    elif k in ['sol_version','sdk_version','solmanager_version']:
+                        fields[k] = ".".join(str(i) for i in v)
+
         f = flatdict.FlatDict(fields)
         fields = {}
         for (k,v) in f.items():
             fields[k] = v
 
-        # format mac
-        mac = FormatUtils.formatBuffer(sol_json["mac"])
-
         # get SOL type
         measurement = SolDefines.solTypeToTypeName(SolDefines,sol_json['type'])
-
-        # get device location
-        (site, latitude, longitude) = self.get_location(mac)
 
         # convert SOL timestamp to UTC
         utc_time = sol_json["timestamp"]*1000000000
 
-        if site == "unknown":
-            sol_influxdb = {
-                    "time"          : utc_time,
-                    "tags"          : {
-                        'mac'       : mac,
-                        },
-                    "measurement": measurement,
-                    "fields"     : fields,
-                    }
-        else:
-            sol_influxdb = {
-                    "time"          : utc_time,
-                    "tags"          : {
-                        'mac'       : mac,
-                        'site'      : site,
-                        'latitude'  : latitude,
-                        'longitude' : longitude,
-                        },
-                    "measurement": measurement,
-                    "fields"     : fields,
-                    }
+        sol_influxdb = {
+                "time"          : utc_time,
+                "tags"          : tags,
+                "measurement": measurement,
+                "fields"     : fields,
+                }
 
         return sol_influxdb
 
@@ -514,28 +509,6 @@ class Sol(object):
 
         return sol_jsonl
 
-    def get_location(self, mac):
-        """
-        Search for the sites csv files to get device location
-
-        :param str mac: device MAC address
-        :return: device site and location as (site, lat, long)
-        :rtpe: tuple
-        """
-
-        # loop through sites files
-        file_list = glob.glob(os.path.join(here,"sites/") + "*.csv")
-        for site_file in file_list:
-            with open(site_file,'r') as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    # if MAC is found, return filename and device coordinates
-                    if row[0] == mac:
-                        site_name = os.path.splitext(os.path.basename(f.name))[0]
-                        return site_name, row[1], row[2]
-        return "unknown", "0", "0"
-
-    
     #======================== private =========================================
     
     #===== create value (generic code)
@@ -629,9 +602,69 @@ class Sol(object):
         for (k,v) in returnVal.items():
             if k in ['macAddress','source','dest']:
                 returnVal[k] = self._num_to_list(v,8)
+            elif k in ['sol_version','sdk_version','solmanager_version']:
+                returnVal[k] = self._num_to_list(v,4)
         
         return returnVal
     
+    def _binary_to_fields_snapshot(self,binary):
+        return_val      = []
+
+        # set SNAPSHOT structure
+        mote_structure  = ">QHBBBBBIIIIII"
+        mote_fields     = [
+                    'macAddress','moteId','isAP','state','isRouting','numNbrs',
+                    'numGoodNbrs','requestedBw','totalNeededBw','assignedBw',
+                    'packetsReceived','packetsLost','avgLatency'
+                ]
+        mote_size       = struct.calcsize(mote_structure)
+        path_structure  = ">QBBBbb"
+        path_fields     = [
+                    'macAddress','direction','numLinks','quality',
+                    'rssiSrcDest','rssiDestSrc'
+                ]
+        path_size       = struct.calcsize(path_structure)
+
+        # get number of motes in snapshot
+        num_motes       = struct.unpack('>B',chr(binary[0]))[0]
+        binary          = binary[1:]
+
+        # parse SNAPSHOT
+        for i in range(0,num_motes):
+            # create mote dict
+            mote = {}
+            m = struct.unpack(mote_structure, ''.join(chr(b) for b in binary[:mote_size]))
+            binary          = binary[mote_size:]
+            for (k,v) in zip(mote_fields,m):
+                mote[k]= v
+
+            # format mac address
+            mote["macAddress"] = self._num_to_list(mote["macAddress"],8)
+
+            # get number of paths in mote
+            num_paths       = struct.unpack('>B',chr(binary[0]))[0]
+            binary          = binary[1:]
+
+            # create path dict
+            path_list       = []
+            for j in range(0,num_paths):
+                path = {}
+                p = struct.unpack('>QBBBbb',''.join(chr(b) for b in binary[:path_size]))
+                binary = binary[path_size:]
+                for (k,v) in zip(path_fields,p):
+                    path[k] = v
+
+                # format mac address
+                path["macAddress"] = self._num_to_list(path["macAddress"],8)
+
+                path_list.append(path)
+
+            mote["paths"]   = path_list
+
+            return_val.append(mote)
+
+        return return_val
+
     #===== create value (specific)
     
     def _get_sol_json_value_dust_notifData(self,dust_notif):
@@ -734,7 +767,52 @@ class Sol(object):
         return_val  = [ord(c) for c in return_val]
 
         return return_val
-    
+
+    def _get_sol_binary_value_snapshot(self,snapshot):
+        return_val  = ""
+
+        # adding number of items
+        return_val  += struct.pack('>B', len(snapshot))
+
+        # converting json to bytes
+        for mote in snapshot:
+            m = struct.pack(
+                    '>QHBBBBBIIIIII',
+                self._list_to_num(mote['macAddress']),      # INT64U  Q
+                mote['moteId'],                             # INT16U  H
+                mote['isAP'],                               # BOOL    B
+                mote['state'],                              # INT8U   B
+                mote['isRouting'],                          # BOOL    B
+                mote['numNbrs'],                            # INT8U   B
+                mote['numGoodNbrs'],                        # INT8U   B
+                mote['requestedBw'],                        # INT32U  I
+                mote['totalNeededBw'],                      # INT32U  I
+                mote['assignedBw'],                         # INT32U  I
+                mote['packetsReceived'],                    # INT32U  I
+                mote['packetsLost'],                        # INT32U  I
+                mote['avgLatency'],                         # INT32U  I
+            )
+            return_val  += m
+
+            # adding paths list size
+            return_val  += struct.pack('B', len(mote['paths']))
+
+            p = ""
+            for path in mote['paths']:
+                p += struct.pack(
+                    '>QBBBbb',
+                    self._list_to_num(path['macAddress']),  # INT64U  Q
+                    path['direction'],                      # INT8U   B
+                    path['numLinks'],                       # INT8U   B
+                    path['quality'],                        # INT8U   B
+                    path['rssiSrcDest'],                    # INT8    b
+                    path['rssiDestSrc'],                    # INT8    b
+                )
+            return_val += p
+        return_val  = ''.join(return_val)
+        return_val  = [ord(c) for c in return_val]
+        return return_val
+
     #===== file manipulation
 
     def _fileBackUpUntilStartFrame(self,file_name,curOffset):
@@ -761,91 +839,6 @@ class Sol(object):
         for i in range(len(l)):
             output += l[i]<<(8*(len(l)-i-1))
         return output
-
-''' TO BE REMOVED
-    def _parse_specific_DUST(self,type_id,payload):
-        obj = {}
-
-        # get SOL type
-        type_name = SolDefines.solTypeToTypeName(SolDefines,type_id)
-
-        if type_id == SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE:
-            # TODO An OAP parser in the Smartmesh SDK should be used instead
-
-            # convert into byte array (srcPort + destPort = 4 bytes)
-            data = array.array('B',payload)
-
-            # first two bytes are transport header
-            trans = OAPMessage.extract_oap_header(data[0:2])
-
-            # third byte is the command (GET, PUT, POST, DELETE, NOTIF)
-            cmd_type = data[2]
-
-            if trans['response']:
-                oap_resp = OAPMessage.parse_oap_response(data, 2)
-            elif cmd_type == OAPMessage.CmdType.NOTIF:
-                # parse the OAP message into a OAPNotif class
-                oap_notif = OAPNotif.parse_oap_notif(data,3)
-
-                # store the parsed message attributes
-                obj = oap_notif.__dict__
-
-                # clear value for pymongo (does not accept arrays of bytes)
-                obj['raw_data'] = obj['raw_data'].tolist()
-                obj['channel'] = obj['channel'].tolist()[0]
-                obj['received_timestamp'] = (obj['received_timestamp'] -
-                        datetime.datetime(1970, 1, 1)
-                    ).total_seconds()
-
-        # Health Reports
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE:
-            hr = [self.hrParser.HR_ID_DEVICE,len(payload)]+list(payload)
-            obj = self.hrParser.parseHr(hr)
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
-            hr = [self.hrParser.HR_ID_NEIGHBORS,len(payload)]+list(payload)
-            obj = self.hrParser.parseHr(hr)
-        elif type_id == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
-            hr = [self.hrParser.HR_ID_DISCOVERED,len(payload)]+list(payload)
-            obj = self.hrParser.parseHr(hr)
-
-        # Dust Notifs
-        elif (  type_name.startswith('SOL_TYPE_DUST_NOTIF_EVENT') and
-                getattr(SolDefines,type_name)==type_id ):
-
-            # get SOL structure
-            sol_item = SolDefines.solStructure(SolDefines,type_id)
-
-            # unpack payload to dict
-            spayload = ''.join(chr( val ) for val in payload)
-            values = struct.unpack(sol_item['structure'],spayload)
-            obj = dict(zip(sol_item['fields'], values))
-
-            # quick fix macAddrr parsing
-            if "macAddress" in obj:
-                mac_str = struct.pack('>Q', obj['macAddress'])
-                obj['macAddress'] = [ord(b) for b in mac_str]
-            if "dest" in obj:
-                mac_str = struct.pack('>Q', obj['dest'])
-                obj['dest'] = [ord(b) for b in mac_str]
-            if "source" in obj:
-                mac_str = struct.pack('>Q', obj['source'])
-                obj['source'] = [ord(b) for b in mac_str]
-            if "asn" in obj:
-                obj['asn'] = [ord(i) for i in obj['asn']]
-
-        elif (type_id in [
-                    SolDefines.SOL_TYPE_DUST_SNAPSHOT,
-                    SolDefines.SOL_TYPE_DUST_NOTIFDATA
-                ]
-        ):
-            # Return raw object (TODO: parse)
-            obj = payload
-
-        else:
-            raise ValueError("Sol type "+str(type_id)+" does not exist.")
-
-        return obj
-'''
 
 #============================ main ============================================
 
