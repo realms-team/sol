@@ -18,16 +18,19 @@ It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 Download source:
 `git clone https://github.com/realms-team/sol.git`
 
+# Code documentation
+http://realms-sol.readthedocs.io
+
 # Registry
 
-## "type" registry
+## Objects' "types" registry
 
 See [registry](registry.md).
 
 # Representations
 
 The SOL Objects are manipulated in groups.
-Each group of Objects can be represented in [binary](#binary-representation) or [JSON](#json-representation).
+Each group of Objects can be represented in [binary](#binary-representation), [JSON](#json-representation) or [HTTP](#http-representation) format.
 
 ## Binary representation
 
@@ -163,7 +166,9 @@ The following rules hence apply when saving to a binary file:
 
 ## JSON representation
 
-A [JSON](http://json.org/) representation is used when the Objects are stored in a database.
+A [JSON](http://json.org/) representation is used:
+ * when the Objects are stored in a database
+ * when manipulating Objects
 
 We use clean indentation for easier readability in these examples. An efficient implementation SHOULD represent the entire JSON string on a single line.
 
@@ -171,40 +176,12 @@ The following is the general format of a JSON representation of sensor Objects:
 
 ```
 {
-   "v": 0,
-   "o": [
-       <minimal or verbose representation>,
-       <minimal or verbose representation>,
-       ...
-       <minimal or verbose representation>,
-   ]
-}
-```
-
-* `v`: the version of the representation. Only version `0` is defined in this specification. Other values SHOULD NOT be used. Future revisions of this document MIGHT define further versions.
-* `o`: an array of representations. Each representation can be either a JSON string (for the "minimal" representation) or a JSON Object (for the "verbose" representation). A single JSON string CAN contain both "minimal" and "verbose" representations.
-
-This specification defines two formats:
-* a "compact" representation for minimal communication overhead.
-* a "verbose" representation for readability.
-
-#### "minimal" representation
-
-```
-"ew0KICAgIm1hYyI6ICAgICAgICIwMC0xNy0wZC0wMC0wMC0xMi0zNC01NiIsDQogICAidGltZXN0YW1wIjogMTIzNDU2Nzg4OTAsDQogICAidHlwZSI6ICAgICAgMTIsDQogICAidmFsdWUiOiAgICAgIlRXRnVJR2x6SUdScGMzUnBibWQxYVhOb1pXUXMiLA0KfQ=="
-```
-
-* the minimal representation is a string representing the binary representation of exactly one sensor Objects.
-* the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of exactly one sensor Objects.
-
-#### "verbose" representation
-
-```
-{
    "mac":       "00-17-0d-00-00-12-34-56",
    "timestamp": 12345678890,
-   "type":      12,
-   "value":     "TWFuIGlzIGRpc3Rpbmd1aXNoZWQs",
+   "type":      39,
+   "value":     {
+       'temperature': 0x0a33,
+   },
 }
 ```
 
@@ -215,4 +192,26 @@ This specification defines two formats:
 * "type"
     * an integer, per the registry above
 * "value"
-    * a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary value
+    * a dictionary of values
+
+
+## HTTP representation
+
+This representation is used for minimal communication overhead (when data transists).
+
+```
+{
+   "v": 0,
+   "o": [
+       ew0KICAgIm1hYyI6ICAg,
+       ICAgICIwMC0xNy0wZC0w,
+       ...
+       1NiIsDQogICAidGltZXw,
+   ]
+}
+```
+
+* `v`: the version of the representation. Only version `0` is defined in this specification. Other values SHOULD NOT be used. Future revisions of this document MIGHT define further versions.
+* `o`: an array of representations. Each representation is a string representing the binary representation of one or more sensor Objects.
+  * the string MUST be a [Base64](https://en.wikipedia.org/wiki/Base64) encoding of the binary representation of exactly one sensor Objects.
+
