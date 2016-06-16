@@ -412,3 +412,8 @@ Where each _path_:
 | temp_raw | t_countV | rhumidity | rh_countV |
 |----------|----------|-----------|-----------|
 |   INT16U |    INT8U |    INT16U |     INT8U |
+
+### VBAT_DTYPE_V2N1
+|  voltage |  numReadings |
+|----------|--------------|
+|   INT16U |        INT8U |
