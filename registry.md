@@ -397,3 +397,18 @@ Where each _path_:
 |-------------|--------------------|-------------|
 |      INT32U |             INT32U |      INT32U |
 
+#### SENS_MB7363_D2S2N1L1G1
+
+| distance | stdDev | countValid | countLt | countGt |
+|----------|--------|------------|---------|---------|
+|   INT16U | INT16U |      INT8U |   INT8U |   INT8U |
+
+### SENS_GS3_I1D2T2E2N1
+|    id | dielectric | temperature | elec_conduct | countValid |
+|-------|------------|-------------|--------------|------------|
+| INT8U |     INT16U |      INT16U |       INT16U |      INT8U |
+
+### SENS_SHT25_T2N1H2N1
+| temp_raw | t_countV | rhumidity | rh_countV |
+|----------|----------|-----------|-----------|
+|   INT16U |    INT8U |    INT16U |     INT8U |

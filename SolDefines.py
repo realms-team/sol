@@ -36,6 +36,9 @@ SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
+SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
+SOL_TYPE_SENS_GS3_I1D2T2E2N1                = 0x30
+SOL_TYPE_SENS_SHT25_T2N1H2N1                = 0x31
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -288,4 +291,22 @@ sol_types = [
         'structure':    '>III',
         'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
     },
+    {
+        'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
+        'description':  'maxbotix 10 meter ultrasound sensor',
+        'structure':    '>HHBBB',
+        'fields':       ['distance', 'stdDev', 'countValid', 'countLt', 'countGt'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D2T2E2N1,
+        'description':  'soil moisture sensor decagon gs3',
+        'structure':    '>BHHHB',
+        'fields':       ['id', 'dielectric', 'temperature', 'elec_conduct', 'countValid'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
+        'description':  'temperature and humidity sensor',
+        'structure':    '>HBHB',
+        'fields':       ['temp_raw', 't_countV', 'rhumidity', 'rh_countV'],
+    }
 ]
