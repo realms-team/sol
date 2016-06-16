@@ -301,7 +301,7 @@ sol_types = [
     {
         'type':         SOL_TYPE_SENS_GS3_I1D2T2E2N1,
         'description':  'soil moisture sensor decagon gs3',
-        'structure':    '>BHHHB',
+        'structure':    '>BIIIB',
         'fields':       ['id', 'dielectric', 'temperature', 'elec_conduct', 'countValid'],
     },
     {
