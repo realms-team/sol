@@ -67,44 +67,49 @@ class Sol(object):
 
     #===== "chain" of communication from the Dust manager to the server
 
-    def dust_to_json(self, dust_notif, macManager=None, timestamp=None):
+    def dust_to_json(self, notif_name, dust_notif, macManager=None, timestamp=None):
         """
-        Convert a single Dust serial API notification into a single JSON SOL Object.
+        Convert a single Dust serial API notification into a list of JSON SOL Object.
 
         :param dict dust_notif: The Dust serial API notification as
             created by the SmartMesh SDK
-        :return: A SOL Object in JSON format
-        :rtype: dict
+        :return: A list of SOL Object in JSON format
+        :rtype: list
         """
 
-        # get sol_mac
-        if type(dust_notif) in [
-                self.connSerial.Tuple_notifData,
-                self.connSerial.Tuple_notifIpData,
-                self.connSerial.Tuple_notifHealthReport,
-            ]:
-            sol_mac = getattr(dust_notif,'macAddress')
-        else:
-            sol_mac = macManager
+        notif_list  = self._split_dust_notif(notif_name, dust_notif)
+        sol_jsonl   = []
 
-        # get sol_ts
-        if timestamp==None:
-            sol_ts = int(time.time()) # timestamp in seconds
-        else:
-            sol_ts = timestamp
+        for d_n in notif_list:
+            # get sol_mac
+            if type(d_n) in [
+                    self.connSerial.Tuple_notifData,
+                    self.connSerial.Tuple_notifIpData,
+                    self.connSerial.Tuple_notifHealthReport,
+                ]:
+                sol_mac = getattr(d_n,'macAddress')
+            else:
+                sol_mac = macManager
 
-        # get sol_type and sol_value
-        (sol_type,sol_value) = self._get_sol_json_value(dust_notif)
+            # get sol_ts
+            if timestamp==None:
+                sol_ts = int(time.time()) # timestamp in seconds
+            else:
+                sol_ts = timestamp
 
-        # create JSON Object
-        sol_json = {
-            "mac":          sol_mac,
-            "timestamp":    sol_ts,
-            "type":         sol_type,
-            "value":        sol_value,
-        }
+            # get sol_type and sol_value
+            (sol_type,sol_value) = self._get_sol_json_value(d_n)
 
-        return sol_json
+            # create JSON Object
+            sol_json = {
+                "mac":          sol_mac,
+                "timestamp":    sol_ts,
+                "type":         sol_type,
+                "value":        sol_value,
+            }
+            sol_jsonl.append(sol_json)
+
+        return sol_jsonl
 
     def json_to_bin(self, sol_json):
         """
@@ -240,7 +245,6 @@ class Sol(object):
         # type
 
         assert h_Y==SolDefines.SOL_HDR_Y_1B
-        assert len(sol_bin)>=1
         sol_json['type'] = sol_bin[0]
         sol_bin = sol_bin[1:]
 
@@ -511,6 +515,94 @@ class Sol(object):
 
     #======================== private =========================================
 
+    def _split_dust_notif(self, notif_name, dust_notif):
+        """
+        Split a single Dust serial API notification into a list of Dust notifications
+        :param dict dust_notif: The Dust serial API notification as
+                                created by the SmartMesh SDK
+        :return: A list of Dust notifications
+        :rtype: list
+        """
+        notif_list = []
+
+        if notif_name==IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFHEALTHREPORT:
+            hr_exists       = True
+            dust_notifs     = []
+            hr_currptr      = 0
+            hr_nextptr      = dust_notif.payload[1]+2
+            while hr_exists:
+                # add HR notification to list
+                notif_list.append(
+                    IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport(
+                        macAddress = dust_notif.macAddress,
+                        payload    = dust_notif.payload[hr_currptr:hr_nextptr],
+                    )
+                )
+                # check if other notifs are present
+                hr_currptr = hr_nextptr
+                if len(dust_notif.payload) > (hr_currptr+2):
+                    hr_nextptr = hr_currptr + dust_notif.payload[hr_currptr+1] + 2
+                    if hr_nextptr < len(dust_notif.payload):
+                        hr_exists = False
+                else:
+                    hr_exists = False
+        elif notif_name==IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA:
+
+            # parse header
+            sol_header  = dust_notif.data[0]
+            header_V    = sol_header >> SolDefines.SOL_HDR_V_OFFSET & 0x03
+            header_T    = sol_header >> SolDefines.SOL_HDR_T_OFFSET & 0x01
+            header_S    = sol_header >> SolDefines.SOL_HDR_S_OFFSET & 0x01
+            header_Y    = sol_header >> SolDefines.SOL_HDR_Y_OFFSET & 0x01
+            header_L    = sol_header >> SolDefines.SOL_HDR_L_OFFSET & 0x03
+
+            if header_T == 0: # single object
+                notif_list = [dust_notif]
+            else: # multiple objects
+                # reset header Type bit
+                sol_header = dust_notif.data[0] & 0xdf
+
+                # get structure size
+                solheader_size  = SolDefines.SOL_HEADER_SIZE
+                ts_size         = SolDefines.SOL_TIMESTAMP_SIZE
+                objnum_size     = SolDefines.SOL_OBJNUMBER_SIZE
+
+                # get time
+                ts_sec  = 0
+                ts_usec = 0
+                if header_T == 0: # timestamp from obj
+                    ts_sec  = dust_notif.data[0:ts_size]
+                    ts_usec = 0
+                else: # timestamp from dust notif
+                    ts_sec  = dust_notif.utcSecs
+                    ts_user = dust_notif.utcUsecs
+
+                # get number of objects
+                obj_number  = dust_notif.data[ts_size+objnum_size]
+
+                curr_ptr    = solheader_size + ts_size + objnum_size
+                for i in range(0,obj_number):
+                    obj_type    = dust_notif.data[curr_ptr]
+                    sol_item    = SolDefines.solStructure(obj_type)
+                    obj_size    = struct.calcsize(sol_item['structure'])
+                    notif_list.append(
+                            IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(
+                                utcSecs     = ts_sec,
+                                utcUsecs    = ts_usec,
+                                macAddress  = dust_notif.macAddress,
+                                srcPort     = dust_notif.srcPort,
+                                dstPort     = dust_notif.dstPort,
+                                # data = solheader + timestamp + object
+                                data        = dust_notif.data[:solheader_size+ts_size]+
+                                              dust_notif.data[curr_ptr:curr_ptr+obj_size+1]
+                        )
+                    )
+                    curr_ptr   += obj_size+1
+        else:
+            notif_list = [dust_notif]
+
+        return notif_list
+
     #===== create value (generic code)
 
     def _get_sol_json_value(self,dust_notif):
@@ -674,6 +766,8 @@ class Sol(object):
 
         if getattr(dust_notif,'dstPort')==OAPMessage.OAP_PORT:
             (sol_type,sol_value) = self._get_sol_json_value_OAP(dust_notif)
+        elif getattr(dust_notif,'dstPort')==SolDefines.SOL_PORT:
+            (sol_type,sol_value) = self._get_sol_json_value_SOL(dust_notif)
 
         if sol_type==None and sol_value==None:
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
@@ -683,6 +777,20 @@ class Sol(object):
             )
 
         return (sol_type,sol_value)
+
+    def _get_sol_json_value_SOL(self, dust_notif):
+        """
+        Turn a SOL dust notif: SOL_header + timestamp + SOL_object into a dictionnary
+        :return: (sol_type, sol_value)
+        :rtype: tuple(int, int)
+        """
+        type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
+        sol_type    = dust_notif.data[type_index]
+        sol_value   = self._binary_to_fields_with_structure(
+                dust_notif.data[type_index],
+                dust_notif.data[type_index+1:]
+                )
+        return sol_type, sol_value
 
     def _get_sol_json_value_OAP(self,dust_notif):
         sol_type   = None
