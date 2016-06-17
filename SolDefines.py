@@ -37,7 +37,7 @@ SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
-SOL_TYPE_SENS_GS3_I1D2T2E2N1                = 0x30
+SOL_TYPE_SENS_GS3_I1D4T4E4N1                = 0x30
 SOL_TYPE_SENS_SHT25_T2N1H2N1                = 0x31
 SOL_TYPE_VBAT_DTYPE_V2N1                    = 0x32
 
@@ -106,15 +106,13 @@ SOL_HDR_L_1B            = 1
 SOL_HDR_L_2B            = 2
 SOL_HDR_L_ELIDED        = 3
 
-# Number of objects
+### SOL Object
 
-SOL_HDR_MORE_N_OFFSET   = 3
-SOL_HDR_MORE_N_2        = 0
-SOL_HDR_MORE_N_8        = 1
-SOL_HDR_MORE_N_16       = 2
-SOL_HDR_MORE_N_EXPLICIT = 3
+SOL_HEADER_SIZE         = 1
+SOL_TIMESTAMP_SIZE      = 4
+SOL_OBJNUMBER_SIZE      = 1
 
-# type definitions
+### type definitions
 
 sol_types = [
     {
@@ -299,7 +297,7 @@ sol_types = [
         'fields':       ['distance', 'stdDev', 'countValid', 'countLt', 'countGt'],
     },
     {
-        'type':         SOL_TYPE_SENS_GS3_I1D2T2E2N1,
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
         'description':  'soil moisture sensor decagon gs3',
         'structure':    '>BIIIB',
         'fields':       ['id', 'dielectric', 'temperature', 'elec_conduct', 'countValid'],
