@@ -305,8 +305,20 @@ sol_types = [
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
         'description':  'temperature and humidity sensor',
-        'structure':    '>HBHB',
+        'structure':    '<HBHB',
         'fields':       ['temp_raw', 't_countV', 'rhumidity', 'rh_countV'],
+        'apply':        [
+                {
+                    'name':     "tempPhysical",
+                    'function': lambda x: -46.85 + 175.72*(float(x)/65536),
+                    'args':     ['temp_raw'],
+                },
+                {
+                    'name':     "humidRaw",
+                    'function': lambda x:  -6 + 125*(float(x)/65536),
+                    'args':     ['rhumidity'],
+                },
+            ]
     },
     {
         'type':         SOL_TYPE_VBAT_DTYPE_V2N1,

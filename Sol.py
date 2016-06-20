@@ -325,6 +325,16 @@ class Sol(object):
         for (k,v) in f.items():
             fields[k] = v
 
+        # add additionnal fiel if apply_function exists
+        try:
+            obj_struct = SolDefines.solStructure(sol_json['type'])
+            if 'apply' in obj_struct:
+                for ap in obj_struct['apply']:
+                    arg_list = [fields[arg] for arg in ap["args"]]
+                    fields[ap["name"]] = ap["function"](*arg_list)
+        except ValueError:
+            pass
+
         # get SOL type
         measurement = SolDefines.solTypeToTypeName(SolDefines,sol_json['type'])
 
