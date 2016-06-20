@@ -1071,6 +1071,77 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
+    # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply function
+    {
+        "dust": {
+            "notif" :
+                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(     \
+                    utcSecs      = 1111,                                        \
+                    utcUsecs     = 222,                                         \
+                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
+                    srcPort      = 0xf0ba,                                      \
+                    dstPort      = 0xf0ba,                                      \
+                    data         = (0x00, 0x50, 0x7b, 0x41, 0x3e,               \
+                                    0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01,"  + # SENS_SHT25_T2N1H2N1
+                                    "                                           \
+                                   ),                                           \
+                )",
+            "notif_name":IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            },
+        "objects": [
+            {
+                "json":
+                    {
+                        "timestamp"  : TIMESTAMP,
+                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "type"       : 0x31,
+                        "value"      : {
+                            "temp_raw"      : 0x3c65,
+                            "t_countV"      : 0x01,
+                            "rhumidity"     : 0xa267,
+                            "rh_countV"     : 0x01,
+                        },
+                    },
+                "bin":
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x31,                                      # type
+                        0x3c,0x65,                                 # value--temp_raw
+                        0x01,                                      # value--t_countV
+                        0xa2,0x67,                                 # value--rhumidity
+                        0x01,                                      # value--rh_countV
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIBQUFBTE8ZQGiZwE="         \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : TIMESTAMP*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                        },
+                        "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
+                        "fields"     : {
+                            "temp_raw"      : 0x3c65,
+                            "t_countV"      : 0x01,
+                            "rhumidity"     : 0xa267,
+                            "rh_countV"     : 0x01,
+                            "tempPhysical"  : 22.64,
+                        },
+                    },
+            }
+        ]
+    },
     # MULTI-TTLV (VBAT_DTYPE_V2N1, SENS_SHT25_T2N1H2N1, SENS_GS3_I1D4T4E4N1, SENS_MB7363_D2S2N1L1G1)
     {
         "dust": {
