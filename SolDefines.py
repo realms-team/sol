@@ -297,7 +297,7 @@ sol_types = [
         'fields':       ['mean_d2g[mm]', 'stdev[mm]', 'Nval', 'N<min', 'N<max'],
     },    
     {
-        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1 
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1, 
         'description':  'sub_id indicating soil depth - to convert dielect to VWC',
         'structure':    '<BfffB',
         'fields':       ['sub_id', 'dielect', 'temp[degC]', 'eleCond[dS/m]', 'Nval'],
@@ -321,7 +321,7 @@ sol_types = [
             ]
     },
     {
-        'type':         SOL_TYPE_SENS_NEOVBAT_V2N1
+        'type':         SOL_TYPE_SENS_NEOVBAT_V2N1,
         'description':  'raw battery voltage of Neomote - to divide by 11',
         'structure':    '<hB',
         'fields':       ['vol_raw', 'Nval'],
