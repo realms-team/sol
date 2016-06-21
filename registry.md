@@ -46,10 +46,18 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
 |   `0x29` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
-|   `0x30` | [`SENS_GS3_I1D2T2E2N1`](#sens_gs3_i1d2t2e2n1)                               |
+|   `0x30` | [`SENS_GS3_I1D4T4E4N1`](#sens_gs3_i1d4t4e4n1)                               |
 |   `0x31` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
+|   `0x32` | [`SENS_NEOVBAT_V2N1`](#sens_neovbat_v2n1)                                   |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
+
+
+#### SENS_NEOVBAT_V2N1
+
+| voltageRaw | nvalid | 
+|------------|--------|
+|  INT16U    | INT8U  | 
 
 #### SENS_MB7363_D2S2N1L1G1
 
@@ -57,11 +65,11 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |----------|--------|-------|--------|--------|
 |  INT16U  | INT16U | INT8U | INT8U  | INT8U  |
 
-#### SENS_GS3_I1D2T2E2N1
+#### SENS_GS3_I1D4T4E4N1
 
 | id       | dielectric | temp   | elec conduct | count  |
 |----------|------------|--------|--------------|--------|
-|  INT8U   | INT16U     | INT16U | INT16U       | INT8U  |
+|  INT8U   | FLOAT4     | FLOAT4 |  FLOAT4      | INT8U  |
 
 #### SENS_SHT25_T2N1H2N1
 
