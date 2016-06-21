@@ -39,7 +39,7 @@ SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
 SOL_TYPE_SENS_GS3_I1D4T4E4N1                = 0x30
 SOL_TYPE_SENS_SHT25_T2N1H2N1                = 0x31
-SOL_TYPE_VBAT_DTYPE_V2N1                    = 0x32
+SOL_TYPE_SENS_NEOVBAT_V2N1                  = 0x32
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -292,16 +292,16 @@ sol_types = [
     },
     {
         'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
-        'description':  'maxbotix 10 meter ultrasound sensor',
-        'structure':    '>HHBBB',
-        'fields':       ['distance', 'stdDev', 'countValid', 'countLt', 'countGt'],
-    },
+        'description':  'mean & stddev of Nval d2g readings',
+        'structure':    '<HHBBB',
+        'fields':       ['mean_d2g[mm]', 'stdev[mm]', 'Nval', 'N<min', 'N<max'],
+    },    
     {
-        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
-        'description':  'soil moisture sensor decagon gs3',
-        'structure':    '>BIIIB',
-        'fields':       ['id', 'dielectric', 'temperature', 'elec_conduct', 'countValid'],
-    },
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1 
+        'description':  'sub_id indicating soil depth - to convert dielect to VWC',
+        'structure':    '<BfffB',
+        'fields':       ['sub_id', 'dielect', 'temp[degC]', 'eleCond[dS/m]', 'Nval'],
+    },        
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
         'description':  'temperature and humidity sensor',
@@ -321,9 +321,9 @@ sol_types = [
             ]
     },
     {
-        'type':         SOL_TYPE_VBAT_DTYPE_V2N1,
-        'description':  '',
-        'structure':    '>HB',
-        'fields':       ['voltage', 'numReadings'],
+        'type':         SOL_TYPE_SENS_NEOVBAT_V2N1
+        'description':  'raw battery voltage of Neomote - to divide by 11',
+        'structure':    '<hB',
+        'fields':       ['vol_raw', 'Nval'],
     },
 ]
