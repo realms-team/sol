@@ -325,5 +325,12 @@ sol_types = [
         'description':  'raw battery voltage of Neomote - to divide by 11',
         'structure':    '<hB',
         'fields':       ['vol_raw', 'Nval'],
+        'apply':        [
+                {
+                    'name':     "vol_phys",
+                    'function': lambda x: float(x)/11,
+                    'args':     ['vol_raw'],
+                }
+            ]
     },
 ]
