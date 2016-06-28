@@ -1097,9 +1097,9 @@ SOL_CHAIN_EXAMPLE = [
                         "type"       : 0x31,
                         "value"      : {
                             "temp_raw"      : 0x653c,
-                            "t_countV"      : 0x01,
-                            "rhumidity"     : 0x67a2,
-                            "rh_countV"     : 0x01,
+                            "t_Nval"      : 0x01,
+                            "rh_raw"        : 0x67a2,
+                            "rh_Nval"       : 0x01,
                         },
                     },
                 "bin":
@@ -1110,9 +1110,9 @@ SOL_CHAIN_EXAMPLE = [
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x31,                                      # type
                         0x3c,0x65,                                 # value--temp_raw
-                        0x01,                                      # value--t_countV
-                        0xa2,0x67,                                 # value--rhumidity
-                        0x01,                                      # value--rh_countV
+                        0x01,                                      # value--t_Nval
+                        0xa2,0x67,                                 # value--rh_raw
+                        0x01,                                      # value--rh_Nval
                     ],
                 "http":
                     '{                                             \
@@ -1133,11 +1133,11 @@ SOL_CHAIN_EXAMPLE = [
                         "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
                         "fields"     : {
                             "temp_raw"      : 0x653c,
-                            "t_countV"      : 0x01,
-                            "rhumidity"     : 0x67a2,
-                            "rh_countV"     : 0x01,
-                            "tempPhysical"  : 22.63790771484374,
-                            "humidRaw"      : 44.601959228515625,
+                            "t_Nval"        : 0x01,
+                            "rh_raw"        : 0x67a2,
+                            "rh_Nval"       : 0x01,
+                            "rh_phys"       : 44.601959228515625,
+                            "temp_phys"     : 22.63790771484374,
                         },
                     },
             }
@@ -1175,7 +1175,7 @@ SOL_CHAIN_EXAMPLE = [
                     "type"       : 0x32,
                     "value"      : {
                         "voltage"       : 0,
-                        "numReadings"   : 1,
+                        "N"             : 1,
                     },
                 },
                 "bin" :
@@ -1204,10 +1204,11 @@ SOL_CHAIN_EXAMPLE = [
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
                         },
-                        "measurement": 'SOL_TYPE_VBAT_DTYPE_V2N1',
+                        "measurement": 'SOL_TYPE_SENS_NEOVBAT_V2N1',
                         "fields"     : {
                             "voltage"       : 0,
-                            "numReadings"   : 1,
+                            "vol_phys"      : 0,
+                            "N"             : 1,
                         },
                     },
             },
@@ -1218,9 +1219,9 @@ SOL_CHAIN_EXAMPLE = [
                     "type"       : 0x31,
                     "value"      : {
                         "temp_raw"      : 0x653c,
-                        "t_countV"      : 0x01,
-                        "rhumidity"     : 0x67a2,
-                        "rh_countV"     : 0x01,
+                        "t_Nval"        : 0x01,
+                        "rh_raw"        : 0x67a2,
+                        "rh_Nval"       : 0x01,
                     },
                 },
                 "bin" :
@@ -1231,9 +1232,9 @@ SOL_CHAIN_EXAMPLE = [
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x31,                                      # type
                         0x3c,0x65,                                 # value--temp_raw
-                        0x01,                                      # value--t_countV
-                        0xa2,0x67,                                 # value--rhumidity
-                        0x01,                                      # value--rh_countV
+                        0x01,                                      # value--t_Nval
+                        0xa2,0x67,                                 # value--rh_raw
+                        0x01,                                      # value--rh_Nval
                     ],
                 "http":
                     '{                                             \
@@ -1254,11 +1255,11 @@ SOL_CHAIN_EXAMPLE = [
                         "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
                         "fields"     : {
                             "temp_raw"      : 0x653c,
-                            "t_countV"      : 0x01,
-                            "rhumidity"     : 0x67a2,
-                            "rh_countV"     : 0x01,
-                            "tempPhysical"  : 22.63790771484374,
-                            "humidRaw"      : 44.601959228515625,
+                            "t_Nval"        : 0x01,
+                            "rh_raw"        : 0x67a2,
+                            "rh_Nval"       : 0x01,
+                            "rh_phys"       : 44.601959228515625,
+                            "temp_phys"     : 22.63790771484374,
                         },
                     },
             },
@@ -1268,11 +1269,11 @@ SOL_CHAIN_EXAMPLE = [
                     "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                     "type"       : 0x30,
                     "value"      : {
-                        "id"            : 0x00,
-                        "dielectric"    : 0x0ad72340,
-                        "temperature"   : 0x6666b241,
-                        "elec_conduct"  : 0x0000803f,
-                        "countValid"    : 0x01,
+                        "sub_id"        : 0x00,
+                        "dielect"       : 2.559999942779541,
+                        "temp"          : 22.299999237060547,
+                        "eleCond"       : 1.0,
+                        "Nval"          : 0x01,
                     },
                 },
                 "bin" :
@@ -1283,10 +1284,10 @@ SOL_CHAIN_EXAMPLE = [
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x30,                                      # type
                         0x00,                                      # value--id
-                        0x0a,0xd7,0x23,0x40,                       # value--dielectric
-                        0x66,0x66,0xb2,0x41,                       # value--temperature
-                        0x00,0x00,0x80,0x3f,                       # value--elec_conduct
-                        0x01,                                      # value--countValid
+                        0x0a,0xd7,0x23,0x40,                       # value--dielect
+                        0x66,0x66,0xb2,0x41,                       # value--temp
+                        0x00,0x00,0x80,0x3f,                       # value--eleCond
+                        0x01,                                      # value--Nval
                     ],
                 "http":
                     '{                                             \
@@ -1306,11 +1307,11 @@ SOL_CHAIN_EXAMPLE = [
                         },
                         "measurement": 'SOL_TYPE_SENS_GS3_I1D4T4E4N1',
                         "fields"     : {
-                            "id"            : 0x00,
-                            "dielectric"    : 0x0ad72340,
-                            "temperature"   : 0x6666b241,
-                            "elec_conduct"  : 0x0000803f,
-                            "countValid"    : 0x01,
+                            "sub_id"        : 0x00,
+                            "dielect"       : 2.559999942779541,
+                            "temp"          : 22.299999237060547,
+                            "eleCond"       : 1.0,
+                            "Nval"          : 0x01,
                         },
                     },
             },
@@ -1320,11 +1321,11 @@ SOL_CHAIN_EXAMPLE = [
                     "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                     "type"       : 0x29,
                     "value"      : {
-                        "distance"      : 0x1b02,
-                        "stdDev"        : 0x0100,
-                        "countValid"    : 0x1b,
-                        "countLt"       : 0x54,
-                        "countGt"       : 0x55,
+                        "mean_d2g"      : 0x021b,
+                        "stdev"         : 0x0001,
+                        "Nval"          : 0x1b,
+                        "Nltm"          : 0x54,
+                        "NgtM"          : 0x55,
                     },
                 },
                 "bin" :
@@ -1334,11 +1335,11 @@ SOL_CHAIN_EXAMPLE = [
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x29,                                      # type
-                        0x1b, 0x02,                                # value--distance
+                        0x1b, 0x02,                                # value--mean_d2g
                         0x01, 0x00,                                # value--stdDev
-                        0x1b,                                      # value--countValid
-                        0x54,                                      # value--countLt
-                        0x55,                                      # value--countGt
+                        0x1b,                                      # value--Nval
+                        0x54,                                      # value--Nltm
+                        0x55,                                      # value--NgtM
                     ],
                 "http":
                     '{                                             \
@@ -1358,11 +1359,11 @@ SOL_CHAIN_EXAMPLE = [
                         },
                         "measurement": 'SOL_TYPE_SENS_MB7363_D2S2N1L1G1',
                         "fields"     : {
-                            "distance"      : 0x1b02,
-                            "stdDev"        : 0x0100,
-                            "countValid"    : 0x1b,
-                            "countLt"       : 0x54,
-                            "countGt"       : 0x55,
+                            "mean_d2g"      : 0x021b,
+                            "stdev"         : 0x0001,
+                            "Nval"          : 0x1b,
+                            "Nltm"          : 0x54,
+                            "NgtM"          : 0x55,
                         },
                     }
             }
