@@ -295,13 +295,13 @@ sol_types = [
         'description':  'mean & stddev of Nval d2g readings',
         'structure':    '<HHBBB',
         'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
-    },    
+    },
     {
-        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1, 
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
         'description':  'sub_id indicating soil depth - to convert dielect to VWC',
         'structure':    '<BfffB',
         'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
-    },        
+    },
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
         'description':  'temperature and humidity sensor',
