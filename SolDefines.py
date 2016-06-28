@@ -328,7 +328,7 @@ sol_types = [
         'apply':        [
                 {
                     'name':     "vol_phys",
-                    'function': lambda x: float(x)*1.1,
+                    'function': lambda x: float(x)*0.11,
                     'args':     ['voltage'],
                 }
             ]
