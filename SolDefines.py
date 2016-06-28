@@ -294,41 +294,41 @@ sol_types = [
         'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
         'description':  'mean & stddev of Nval d2g readings',
         'structure':    '<HHBBB',
-        'fields':       ['mean_d2g[mm]', 'stdev[mm]', 'Nval', 'N<min', 'N<max'],
+        'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
     },    
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1, 
         'description':  'sub_id indicating soil depth - to convert dielect to VWC',
         'structure':    '<BfffB',
-        'fields':       ['sub_id', 'dielect', 'temp[degC]', 'eleCond[dS/m]', 'Nval'],
+        'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
     },        
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
         'description':  'temperature and humidity sensor',
         'structure':    '<HBHB',
-        'fields':       ['temp_raw', 't_countV', 'rhumidity', 'rh_countV'],
+        'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
         'apply':        [
                 {
-                    'name':     "tempPhysical",
+                    'name':     "temp_phys",
                     'function': lambda x: -46.85 + 175.72*(float(x)/65536),
                     'args':     ['temp_raw'],
                 },
                 {
-                    'name':     "humidRaw",
+                    'name':     "rh_phys",
                     'function': lambda x:  -6 + 125*(float(x)/65536),
-                    'args':     ['rhumidity'],
+                    'args':     ['rh_raw'],
                 },
             ]
     },
     {
         'type':         SOL_TYPE_SENS_NEOVBAT_V2N1,
-        'description':  'raw battery voltage of Neomote - to divide by 11',
+        'description':  'raw battery voltage of Neomote',
         'structure':    '<hB',
-        'fields':       ['voltage', 'numReadings'],
+        'fields':       ['voltage', 'N'],
         'apply':        [
                 {
                     'name':     "vol_phys",
-                    'function': lambda x: float(x)/11,
+                    'function': lambda x: float(x)*1.1,
                     'args':     ['voltage'],
                 }
             ]
