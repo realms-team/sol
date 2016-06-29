@@ -40,6 +40,9 @@ SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
 SOL_TYPE_SENS_GS3_I1D4T4E4N1                = 0x30
 SOL_TYPE_SENS_SHT25_T2N1H2N1                = 0x31
 SOL_TYPE_SENS_NEOVBAT_V2N1                  = 0x32
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_0              = 0x33
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_1              = 0x34
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -298,10 +301,10 @@ sol_types = [
     },    
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1, 
-        'description':  'sub_id indicating soil depth - to convert dielect to VWC',
+        'description':  'soil moisture. sub_id indicates depth',
         'structure':    '<BfffB',
         'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
-    },        
+    },
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
         'description':  'temperature and humidity sensor',
@@ -333,4 +336,22 @@ sol_types = [
                 }
             ]
     },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_0, 
+        'description':  'soil moisture at depth 0',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_1, 
+        'description':  'soil moisture at depth 1',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_2, 
+        'description':  'soil moisture at depth 2',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },     
 ]
