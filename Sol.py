@@ -836,10 +836,7 @@ class Sol(object):
             assert 'Neighbors'  not in hr
             assert 'Discovered' not in hr
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
-            sol_value   = self._fields_to_json_with_structure(
-                SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE,
-                hr['Device'],
-            )
+            sol_value   = hr['Device']
         if 'Neighbors' in hr:
             assert 'Device'  not in hr
             assert 'Discovered' not in hr
