@@ -41,7 +41,6 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x23` | [`LP02_DTYPE_IR4N1`]()                                                      |
 |   `0x24` | [`MB7554_DTYPE_D2N1NL1NG1`]()                                               |
 |   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
-|   `0x25` | [` VBAT_DTYPE_V2N1`]()                                                      |
 |   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
