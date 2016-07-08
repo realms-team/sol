@@ -36,6 +36,13 @@ SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
+SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
+SOL_TYPE_SENS_GS3_I1D4T4E4N1                = 0x30
+SOL_TYPE_SENS_SHT25_T2N1H2N1                = 0x31
+SOL_TYPE_SENS_NEOVBAT_V2N1                  = 0x32
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_0              = 0x33
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_1              = 0x34
+SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -102,15 +109,13 @@ SOL_HDR_L_1B            = 1
 SOL_HDR_L_2B            = 2
 SOL_HDR_L_ELIDED        = 3
 
-# Number of objects
+### SOL Object
 
-SOL_HDR_MORE_N_OFFSET   = 3
-SOL_HDR_MORE_N_2        = 0
-SOL_HDR_MORE_N_8        = 1
-SOL_HDR_MORE_N_16       = 2
-SOL_HDR_MORE_N_EXPLICIT = 3
+SOL_HEADER_SIZE         = 1
+SOL_TIMESTAMP_SIZE      = 4
+SOL_OBJNUMBER_SIZE      = 1
 
-# type definitions
+### type definitions
 
 sol_types = [
     {
@@ -287,5 +292,66 @@ sol_types = [
         'description':  '',
         'structure':    '>III',
         'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
+        'description':  'mean & stddev of Nval d2g readings',
+        'structure':    '<HHBBB',
+        'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
+        'description':  'soil moisture. sub_id indicates depth',
+        'structure':    '<BfffB',
+        'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
+        'description':  'temperature and humidity sensor',
+        'structure':    '<HBHB',
+        'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
+        'apply':        [
+                {
+                    'name':     "temp_phys",
+                    'function': lambda x: -46.85 + 175.72*(float(x)/65536),
+                    'args':     ['temp_raw'],
+                },
+                {
+                    'name':     "rh_phys",
+                    'function': lambda x:  -6 + 125*(float(x)/65536),
+                    'args':     ['rh_raw'],
+                },
+            ]
+    },
+    {
+        'type':         SOL_TYPE_SENS_NEOVBAT_V2N1,
+        'description':  'raw battery voltage of Neomote',
+        'structure':    '<hB',
+        'fields':       ['voltage', 'N'],
+        'apply':        [
+                {
+                    'name':     "vol_phys",
+                    'function': lambda x: float(x)*0.11,
+                    'args':     ['voltage'],
+                }
+            ]
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_0,
+        'description':  'soil moisture at depth 0',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_1,
+        'description':  'soil moisture at depth 1',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_2,
+        'description':  'soil moisture at depth 2',
+        'structure':    '<fffB',
+        'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
     },
 ]
