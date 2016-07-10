@@ -1,3 +1,4 @@
+from .context import Sol
 
 #============================ defines ===============================
 
@@ -10,4 +11,3 @@
 def test_import():
     import sys
     print sys.path
-    import solob
