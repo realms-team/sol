@@ -1,7 +1,7 @@
+from .context import Sol
 import pytest
 import json
 import pprint
-import os
 
 from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
@@ -1384,7 +1384,6 @@ pp = pprint.PrettyPrinter(indent=4)
 def test_chain(sol_chain_example):
     sol_chain_example = json.loads(sol_chain_example)
 
-    import Sol
     sol = Sol.Sol()
 
     sol_json = None
