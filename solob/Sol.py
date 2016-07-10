@@ -6,8 +6,8 @@ import sys
 import os
 
 here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'libs'))
-sys.path.insert(0, os.path.join(here, 'smartmeshsdk', 'external_libs'))
+sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
+sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'external_libs'))
 
 # =========================== imports =========================================
 
