@@ -848,6 +848,64 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
+    # SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+    {
+        "objects": [
+            {
+                "json":
+                    {
+                        "timestamp"  : TIMESTAMP,
+                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "type"       : 0x22,
+                        "value"      : {
+                            'temperature': 0x0a33,
+                            'depth': 0x0b44,
+                            'numReadings': 0x01,
+                            'stdDev': 0x0203,
+                            'retries': 0x04,
+                        },
+                    },
+                "bin":
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
+                        0x05,0x05,0x05,0x05,                        # timestamp
+                        0x22,                                       # type
+                        0x0a,0x33,                                  # value_temperature
+                        0x0b,0x44,                                  # value_depth
+                        0x01,                                       # value_numReadings
+                        0x02,0x03,                                  # value_stdDev
+                        0x04,                                       # value_retries
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIBQUFBSIKMwtEAQIDBA=="     \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : TIMESTAMP*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                        },
+                        "measurement": 'SOL_TYPE_JUDD_DTYPE_T2D2R1N1',
+                        "fields"     : {
+                            'temperature': 0x0a33,
+                            'depth': 0x0b44,
+                            'numReadings': 0x01,
+                            'stdDev': 0x0203,
+                            'retries': 0x04,
+                        },
+                    },
+            }
+        ]
+    },
     # SOL_TYPE_DUST_SNAPSHOT
     {
         "objects": [

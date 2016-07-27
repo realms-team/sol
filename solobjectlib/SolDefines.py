@@ -34,6 +34,7 @@ SOL_TYPE_DUST_EVENTMOTEOPERATIONAL          = 0x1d
 SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
+SOL_TYPE_JUDD_DTYPE_T2D2R1N1                = 0x22
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
@@ -280,6 +281,12 @@ sol_types = [
         'description':  '',
         'structure':    '>IB',
         'fields':       ['callbackId', 'rc'],
+    },
+    {
+        'type':         SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+        'description':  'ultrasonic snow depth and temperature sensor',
+        'structure':    '>hHBHB',
+        'fields':       ['temperature', 'depth', 'numReadings', 'stdDev', 'retries'],
     },
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
