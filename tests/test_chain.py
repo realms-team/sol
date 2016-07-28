@@ -1139,8 +1139,9 @@ SOL_CHAIN_EXAMPLE = [
                     macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
-                    data         = (0x00, 0x50, 0x7b, 0x41, 0x3e,               \
-                                    0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01,"  + # SENS_SHT25_T2N1H2N1
+                    data         = (0x00,"                                      + # HEADER
+                                    "0x05, 0x05, 0x05, 0x05,"                   + # TIMESTAMP
+                                    "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # SENS_SHT25_T2N1H2N1
                                     "                                           \
                                    ),                                           \
                 )",
@@ -1155,7 +1156,7 @@ SOL_CHAIN_EXAMPLE = [
                         "type"       : 0x31,
                         "value"      : {
                             "temp_raw"      : 0x653c,
-                            "t_Nval"      : 0x01,
+                            "t_Nval"        : 0x01,
                             "rh_raw"        : 0x67a2,
                             "rh_Nval"       : 0x01,
                         },
@@ -1211,8 +1212,8 @@ SOL_CHAIN_EXAMPLE = [
                     macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
-                    data         = ( 0x20,"                                     + # multi TTLV 0100 0000
-                                    "0x50, 0x7b, 0x41, 0x3e,"                   + # epoch
+                    data         = ( 0x20,"                                     + # multi TTLV 0010 0000
+                                    "0x05, 0x05, 0x05, 0x05,"                   + # epoch
                                     "0x04,"                                     + # 5 objects
                                     "0x32, 0x00, 0x00, 0x01,"                   + # 1. VBAT_DTYPE_V2N1
                                     "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # 2. SENS_SHT25_T2N1H2N1

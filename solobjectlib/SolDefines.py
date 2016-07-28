@@ -95,6 +95,7 @@ SOL_HDR_M_8BMAC         = 1
 SOL_HDR_S_OFFSET        = 3
 SOL_HDR_S_EPOCH         = 0
 SOL_HDR_S_ELIDED        = 1
+SOL_HDR_S_SIZE          = 1
 
 # Type encoding
 
@@ -113,7 +114,9 @@ SOL_HDR_L_ELIDED        = 3
 ### SOL Object
 
 SOL_HEADER_SIZE         = 1
+SOL_HEADER_OFFSET       = 0
 SOL_TIMESTAMP_SIZE      = 4
+SOL_TIMESTAMP_OFFSET    = 1
 SOL_OBJNUMBER_SIZE      = 1
 
 ### type definitions

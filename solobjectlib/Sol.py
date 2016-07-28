@@ -91,14 +91,16 @@ class Sol(object):
             else:
                 sol_mac = macManager
 
-            # get sol_ts
-            if timestamp==None:
-                sol_ts = int(time.time()) # timestamp in seconds
-            else:
-                sol_ts = timestamp
 
             # get sol_type and sol_value
-            (sol_type,sol_value) = self._get_sol_json_value(d_n)
+            (sol_type,sol_ts,sol_value) = self._get_sol_json_fields(d_n)
+
+            # get sol_ts
+            if sol_ts is None:
+                if timestamp is None:
+                    sol_ts = int(time.time()) # timestamp in seconds
+                else:
+                    sol_ts = timestamp
 
             # create JSON Object
             sol_json = {
@@ -615,13 +617,14 @@ class Sol(object):
 
     #===== create value (generic code)
 
-    def _get_sol_json_value(self,dust_notif):
+    def _get_sol_json_fields(self,dust_notif):
 
-        sol_type   = None
-        sol_value  = None
+        sol_type    = None
+        sol_ts      = None
+        sol_value   = None
 
         if   type(dust_notif)==self.connSerial.Tuple_notifData:
-            (sol_type,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
+            (sol_type,sol_ts,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
         elif type(dust_notif)==self.connSerial.Tuple_notifHealthReport:
             (sol_type,sol_value) = self._get_sol_json_value_dust_hr(dust_notif)
         else:
@@ -630,7 +633,7 @@ class Sol(object):
         if (sol_type==None or sol_value==None):
             raise NotImplementedError()
 
-        return (sol_type,sol_value)
+        return (sol_type,sol_ts,sol_value)
 
     def _get_sol_json_value_generic(self,dust_notif):
         sol_typeName    = self._dust_notifName_to_sol_typeName(str(type(dust_notif)))
@@ -771,13 +774,14 @@ class Sol(object):
 
     def _get_sol_json_value_dust_notifData(self,dust_notif):
 
-        sol_type   = None
-        sol_value  = None
+        sol_type    = None
+        sol_ts      = None
+        sol_value   = None
 
         if getattr(dust_notif,'dstPort')==OAPMessage.OAP_PORT:
             (sol_type,sol_value) = self._get_sol_json_value_OAP(dust_notif)
         elif getattr(dust_notif,'dstPort')==SolDefines.SOL_PORT:
-            (sol_type,sol_value) = self._get_sol_json_value_SOL(dust_notif)
+            (sol_type,sol_ts,sol_value) = self._get_sol_json_value_SOL(dust_notif)
 
         if sol_type==None and sol_value==None:
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
@@ -786,21 +790,33 @@ class Sol(object):
                 dust_notif._asdict(),
             )
 
-        return (sol_type,sol_value)
+        return (sol_type,sol_ts,sol_value)
 
     def _get_sol_json_value_SOL(self, dust_notif):
         """
         Turn a SOL dust notif: SOL_header + timestamp + SOL_object into a dictionnary
-        :return: (sol_type, sol_value)
-        :rtype: tuple(int, int)
+        :return: (sol_type, sol_ts, sol_value)
+        :rtype: tuple(int, int, int)
         """
-        type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
+        sol_ts      = None
+
+        # check for timestamp flag in SOL_HEADER
+        header_offset = SolDefines.SOL_HEADER_OFFSET
+        ts_offset = SolDefines.SOL_TIMESTAMP_OFFSET
+        header_ts_flag = dust_notif.data[0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
+        if header_ts_flag == SolDefines.SOL_HDR_S_EPOCH:
+            ts = dust_notif.data[ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE]
+            sol_ts      = struct.unpack('>I',''.join(chr(b) for b in ts))[0]
+            type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
+        else:
+            type_index  = SolDefines.SOL_HEADER_SIZE
+
         sol_type    = dust_notif.data[type_index]
         sol_value   = self._binary_to_fields_with_structure(
                 dust_notif.data[type_index],
                 dust_notif.data[type_index+1:]
                 )
-        return sol_type, sol_value
+        return sol_type, sol_ts, sol_value
 
     def _get_sol_json_value_OAP(self,dust_notif):
         sol_type   = None
