@@ -806,6 +806,7 @@ class Sol(object):
         header_ts_flag = dust_notif.data[0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
         if header_ts_flag == SolDefines.SOL_HDR_S_EPOCH:
             ts = list(dust_notif.data[ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE])
+            ts.reverse()
             sol_ts      = Sol._list_to_num(ts)
             type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
         else:

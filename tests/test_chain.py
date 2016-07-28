@@ -861,7 +861,6 @@ SOL_CHAIN_EXAMPLE = [
                             'temperature': 0x0a33,
                             'depth': 0x0b44,
                             'numReadings': 0x01,
-                            'stdDev': 0x0203,
                             'retries': 0x04,
                         },
                     },
@@ -875,14 +874,13 @@ SOL_CHAIN_EXAMPLE = [
                         0x0a,0x33,                                  # value_temperature
                         0x0b,0x44,                                  # value_depth
                         0x01,                                       # value_numReadings
-                        0x02,0x03,                                  # value_stdDev
                         0x04,                                       # value_retries
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBSIKMwtEAQIDBA=="     \
+                            "EwECAwQFBgcIBQUFBSIKMwtEAQQ="         \
                         ]                                          \
                     }',
                 "influxdb":
@@ -899,7 +897,6 @@ SOL_CHAIN_EXAMPLE = [
                             'temperature': 0x0a33,
                             'depth': 0x0b44,
                             'numReadings': 0x01,
-                            'stdDev': 0x0203,
                             'retries': 0x04,
                         },
                     },
@@ -1140,7 +1137,7 @@ SOL_CHAIN_EXAMPLE = [
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
                     data         = (0x00,"                                      + # HEADER
-                                    "0x57, 0x9a, 0x0e, 0x00,"                   + # TIMESTAMP
+                                    "0x00, 0x0e, 0x9a, 0x57,"                   + # TIMESTAMP
                                     "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # SENS_SHT25_T2N1H2N1
                                     "                                           \
                                    ),                                           \
