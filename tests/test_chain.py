@@ -1140,7 +1140,7 @@ SOL_CHAIN_EXAMPLE = [
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
                     data         = (0x00,"                                      + # HEADER
-                                    "0x05, 0x05, 0x05, 0x05,"                   + # TIMESTAMP
+                                    "0x57, 0x9a, 0x0e, 0x00,"                   + # TIMESTAMP
                                     "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # SENS_SHT25_T2N1H2N1
                                     "                                           \
                                    ),                                           \
@@ -1151,7 +1151,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json":
                     {
-                        "timestamp"  : TIMESTAMP,
+                        "timestamp"  : 0x579a0e00,
                         "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                         "type"       : 0x31,
                         "value"      : {
@@ -1166,7 +1166,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x57,0x9a,0x0e,0x00,                       # timestamp
                         0x31,                                      # type
                         0x3c,0x65,                                 # value--temp_raw
                         0x01,                                      # value--t_Nval
@@ -1177,12 +1177,12 @@ SOL_CHAIN_EXAMPLE = [
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBTE8ZQGiZwE="         \
+                            "EwECAwQFBgcIV5oOADE8ZQGiZwE="         \
                         ]                                          \
                     }',
                 "influxdb":
                     {
-                        "time"       : TIMESTAMP*1000000000,
+                        "time"       : 0x579a0e00*1000000000,
                         "tags"       : {
                             'mac'    : '01-02-03-04-05-06-07-08',
                             'site'      : 'super_site',
