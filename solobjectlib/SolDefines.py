@@ -288,8 +288,8 @@ sol_types = [
     {
         'type':         SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
         'description':  'ultrasonic snow depth and temperature sensor',
-        'structure':    '>hHBHB',
-        'fields':       ['temperature', 'depth', 'numReadings', 'stdDev', 'retries'],
+        'structure':    '>hHBB',
+        'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
     },
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
