@@ -45,6 +45,7 @@ SOL_TYPE_SENS_NEOVBAT_V2N1                  = 0x32
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_0              = 0x33
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_1              = 0x34
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
+SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -373,5 +374,11 @@ sol_types = [
         'description':  'soil moisture at depth 2',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_LP02_R4N1,
+        'description':  'radiation sensor',
+        'structure':    '<iB',
+        'fields':       ['irradiance', 'N'],
     },
 ]
