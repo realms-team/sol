@@ -46,6 +46,8 @@ SOL_TYPE_SENS_GS3_I1D4T4E4N1_0              = 0x33
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_1              = 0x34
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
 SOL_TYPE_SENS_LP02_R4N1                     = 0x36
+SOL_TYPE_SENS_ECTM                          = 0x37
+SOL_TYPE_SENS_MPS1                          = 0x38
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -380,5 +382,17 @@ sol_types = [
         'description':  'radiation sensor',
         'structure':    '<iB',
         'fields':       ['irradiance', 'N'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_ECTM,
+        'description':  'Decagon ECTM soil moisture and temp',
+        'structure':    '<iii',
+        'fields':       ['die_raw', 'temp_raw','depth'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_MPS1,
+        'description':  'Decagon MPS1 soil matric potential',
+        'structure':    '<fi',
+        'fields':       ['die_raw','depth'],
     },
 ]
