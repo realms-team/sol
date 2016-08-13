@@ -431,3 +431,8 @@ Where each _path_:
 |  die_raw |  temp_raw    |  depth  |
 |----------|--------------|---------|
 |  FLOAT4  |    FLOAT4    | FLOAT4  |
+
+### SENS_MPS1
+|  mps_raw |    depth     |
+|----------|--------------|
+|  FLOAT4  |    FLOAT4    |
