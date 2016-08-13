@@ -386,13 +386,13 @@ sol_types = [
     {
         'type':         SOL_TYPE_SENS_ECTM,
         'description':  'Decagon ECTM soil moisture and temp',
-        'structure':    '<iii',
+        'structure':    '<fff',
         'fields':       ['die_raw', 'temp_raw','depth'],
     },
     {
         'type':         SOL_TYPE_SENS_MPS1,
         'description':  'Decagon MPS1 soil matric potential',
-        'structure':    '<fi',
+        'structure':    '<ff',
         'fields':       ['die_raw','depth'],
     },
 ]
