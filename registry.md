@@ -428,9 +428,9 @@ Where each _path_:
 |   INT16U |        INT8U |
 
 ### SENS_ECTM
-|  die_raw |  temp_raw    |  depth  |
-|----------|--------------|---------|
-|  FLOAT4  |    FLOAT4    | FLOAT4  |
+|  die_raw |  EC_raw  |  temp_raw    |  depth  |
+|----------|----------|--------------|---------|
+|  FLOAT4  |  FLOAT4  |    FLOAT4    | FLOAT4  |
 
 ### SENS_MPS1
 |  mps_raw |    depth     |
