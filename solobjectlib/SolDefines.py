@@ -388,6 +388,13 @@ sol_types = [
         'description':  'Decagon ECTM soil moisture and temp',
         'structure':    '<iiif',
         'fields':       ['die_raw','EC_raw','temp_raw','depth'],
+        'apply':        [
+                {
+                    'tag':     "depth",
+                    'function': lambda x: x,
+                    'args':     ['depth'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_MPS1,
