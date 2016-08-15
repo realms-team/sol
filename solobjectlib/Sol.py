@@ -19,6 +19,7 @@ import threading
 import time
 import array
 import datetime
+import copy
 
 # third-party packages
 import flatdict
@@ -294,6 +295,8 @@ class Sol(object):
         :return: InfluxDB point
         :rtpe: list
         """
+        # tags
+        obj_tags = copy.deepcopy(tags)
 
         # fields
         if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
@@ -327,13 +330,16 @@ class Sol(object):
         for (k,v) in f.items():
             fields[k] = v
 
-        # add additionnal fiel if apply_function exists
+        # add additionnal field or tag if apply_function exists
         try:
             obj_struct = SolDefines.solStructure(sol_json['type'])
             if 'apply' in obj_struct:
                 for ap in obj_struct['apply']:
                     arg_list = [fields[arg] for arg in ap["args"]]
-                    fields[ap["name"]] = ap["function"](*arg_list)
+                    if "field" in ap:
+                        fields[ap["field"]] = ap["function"](*arg_list)
+                    if "tag" in ap:
+                        obj_tags[ap["tag"]] = ap["function"](*arg_list)
         except ValueError:
             pass
 
@@ -345,9 +351,9 @@ class Sol(object):
 
         sol_influxdb = {
                 "time"          : utc_time,
-                "tags"          : tags,
-                "measurement": measurement,
-                "fields"     : fields,
+                "tags"          : obj_tags,
+                "measurement"   : measurement,
+                "fields"        : fields,
                 }
 
         return sol_influxdb

@@ -335,12 +335,12 @@ sol_types = [
         'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
         'apply':        [
                 {
-                    'name':     "temp_phys",
+                    'field':     "temp_phys",
                     'function': lambda x: -46.85 + 175.72*(float(x)/65536),
                     'args':     ['temp_raw'],
                 },
                 {
-                    'name':     "rh_phys",
+                    'field':     "rh_phys",
                     'function': lambda x:  -6 + 125*(float(x)/65536),
                     'args':     ['rh_raw'],
                 },
@@ -353,7 +353,7 @@ sol_types = [
         'fields':       ['voltage', 'N'],
         'apply':        [
                 {
-                    'name':     "vol_phys",
+                    'field':     "vol_phys",
                     'function': lambda x: float(x)*0.11,
                     'args':     ['voltage'],
                 }
@@ -394,5 +394,12 @@ sol_types = [
         'description':  'Decagon MPS1 soil matric potential',
         'structure':    '<ff',
         'fields':       ['die_raw','depth'],
+        'apply':        [
+                {
+                    'tag':     "depth",
+                    'function': lambda x: x,
+                    'args':     ['depth'],
+                }
+            ],
     },
 ]
