@@ -1126,7 +1126,7 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
-    # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply function
+    # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply field function
     {
         "dust": {
             "notif" :
@@ -1194,6 +1194,56 @@ SOL_CHAIN_EXAMPLE = [
                             "rh_Nval"       : 0x01,
                             "rh_phys"       : 44.601959228515625,
                             "temp_phys"     : 22.63790771484374,
+                        },
+                    },
+            }
+        ]
+    },
+    # SOL_TYPE_SENS_MPS1 with apply tag function
+    {
+        "objects": [
+            {
+                "json":
+                    {
+                        "timestamp"  : 0x579a0e00,
+                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "type"       : 0x38,
+                        "value"      : {
+                            "die_raw"       : 10.100000381469727,   # 0x4121999a
+                            "depth"         : 15.300000190734863,   # 0x4174cccd
+                        },
+                    },
+                "bin":
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                        0x57,0x9a,0x0e,0x00,                       # timestamp
+                        0x38,                                      # type
+                        0x9a,0x99,0x21,0x41,                       # value--die_raw
+                        0xcd,0xcc,0x74,0x41,                       # value--depth
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIV5oOADiamSFBzcx0QQ=="     \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : 0x579a0e00*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                            'depth'     : 15.300000190734863,
+                        },
+                        "measurement": 'SOL_TYPE_SENS_MPS1',
+                        "fields"     : {
+                            "die_raw"       : 10.100000381469727,
+                            "depth"         : 15.300000190734863,
                         },
                     },
             }
