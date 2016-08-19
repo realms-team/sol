@@ -86,7 +86,7 @@ Only value `b00` is defined in this document. Other values for the 2 first bits 
 
 * `[1B]` SOL Header
    * `V`=`00` (version 0)
-   * `H`=`0` ("start" header)
+   * `T`=`0` (Type of MTtlv Object)
    * `M`=`0` (no MAC address)
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
@@ -103,7 +103,7 @@ Total 8 bytes.
 
 * `[1B]` SOL Header
    * `V`=`00` (version 0)
-   * `H`=`0` ("start" header)
+   * `T`=`0` (Type of MTtlv Object)
    * `M`=`0` (no MAC address)
    * `S`=`1` (elided)
    * `Y`=`0` (1-byte type)
@@ -122,7 +122,7 @@ Total: 4 bytes.
 
 * `[1B]` SOL Header
    * `V`=`00` (version 0)
-   * `H`=`1` ("start" header)
+   * `T`=`1` (Type of MTtlv Object)
    * `M`=`0` (no MAC address)
    * `S`=`0` (epoch)
    * `Y`=`0` (1-byte type)
