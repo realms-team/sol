@@ -34,6 +34,8 @@ SOL_TYPE_DUST_EVENTMOTEOPERATIONAL          = 0x1d
 SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
+SOL_TYPE_JUDD_DTYPE_T2D2R1N1                = 0x22
+SOL_TYPE_SHT15_DTYPE_T4RH4N1                = 0x25
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
@@ -43,6 +45,11 @@ SOL_TYPE_SENS_NEOVBAT_V2N1                  = 0x32
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_0              = 0x33
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_1              = 0x34
 SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
+SOL_TYPE_SENS_LP02_R4N1                     = 0x36
+SOL_TYPE_SENS_ECTM                          = 0x37
+SOL_TYPE_SENS_MPS1                          = 0x38
+SOL_TYPE_ADXL362_FFT_Z                      = 0x39
+
 
 def solTypeToTypeName(solDefinesClass,type_id):
     for n in dir(solDefinesClass):
@@ -94,6 +101,7 @@ SOL_HDR_M_8BMAC         = 1
 SOL_HDR_S_OFFSET        = 3
 SOL_HDR_S_EPOCH         = 0
 SOL_HDR_S_ELIDED        = 1
+SOL_HDR_S_SIZE          = 1
 
 # Type encoding
 
@@ -112,7 +120,9 @@ SOL_HDR_L_ELIDED        = 3
 ### SOL Object
 
 SOL_HEADER_SIZE         = 1
+SOL_HEADER_OFFSET       = 0
 SOL_TIMESTAMP_SIZE      = 4
+SOL_TIMESTAMP_OFFSET    = 1
 SOL_OBJNUMBER_SIZE      = 1
 
 ### type definitions
@@ -282,6 +292,21 @@ sol_types = [
         'fields':       ['callbackId', 'rc'],
     },
     {
+        'type':         SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+        'description':  'ultrasonic snow depth and temperature sensor',
+        'structure':    '>hHBB',
+        'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
+    },
+    
+    {
+        'type':         SOL_TYPE_SHT15_DTYPE_T4RH4N1,
+        'description':  'temperature and relative humidity sensor',
+        'structure':    '<ffB',
+        'fields':       ['temperature', 'rH', 'numReadings'],
+    },
+    
+    
+    {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
         'structure':    '>h',
@@ -312,12 +337,12 @@ sol_types = [
         'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
         'apply':        [
                 {
-                    'name':     "temp_phys",
+                    'field':     "temp_phys",
                     'function': lambda x: -46.85 + 175.72*(float(x)/65536),
                     'args':     ['temp_raw'],
                 },
                 {
-                    'name':     "rh_phys",
+                    'field':     "rh_phys",
                     'function': lambda x:  -6 + 125*(float(x)/65536),
                     'args':     ['rh_raw'],
                 },
@@ -330,7 +355,7 @@ sol_types = [
         'fields':       ['voltage', 'N'],
         'apply':        [
                 {
-                    'name':     "vol_phys",
+                    'field':     "vol_phys",
                     'function': lambda x: float(x)*0.11,
                     'args':     ['voltage'],
                 }
@@ -354,4 +379,42 @@ sol_types = [
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
     },
+    {
+        'type':         SOL_TYPE_SENS_LP02_R4N1,
+        'description':  'radiation sensor',
+        'structure':    '<iB',
+        'fields':       ['irradiance', 'N'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_ECTM,
+        'description':  'Decagon ECTM soil moisture and temp',
+        'structure':    '<iiif',
+        'fields':       ['die_raw','EC_raw','temp_raw','depth'],
+        'apply':        [
+                {
+                    'tag':     "depth",
+                    'function': lambda x: x,
+                    'args':     ['depth'],
+                }
+            ],
+    },
+    {
+        'type':         SOL_TYPE_SENS_MPS1,
+        'description':  'Decagon MPS1 soil matric potential',
+        'structure':    '<ff',
+        'fields':       ['die_raw','depth'],
+        'apply':        [
+                {
+                    'tag':     "depth",
+                    'function': lambda x: x,
+                    'args':     ['depth'],
+                }
+            ],
+    },
+    {
+        'type':         SOL_TYPE_ADXL362_FFT_Z,
+        'description':  'highest 5 frequency bins and magnitudes',
+        'structure':    '<BBHHHHHHHHHH',
+        'fields':       ['conf1', 'conf2', 'f0', 'f1', 'f2', 'f3', 'f4', 'm0', 'm1', 'm2', 'm3', 'm4'],
+    },    
 ]

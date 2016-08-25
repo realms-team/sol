@@ -1,3 +1,4 @@
+from .context import Sol
 import os
 import random
 
@@ -85,7 +86,6 @@ def random_sol_json(timestamp=0):
 #============================ tests =================================
 
 def test_dump_load(removeFile):
-    import Sol
     sol = Sol.Sol()
 
     # prepare dicts to dump
@@ -104,7 +104,6 @@ def test_dump_load(removeFile):
 
 def test_dump_corrupt_load(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
@@ -131,7 +130,6 @@ def test_dump_corrupt_load(removeFile):
 
 def test_retrieve_range(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
@@ -152,7 +150,6 @@ def test_retrieve_range(removeFile):
 
 def test_retrieve_range_corrupt_beginning(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
@@ -175,7 +172,6 @@ def test_retrieve_range_corrupt_beginning(removeFile):
 
 def test_retrieve_range_corrupt_middle(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
@@ -200,7 +196,6 @@ def test_retrieve_range_corrupt_middle(removeFile):
 
 def test_retrieve_range_corrupt_end(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # prepare dicts to dump
@@ -223,7 +218,6 @@ def test_retrieve_range_corrupt_end(removeFile):
 
 def test_retrieve_range_corrupt_all(removeFile):
     
-    import Sol
     sol = Sol.Sol()
     
     # dump

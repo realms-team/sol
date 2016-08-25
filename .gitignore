@@ -4,3 +4,8 @@ sites/*.csv
 # tests
 temp_test_file.sol
 .cache/
+
+# pypi
+dist/
+build/
+MANIFEST

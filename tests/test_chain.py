@@ -1,7 +1,7 @@
+from .context import Sol
 import pytest
 import json
 import pprint
-import os
 
 from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
@@ -848,6 +848,61 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
+    # SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+    {
+        "objects": [
+            {
+                "json":
+                    {
+                        "timestamp"  : TIMESTAMP,
+                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "type"       : 0x22,
+                        "value"      : {
+                            'temperature': 0x0a33,
+                            'depth': 0x0b44,
+                            'numReadings': 0x01,
+                            'retries': 0x04,
+                        },
+                    },
+                "bin":
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
+                        0x05,0x05,0x05,0x05,                        # timestamp
+                        0x22,                                       # type
+                        0x0a,0x33,                                  # value_temperature
+                        0x0b,0x44,                                  # value_depth
+                        0x01,                                       # value_numReadings
+                        0x04,                                       # value_retries
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIBQUFBSIKMwtEAQQ="         \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : TIMESTAMP*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                        },
+                        "measurement": 'SOL_TYPE_JUDD_DTYPE_T2D2R1N1',
+                        "fields"     : {
+                            'temperature': 0x0a33,
+                            'depth': 0x0b44,
+                            'numReadings': 0x01,
+                            'retries': 0x04,
+                        },
+                    },
+            }
+        ]
+    },
     # SOL_TYPE_DUST_SNAPSHOT
     {
         "objects": [
@@ -1071,7 +1126,7 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
-    # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply function
+    # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply field function
     {
         "dust": {
             "notif" :
@@ -1081,8 +1136,9 @@ SOL_CHAIN_EXAMPLE = [
                     macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
-                    data         = (0x00, 0x50, 0x7b, 0x41, 0x3e,               \
-                                    0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01,"  + # SENS_SHT25_T2N1H2N1
+                    data         = (0x00,"                                      + # HEADER
+                                    "0x00, 0x0e, 0x9a, 0x57,"                   + # TIMESTAMP
+                                    "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # SENS_SHT25_T2N1H2N1
                                     "                                           \
                                    ),                                           \
                 )",
@@ -1092,12 +1148,12 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json":
                     {
-                        "timestamp"  : TIMESTAMP,
+                        "timestamp"  : 0x579a0e00,
                         "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                         "type"       : 0x31,
                         "value"      : {
                             "temp_raw"      : 0x653c,
-                            "t_Nval"      : 0x01,
+                            "t_Nval"        : 0x01,
                             "rh_raw"        : 0x67a2,
                             "rh_Nval"       : 0x01,
                         },
@@ -1107,7 +1163,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x57,0x9a,0x0e,0x00,                       # timestamp
                         0x31,                                      # type
                         0x3c,0x65,                                 # value--temp_raw
                         0x01,                                      # value--t_Nval
@@ -1118,12 +1174,12 @@ SOL_CHAIN_EXAMPLE = [
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBTE8ZQGiZwE="         \
+                            "EwECAwQFBgcIV5oOADE8ZQGiZwE="         \
                         ]                                          \
                     }',
                 "influxdb":
                     {
-                        "time"       : TIMESTAMP*1000000000,
+                        "time"       : 0x579a0e00*1000000000,
                         "tags"       : {
                             'mac'    : '01-02-03-04-05-06-07-08',
                             'site'      : 'super_site',
@@ -1143,6 +1199,56 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
+    # SOL_TYPE_SENS_MPS1 with apply tag function
+    {
+        "objects": [
+            {
+                "json":
+                    {
+                        "timestamp"  : 0x579a0e00,
+                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "type"       : 0x38,
+                        "value"      : {
+                            "die_raw"       : 10.100000381469727,   # 0x4121999a
+                            "depth"         : 15.300000190734863,   # 0x4174cccd
+                        },
+                    },
+                "bin":
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                        0x57,0x9a,0x0e,0x00,                       # timestamp
+                        0x38,                                      # type
+                        0x9a,0x99,0x21,0x41,                       # value--die_raw
+                        0xcd,0xcc,0x74,0x41,                       # value--depth
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIV5oOADiamSFBzcx0QQ=="     \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : 0x579a0e00*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                            'depth'     : 15.300000190734863,
+                        },
+                        "measurement": 'SOL_TYPE_SENS_MPS1',
+                        "fields"     : {
+                            "die_raw"       : 10.100000381469727,
+                            "depth"         : 15.300000190734863,
+                        },
+                    },
+            }
+        ]
+    },
     # MULTI-TTLV (VBAT_DTYPE_V2N1, SENS_SHT25_T2N1H2N1, SENS_GS3_I1D4T4E4N1, SENS_MB7363_D2S2N1L1G1)
     {
         "dust": {
@@ -1153,8 +1259,8 @@ SOL_CHAIN_EXAMPLE = [
                     macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
-                    data         = ( 0x20,"                                     + # multi TTLV 0100 0000
-                                    "0x50, 0x7b, 0x41, 0x3e,"                   + # epoch
+                    data         = ( 0x20,"                                     + # multi TTLV 0010 0000
+                                    "0x05, 0x05, 0x05, 0x05,"                   + # epoch
                                     "0x04,"                                     + # 5 objects
                                     "0x32, 0x00, 0x00, 0x01,"                   + # 1. VBAT_DTYPE_V2N1
                                     "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # 2. SENS_SHT25_T2N1H2N1
@@ -1384,7 +1490,6 @@ pp = pprint.PrettyPrinter(indent=4)
 def test_chain(sol_chain_example):
     sol_chain_example = json.loads(sol_chain_example)
 
-    import Sol
     sol = Sol.Sol()
 
     sol_json = None

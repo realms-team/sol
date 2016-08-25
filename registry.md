@@ -48,6 +48,8 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x30` | [`SENS_GS3_I1D4T4E4N1`](#sens_gs3_i1d4t4e4n1)                               |
 |   `0x31` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
 |   `0x32` | [`SENS_NEOVBAT_V2N1`](#sens_neovbat_v2n1)                                   |
+|   `0x37` | [`SENS_ECTM`](#sens_ECTM)                                                   |
+|   `0x38` | [`SENS_MPS1`](#sens_MPS1)                                                   |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -424,3 +426,13 @@ Where each _path_:
 |  voltage |  numReadings |
 |----------|--------------|
 |   INT16U |        INT8U |
+
+### SENS_ECTM
+|  die_raw |  EC_raw  |  temp_raw    |  depth  |
+|----------|----------|--------------|---------|
+|  FLOAT4  |  FLOAT4  |    FLOAT4    | FLOAT4  |
+
+### SENS_MPS1
+|  mps_raw |    depth     |
+|----------|--------------|
+|  FLOAT4  |    FLOAT4    |

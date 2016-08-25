@@ -1,3 +1,4 @@
+from .context import Sol
 import pytest
 import json
 import pprint
@@ -229,7 +230,6 @@ def sol_influxjson_example(request):
 def test_influx_to_json(sol_influxjson_example):
     sol_influxjson_example = json.loads(sol_influxjson_example)
 
-    import Sol
     sol = Sol.Sol()
 
     # influxdb->json
