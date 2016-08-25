@@ -48,7 +48,7 @@ SOL_TYPE_SENS_GS3_I1D4T4E4N1_2              = 0x35
 SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
-SOL_TYPE_ADLX362_FFT_Z                      = 0x39
+SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 
 
 def solTypeToTypeName(solDefinesClass,type_id):
