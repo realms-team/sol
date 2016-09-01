@@ -16,427 +16,292 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x0a` | [`SOLAR_HUKSEFLUX_LP25_AV_STATS`](#solar_hukseflux_lp25_av_stats)           |
 |   `0x0b` | [`SOIL_DECAGON_GS3_RS232_RAW`](#soil_decagon_gs3_rs232_raw)                 |
 |   `0x0c` | [`SOIL_DECAGON_GS3_RS232_STATS`](#soil_decagon_gs3_rs232_stats)             |
-|   `0x0d` | [`DUST_NOTIF_LOG`](#dust_notif_log)                                         |
-|   `0x0e` | [`DUST_NOTIF_DATA_RAW`](#dust_notif_data_raw)                               |
-|   `0x0f` | [`DUST_NOTIF_IPDATA`](#dust_notif_ipdata)                                   |
-|   `0x10` | [`DUST_NOTIF_HR_DEVICE`](#dust_notif_hr_device)                             |
-|   `0x11` | [`DUST_NOTIF_HR_NEIGHBORS`](#dust_notif_hr_neighbors)                       |
-|   `0x12` | [`DUST_NOTIF_HR_DISCOVERED`](#dust_notif_hr_discovered)                     |
-|   `0x13` | [`DUST_NOTIF_EVENT_COMMANDFINISHED`](#dust_notif_event_commandfinished)     |
-|   `0x14` | [`DUST_NOTIF_EVENT_PATHCREATE`](#dust_notif_event_pathcreate)               |
-|   `0x15` | [`DUST_NOTIF_EVENT_PATHDELETE`](#dust_notif_event_pathdelete)               |
-|   `0x16` | [`DUST_NOTIF_EVENT_PING`](#dust_notif_event_ping)                           |
-|   `0x17` | [`DUST_NOTIF_EVENT_NETWORKTIME`](#dust_notif_event_networktime)             |
-|   `0x18` | [`DUST_NOTIF_EVENT_NETWORKRESET`](#dust_notif_event_networkreset)           |
-|   `0x19` | [`DUST_NOTIF_EVENT_MOTEJOIN`](#dust_notif_event_motejoin)                   |
-|   `0x1a` | [`DUST_NOTIF_EVENT_MOTECREATE`](#dust_notif_event_motecreate)               |
-|   `0x1b` | [`DUST_NOTIF_EVENT_MOTEDELETE`](#dust_notif_event_motedelete)               |
-|   `0x1c` | [`DUST_NOTIF_EVENT_MOTELOST`](#dust_notif_event_motelost)                   |
-|   `0x1d` | [`DUST_NOTIF_EVENT_MOTEOPERATIONAL`](#dust_notif_event_moteoperational)     |
-|   `0x1e` | [`DUST_NOTIF_EVENT_MOTERESET`](#dust_notif_event_motereset)                 |
-|   `0x1f` | [`DUST_NOTIF_EVENT_PACKETSENT`](#dust_notif_event_packetsent)               |
+|   `0x0d` | [`DUST_NOTIFLOG`](#dust_notiflog)                                           |
+|   `0x0e` | [`DUST_NOTIFDATA`](#dust_notifdata)                                         |
+|   `0x0f` | [`DUST_NOTIFIPDATA`](#dust_notifipdata)                                     |
+|   `0x10` | [`DUST_NOTIF_HRDEVICE`](#dust_notif_hrdevice)                               |
+|   `0x11` | [`DUST_NOTIF_HRNEIGHBORS`](#dust_notif_hrneighbors)                         |
+|   `0x12` | [`DUST_NOTIF_HRDISCOVERED`](#dust_notif_hrdiscovered)                       |
+|   `0x13` | [`DUST_EVENTCOMMANDFINISHED`](#dust_eventcommandfinished)                   |
+|   `0x14` | [`DUST_EVENTPATHCREATE`](#dust_eventpathcreate)                             |
+|   `0x15` | [`DUST_EVENTPATHDELETE`](#dust_eventpathdelete)                             |
+|   `0x16` | [`DUST_EVENTPING`](#dust_eventping)                                         |
+|   `0x17` | [`DUST_EVENTNETWORKTIME`](#dust_eventnetworktime)                           |
+|   `0x18` | [`DUST_EVENTNETWORKRESET`](#dust_eventnetworkreset)                         |
+|   `0x19` | [`DUST_EVENTMOTEJOIN`](#dust_eventmotejoin)                                 |
+|   `0x1a` | [`DUST_EVENTMOTECREATE`](#dust_eventmotecreate)                             |
+|   `0x1b` | [`DUST_EVENTMOTEDELETE`](#dust_eventmotedelete)                             |
+|   `0x1c` | [`DUST_EVENTMOTELOST`](#dust_eventmotelost)                                 |
+|   `0x1d` | [`DUST_EVENTMOTEOPERATIONAL`](#dust_eventmoteoperational)                   |
+|   `0x1e` | [`DUST_EVENTMOTERESET`](#dust_eventmotereset)                               |
+|   `0x1f` | [`DUST_EVENTPACKETSENT`](#dust_eventpacketsent)                             |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
-|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`](#judd_dtype_T2D2R1N1)                               |
-|   `0x23` | [`LP02_DTYPE_IR4N1`]()                                                      |
-|   `0x24` | [`MB7554_DTYPE_D2N1NL1NG1`]()                                               |
-|   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
-|   `0x26` | [`LP02_DTYPE_IRS60`]()                                                      |
+|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`](#judd_dtype_t2d2r1n1)                               |
+|   `0x25` | [`SHT15_DTYPE_T4RH4N1`](#sht15_dtype_t4rh4n1)                               |
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
 |   `0x29` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
 |   `0x30` | [`SENS_GS3_I1D4T4E4N1`](#sens_gs3_i1d4t4e4n1)                               |
 |   `0x31` | [`SENS_SHT25_T2N1H2N1`](#sens_sht25_t2n1h2n1)                               |
 |   `0x32` | [`SENS_NEOVBAT_V2N1`](#sens_neovbat_v2n1)                                   |
-|   `0x37` | [`SENS_ECTM`](#sens_ECTM)                                                   |
-|   `0x38` | [`SENS_MPS1`](#sens_MPS1)                                                   |
+|   `0x33` | [`SENS_GS3_I1D4T4E4N1_0`](#sens_gs3_i1d4t4e4n1_0)                           |
+|   `0x34` | [`SENS_GS3_I1D4T4E4N1_1`](#sens_gs3_i1d4t4e4n1_1)                           |
+|   `0x35` | [`SENS_GS3_I1D4T4E4N1_2`](#sens_gs3_i1d4t4e4n1_2)                           |
+|   `0x36` | [`SENS_LP02_R4N1`](#sens_lp02_r4n1)                                         |
+|   `0x37` | [`SENS_ECTM`](#sens_ectm)                                                   |
+|   `0x38` | [`SENS_MPS1`](#sens_mps1)                                                   |
+|   `0x39` | [`ADXL362_FFT_Z`](#adxl362_fft_z)                                           |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
-
-#### SENS_NEOVBAT_V2N1
-
-| voltageRaw | nvalid |
-|------------|--------|
-|  INT16U    | INT8U  |
-
-#### SENS_MB7363_D2S2N1L1G1
-
-| distance | stdDev | count | count< | count> |
-|----------|--------|-------|--------|--------|
-|  INT16U  | INT16U | INT8U | INT8U  | INT8U  |
-
-#### SENS_GS3_I1D4T4E4N1
-
-| id       | dielectric | temp   | elec conduct | count  |
-|----------|------------|--------|--------------|--------|
-|  INT8U   | FLOAT4     | FLOAT4 |  FLOAT4      | INT8U  |
-
-#### SENS_SHT25_T2N1H2N1
-
-| temp_raw | tcount | rhumidity | rhcount  |
-|----------|--------|-----------|----------|
-|  INT16U  | INT16U | INT16U    | INT8U    |
-
-#### DISTANCE_JUDD_RS232_RAW
+#### SOL_TYPE_DISTANCE_JUDD_RS232_RAW
 
 | airtemp | travel_time | distance | retries |
 |---------|-------------|----------|---------|
 |  INT16U |      INT16U |   INT16U |   INT8U |
 
-#### DISTANCE_JUDD_RS232_STATS
+#### SOL_TYPE_DISTANCE_JUDD_RS232_STATS
 
 | airtemp | travel_time | distance | retries | count |    std |
 |---------|-------------|----------|---------|-------|--------|
 |  INT16U |      INT16U |   INT16U |   INT8U | INT8U | INT32U |
 
-#### SNOW_MAXBOTIX_MB7554_RS232_RAW
+#### SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_RAW
 
 | distance |
 |----------|
 |   INT16U |
 
-#### SNOW_MAXBOTIX_MB7554_RS232_STATS
+#### SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_STATS
 
 | distance | count |    std |
 |----------|-------|--------|
 |   INT16U | INT8U | INT32U |
 
-#### TEMPRH_SENSERION_SHT15_RS232_RAW
+#### SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_RAW
 
 |   temp |     rH |
 |--------|--------|
 | INT32U | INT32U |
 
-#### TEMPRH_SENSERION_SHT15_RS232_STATS
+#### SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_STATS
+
+|   temp |     rH | count | std_temp | std_rH |
+|--------|--------|-------|----------|--------|
+| INT32U | INT32U | INT8U |    INT8U | INT32U |
+
+#### SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_RAW
+
+|   temp |     rH |
+|--------|--------|
+| INT32U | INT32U |
+
+#### SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_STATS
 
 |   temp |     rH | count | std_temp | std_rH |
 |--------|--------|-------|----------|--------|
 | INT32U | INT32U | INT8U |   INT32U | INT32U |
 
-#### TEMPRH_SENSERION_SHT25_RS232_RAW
-
-|   temp |     rH |
-|--------|--------|
-| INT32U | INT32U |
-
-#### TEMPRH_SENSERION_SHT25_RS232_STATS
-
-|   temp |     rH | count | std_temp | std_rH |
-|--------|--------|-------|----------|--------|
-| INT32U | INT32U | INT8U |   INT32U | INT32U
-
-#### SOLAR_HUKSEFLUX_LP25_AV_RAW
+#### SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_RAW
 
 |   Vout |
 |--------|
 | INT32U |
 
-#### SOLAR_HUKSEFLUX_LP25_AV_STATS
+#### SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_STATS
 
 |   Vout | count |    std |
 |--------|-------|--------|
 | INT32U | INT8U | INT32U |
 
-#### SOIL_DECAGON_GS3_RS232_RAW
+#### SOL_TYPE_SOIL_DECAGON_GS3_RS232_RAW
 
 | moisture | soil_temp | soil_ec |
 |----------|-----------|---------|
 |   INT32U |    INT32U |  INT32U |
 
-#### SOIL_DECAGON_GS3_RS232_STATS
+#### SOL_TYPE_SOIL_DECAGON_GS3_RS232_STATS
 
 | moisture | soil_temp | soil_ec | count |    std |
 |----------|-----------|---------|-------|--------|
 |   INT32U |    INT32U |  INT32U | INT8U | INT32U |
 
-#### DUST_NOTIF_LOG
+#### SOL_TYPE_DUST_NOTIFDATA
 
-|    payload |
-|------------|
-| _variable_ |
+| srcPort | dstPort |
+|---------|---------|
+|  INT16U |  INT16U |
 
-#### DUST_NOTIF_DATA_RAW
-
-| srcPort | dstPort |    payload |
-|---------|---------|------------|
-|  INT16U |  INT16U | _variable_ |
-
-#### DUST_NOTIF_IPDATA
-
-|    payload |
-|------------|
-| _variable_ |
-
-#### DUST_NOTIF_HR_DEVICE
+#### SOL_TYPE_DUST_NOTIF_HRDEVICE
 
 | charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
 |--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
 | INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
 
-#### DUST_NOTIF_HR_NEIGHBORS
-
-**JSON representation:**
-
-```
-[
-    {
-        'neighborId':         xx,  # INT16U
-        'neighborFlag':       xx,  # INT8U
-        'rssi':               xx,  # INT8
-        'numTxPackets':       xx,  # INT16U
-        'numTxFailures':      xx,  # INT16U
-        'numRxPackets':       xx,  # INT16U
-    },
-    ...
-]
-```
-
-**Binary representation:**
-
-| num_neighbors |  _neighbor_ | ... |  _neighbor_ |
-|---------------|-------------|-----|-------------|
-|         INT8U | _see below_ | ... | _see below_ |
-
-Where each _neighbor_:
-
-| neighborId | neighborFlag | rssi | numTxPackets | numTxFailures | numRxPackets |
-|------------|--------------|------|--------------|---------------|--------------|
-|     INT16U |        INT8U | INT8 |       INT16U |        INT16U |       INT16U |
-
-#### DUST_NOTIF_HR_DISCOVERED
-
-**JSON representation:**
-
-```
-{
-    'numJoinParents':             xx,  # INT8U
-    'discoveredNeighbors': [
-        {
-            'neighborId':         xx,  # INT16U
-            'rssi':               xx,  # INT8
-            'numRx':              xx,  # INT8U
-        },
-        ...
-    ]
-}
-```
-
-**Binary representation:**
-
-| numJoinParents | num_discoveredNeighbors | _discoveredNeighbor_ | ... | _discoveredNeighbor_ |
-|----------------|-------------------------|----------------------|-----|----------------------|
-|          INT8U |                   INT8U |          _see below_ | ... |          _see below_ |
-
-Where each _discoveredNeighbor_:
-
-| neighborId | rssi | numRx |
-|------------|------|-------|
-|     INT16U | INT8 | INT8U |
-
-#### DUST_NOTIF_EVENT_COMMANDFINISHED
+#### SOL_TYPE_DUST_EVENTCOMMANDFINISHED
 
 | callbackId |    rc |
 |------------|-------|
 |     INT32U | INT8U |
 
-#### DUST_NOTIF_EVENT_PATHCREATE
+#### SOL_TYPE_DUST_EVENTPATHCREATE
 
-| source | dest | direction |
-|--------|------|-----------|
-|     8B |   8B |     INT8U |
+| source |   dest | direction |
+|--------|--------|-----------|
+| INT64U | INT64U |     INT8U |
 
-#### DUST_NOTIF_EVENT_PATHDELETE
+#### SOL_TYPE_DUST_EVENTPATHDELETE
 
-| source | dest | direction |
-|--------|------|-----------|
-|     8B |   8B |     INT8U |
+| source |   dest | direction |
+|--------|--------|-----------|
+| INT64U | INT64U |     INT8U |
 
-#### DUST_NOTIF_EVENT_PING
+#### SOL_TYPE_DUST_EVENTPING
 
 | callbackId | macAddress |  delay | voltage | temperature |
 |------------|------------|--------|---------|-------------|
-|     INT32U |         8B | INT32U |  INT16U |       INT8U |
+|     INT32U |     INT64U | INT32U |  INT16U |       INT8U |
 
-#### DUST_NOTIF_EVENT_NETWORKTIME
+#### SOL_TYPE_DUST_EVENTNETWORKTIME
 
-| uptime | utcTime | asn | asnOffset |
-|--------|---------|-----|-----------|
-| INT32U |      8B |  5B |    INT16U |
+| uptime | utcTime |   asn | asnOffset |
+|--------|---------|-------|-----------|
+| INT32U |  INT64U | 5INT8 |      INT8 |
 
-#### DUST_NOTIF_EVENT_NETWORKRESET
+#### SOL_TYPE_DUST_EVENTNETWORKRESET
 
-_no payload_
+|
+|
+|
 
-#### DUST_NOTIF_EVENT_MOTEJOIN
+#### SOL_TYPE_DUST_EVENTMOTEJOIN
 
 | macAddress |
 |------------|
-|         8B |
+|     INT64U |
 
-#### DUST_NOTIF_EVENT_MOTECREATE
+#### SOL_TYPE_DUST_EVENTMOTECREATE
 
 | macAddress | moteId |
 |------------|--------|
-|         8B | INT16U |
+|     INT64U | INT16U |
 
-#### DUST_NOTIF_EVENT_MOTEDELETE
+#### SOL_TYPE_DUST_EVENTMOTEDELETE
 
 | macAddress | moteId |
 |------------|--------|
-|         8B | INT16U |
+|     INT64U | INT16U |
 
-#### DUST_NOTIF_EVENT_MOTELOST
-
-| macAddress |
-|------------|
-|         8B |
-
-#### DUST_NOTIF_EVENT_MOTEOPERATIONAL
+#### SOL_TYPE_DUST_EVENTMOTELOST
 
 | macAddress |
 |------------|
-|         8B |
+|     INT64U |
 
-#### DUST_NOTIF_EVENT_MOTERESET
+#### SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
 
 | macAddress |
 |------------|
-|         8B |
+|     INT64U |
 
-#### DUST_NOTIF_EVENT_PACKETSENT
+#### SOL_TYPE_DUST_EVENTMOTERESET
+
+| macAddress |
+|------------|
+|     INT64U |
+
+#### SOL_TYPE_DUST_EVENTPACKETSENT
 
 | callbackId |    rc |
 |------------|-------|
 |     INT32U | INT8U |
 
-#### DUST_SNAPSHOT
+#### SOL_TYPE_JUDD_DTYPE_T2D2R1N1
 
-**JSON representation:**
-
-```
-[
-    {   'macAddress':          (0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08),
-        'moteId':              0x090a,        # INT16U  H
-        'isAP':                0x0b,          # BOOL    B
-        'state':               0x0c,          # INT8U   B
-        'isRouting':           0x0d,          # BOOL    B
-        'numNbrs':             0x0e,          # INT8U   B
-        'numGoodNbrs':         0x0f,          # INT8U   B
-        'requestedBw':         0x10111213,    # INT32U  I
-        'totalNeededBw':       0x14151617,    # INT32U  I
-        'assignedBw':          0x18191a1b,    # INT32U  I
-        'packetsReceived':     0x1c1d1e1f,    # INT32U  I
-        'packetsLost':         0x20212223,    # INT32U  I
-        'avgLatency':          0x24252627,    # INT32U  I
-        'paths': [
-            {
-                'macAddress':    (0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18),
-                'direction':      0x2c,       # INT8U   B
-                'numLinks':       0x2d,       # INT8U   B
-                'quality':        0x2e,       # INT8U   B
-                'rssiSrcDest':    -1,         # INT8    b
-                'rssiDestSrc':    -2,         # INT8    b
-            },
-            {
-                'macAddress':    (0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28),
-                'direction':      0x2c,       # INT8U  B
-                'numLinks':       0x2d,       # INT8U  B
-                'quality':        0x2e,       # INT8U  B
-                'rssiSrcDest':    -1,         # INT8   b
-                'rssiDestSrc':    -2,         # INT8   b
-            },
-        ],
-    },
-    {
-        'macAddress':          (0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38),
-        'moteId':              0x090a,        # INT16U
-        'isAP':                0x0b,          # BOOL
-        'state':               0x0c,          # INT8U
-        'isRouting':           0x0d,          # BOOL
-        'numNbrs':             0x0e,          # INT8U
-        'numGoodNbrs':         0x0f,          # INT8U
-        'requestedBw':         0x10111213,    # INT32U
-        'totalNeededBw':       0x14151617,    # INT32U
-        'assignedBw':          0x18191a1b,    # INT32U
-        'packetsReceived':     0x1c1d1e1f,    # INT32U
-        'packetsLost':         0x20212223,    # INT32U
-        'avgLatency':          0x24252627,    # INT32U
-        'paths': [
-            {
-                'macAddress':     (0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48),
-                'direction':      0x2c,       # INT8U
-                'numLinks':       0x2d,       # INT8U
-                'quality':        0x2e,       # INT8U
-                'rssiSrcDest':    -1,         # INT8
-                'rssiDestSrc':    -2,         # INT8
-            },
-        ],
-    },
-]
-```
-
-**Binary representation:**
-
-| num_motes  |     _mote_ | ... |     _mote_ |
-|------------|------------|-----|------------|
-|      INT8U | _variable_ | ... | _variable_ |
-
-Where each _mote_:
-
-| macAddress | moteId |  isAP | state | isRouting | numNbrs | numGoodNbrs | requestedBw | totalNeededBw | assignedBw | packetsReceived | packetsLost | avgLatency | stateTime | num_paths |      _path_ | ... |      _path_ |
-|------------|--------|-------|-------|-----------|---------|-------------|-------------|---------------|------------|-----------------|-------------|------------|-----------|-----------|-------------|-----|-------------|
-|         8B | INT16U | INT8U | INT8U |     INT8U |   INT8U |       INT8U |      INT32U |        INT32U |     INT32U |          INT32U |      INT32U |     INT32U |    INT32U |     INT8U | _see below_ | ... | _see below_ |
-
-Where each _path_:
-
-| macAddress | direction |  numLinks | quality | rssiSrcDest | rssiDestSrc |
-|------------|-----------|-----------|---------|-------------|-------------|
-|         8B |     INT8U |     INT8U |   INT8U |        INT8 |        INT8 |
-
-#### JUDD_DTYPE_T2D2R1N1
 | temperature |  depth | numReadings | retries |
 |-------------|--------|-------------|---------|
 |       INT16 | INT16U |       INT8U |   INT8U |
 
-#### DUST_OAP_TEMPSAMPLE
+#### SOL_TYPE_SHT15_DTYPE_T4RH4N1
+
+| temperature |    rH | numReadings |
+|-------------|-------|-------------|
+|       INT32 | INT32 |       INT8U |
+
+#### SOL_TYPE_DUST_OAP_TEMPSAMPLE
 
 | temperature |
 |-------------|
 |       INT16 |
 
-#### SOLMANAGER_STATS
+#### SOL_TYPE_SOLMANAGER_STATS
 
 | sol_version | solmanager_version | sdk_version |
 |-------------|--------------------|-------------|
 |      INT32U |             INT32U |      INT32U |
 
-#### SENS_MB7363_D2S2N1L1G1
+#### SOL_TYPE_SENS_MB7363_D2S2N1L1G1
 
-| distance | stdDev | countValid | countLt | countGt |
-|----------|--------|------------|---------|---------|
-|   INT16U | INT16U |      INT8U |   INT8U |   INT8U |
+| mean_d2g |  stdev |  Nval |  Nltm |  NgtM |
+|----------|--------|-------|-------|-------|
+|   INT16U | INT16U | INT8U | INT8U | INT8U |
 
-### SENS_GS3_I1D2T2E2N1
-|    id | dielectric | temperature | elec_conduct | countValid |
-|-------|------------|-------------|--------------|------------|
-| INT8U |     INT16U |      INT16U |       INT16U |      INT8U |
+#### SOL_TYPE_SENS_GS3_I1D4T4E4N1
 
-### SENS_SHT25_T2N1H2N1
-| temp_raw | t_countV | rhumidity | rh_countV |
-|----------|----------|-----------|-----------|
-|   INT16U |    INT8U |    INT16U |     INT8U |
+| sub_id | dielect |  temp | eleCond |  Nval |
+|--------|---------|-------|---------|-------|
+|  INT8U |   INT32 | INT32 |   INT32 | INT8U |
 
-### VBAT_DTYPE_V2N1
-|  voltage |  numReadings |
-|----------|--------------|
-|   INT16U |        INT8U |
+#### SOL_TYPE_SENS_SHT25_T2N1H2N1
 
-### SENS_ECTM
-|  die_raw |  EC_raw  |  temp_raw    |  depth  |
-|----------|----------|--------------|---------|
-|  FLOAT4  |  FLOAT4  |    FLOAT4    | FLOAT4  |
+| temp_raw | t_Nval | rh_raw | rh_Nval |
+|----------|--------|--------|---------|
+|   INT16U |  INT8U | INT16U |   INT8U |
 
-### SENS_MPS1
-|  mps_raw |    depth     |
-|----------|--------------|
-|  FLOAT4  |    FLOAT4    |
+#### SOL_TYPE_SENS_NEOVBAT_V2N1
+
+| voltage |     N |
+|---------|-------|
+|   INT16 | INT8U |
+
+#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_0
+
+| dielect |  temp | eleCond |  Nval |
+|---------|-------|---------|-------|
+|   INT32 | INT32 |   INT32 | INT8U |
+
+#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_1
+
+| dielect |  temp | eleCond |  Nval |
+|---------|-------|---------|-------|
+|   INT32 | INT32 |   INT32 | INT8U |
+
+#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_2
+
+| dielect |  temp | eleCond |  Nval |
+|---------|-------|---------|-------|
+|   INT32 | INT32 |   INT32 | INT8U |
+
+#### SOL_TYPE_SENS_LP02_R4N1
+
+| irradiance |     N |
+|------------|-------|
+|      INT32 | INT8U |
+
+#### SOL_TYPE_SENS_ECTM
+
+| die_raw | EC_raw | temp_raw | depth |
+|---------|--------|----------|-------|
+|   INT32 |  INT32 |    INT32 | INT32 |
+
+#### SOL_TYPE_SENS_MPS1
+
+| die_raw | depth |
+|---------|-------|
+|   INT32 | INT32 |
+
+#### SOL_TYPE_ADXL362_FFT_Z
+
+| conf1 | conf2 |     f0 |     f1 |     f2 |     f3 |     f4 |     m0 |     m1 |     m2 |     m3 |     m4 |
+|-------|-------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| INT8U | INT8U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U |

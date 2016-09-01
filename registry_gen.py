@@ -11,7 +11,7 @@ from solobjectlib import SolDefines
 
 # =========================== output file constants ===========================
 
-REGISTRY_FILE   = "test_registry.md"
+REGISTRY_FILE   = "registry.md"
 INTRO_SEC       = \
 """When a sensor is associated a well-known length, the `L` (length) field MAY be omitted from its binary representation.
 When the well-known length is the table below is \"None\", the `L` (length) MUST be present in the object's binary representation.
