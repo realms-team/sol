@@ -51,16 +51,14 @@ Some rules:
 
 #### SOL Header
 
-The header always starts with a 2-bit `V` field (version).
-Only value `b00` is defined in this document. Other values for the 2 first bits are reserved and may be defined in later revisions of this document.
-
 ```
  0 1 2 3 4 5 6 7
 +-+-+-+-+-+-+-+-+
 | V |T|M|S|Y| L |
 +-+-+-+-+-+-+-+-+
 ```
-
+* `V`: Version of the Object:
+    * Only value `b00` is defined in this document. Other values for the 2 first bits are reserved and may be defined in later revisions of this document.
 * `T`: Type of MTtlv Object:
     * `0`: single-MTtlv Object
     * `1`: multi-MTtlv Object (MTNtlv) this implies the 1st byte next to timestamp is N: number of Objects
