@@ -17,7 +17,7 @@ This will create a issue number like #49. We will use it later.
 
 2. Add the object type in the list at the top of the SolDefines.py file.
 
-* Prepend the string "SOL_TYPE" befor your object name.
+* Prepend the string "SOL_TYPE" to your object name.
 
 * Increment the last number of the list to get an object id
 
@@ -28,3 +28,6 @@ Refer to the other object if you are not sure.
 Refere to the python structure to know which field to set: https://docs.python.org/2/library/struct.html
 
 4. Add the object structure at the bottom of the README.md file.
+
+5. Commit your changes starting with the issue number.
+   Commit message example: "#49 adding YOUR_OBJECT_NAME structure"
