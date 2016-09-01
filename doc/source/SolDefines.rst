@@ -12,7 +12,7 @@ This file describes the SOL Objects structure.
 How to add an Object structure
 ==============================
 
-1. Create an issue with name: "Adding YOUR_OBJECT_NAME structure"
+1. Create an issue with name: "Adding YOUR_OBJECT_NAME structure".
 This will create a issue number like #49. We will use it later.
 
 2. Add the object type in the list at the top of the SolDefines.py file.
@@ -23,11 +23,11 @@ This will create a issue number like #49. We will use it later.
 
 Refer to the other object if you are not sure.
 
-3. Add the object structure at the bottom of the SolDefines.py file.
+3. Add the object structure at the bottom of the :doc:`SolDefines.py` file.
 
 Refere to the python structure to know which field to set: https://docs.python.org/2/library/struct.html
 
 4. Add the object structure at the bottom of the README.md file.
 
 5. Commit your changes starting with the issue number.
-   Commit message example: "#49 adding YOUR_OBJECT_NAME structure"
+   Commit message example: "``#49 adding YOUR_OBJECT_NAME structure``".
