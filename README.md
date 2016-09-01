@@ -12,7 +12,7 @@ An sensor Object contains the following _conceptual_ fields:
 * `L`: the length of the value
 * `V`: Object value, a opaque string of bytes
 
-It is a generalization of the well-known "Type-Length-Value" (TLV) format.
+We refer to this format as the MTtlv format. It is a generalization of the well-known "Type-Length-Value" (TLV) format.
 
 # Installation
 Download source:
@@ -78,7 +78,14 @@ Some rules:
 
 #### Object List
 
-### Example transmission use cases
+According to the header flags, the Object list structure can vary.
+
+* If the T flag is `0` then the message will have the following structure:  
+   ```|| SOL Header || MT | tlv |```
+* If the T flag is `1` then the message will have the following structure:  
+   ```|| SOL Header || MT | N | tlv | tlv | ... ```
+
+#### Example transmission use cases
 
 **Example 1**. transmitting a single 2-byte temperature sensor reading, taken in the past:
 
