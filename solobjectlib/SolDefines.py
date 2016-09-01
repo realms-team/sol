@@ -297,15 +297,12 @@ sol_types = [
         'structure':    '>hHBB',
         'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
     },
-    
     {
         'type':         SOL_TYPE_SHT15_DTYPE_T4RH4N1,
         'description':  'temperature and relative humidity sensor',
         'structure':    '<ffB',
         'fields':       ['temperature', 'rH', 'numReadings'],
     },
-    
-    
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
@@ -416,5 +413,5 @@ sol_types = [
         'description':  'highest 5 frequency bins and magnitudes',
         'structure':    '<BBHHHHHHHHHH',
         'fields':       ['conf1', 'conf2', 'f0', 'f1', 'f2', 'f3', 'f4', 'm0', 'm1', 'm2', 'm3', 'm4'],
-    },    
+    },
 ]

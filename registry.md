@@ -36,12 +36,11 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x1e` | [`DUST_NOTIF_EVENT_MOTERESET`](#dust_notif_event_motereset)                 |
 |   `0x1f` | [`DUST_NOTIF_EVENT_PACKETSENT`](#dust_notif_event_packetsent)               |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
-|   `0x21` | [`GS3_DTYPE_ID1D2T2E2N1`]()                                                 |
-|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`]()                                                   |
+|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`](#judd_dtype_T2D2R1N1)                               |
 |   `0x23` | [`LP02_DTYPE_IR4N1`]()                                                      |
 |   `0x24` | [`MB7554_DTYPE_D2N1NL1NG1`]()                                               |
 |   `0x25` | [`SHT15_DTYPE_T4RH4N1`]()                                                   |
-|   `0x26` | [` LP02_DTYPE_IRS60`]()                                                     |
+|   `0x26` | [`LP02_DTYPE_IRS60`]()                                                      |
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
 |   `0x29` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
@@ -56,9 +55,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### SENS_NEOVBAT_V2N1
 
-| voltageRaw | nvalid | 
+| voltageRaw | nvalid |
 |------------|--------|
-|  INT16U    | INT8U  | 
+|  INT16U    | INT8U  |
 
 #### SENS_MB7363_D2S2N1L1G1
 
@@ -124,7 +123,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 |   temp |     rH | count | std_temp | std_rH |
 |--------|--------|-------|----------|--------|
-| INT32U | INT32U | INT8U |   INT32U | INT32U 
+| INT32U | INT32U | INT8U |   INT32U | INT32U
 
 #### SOLAR_HUKSEFLUX_LP25_AV_RAW
 
@@ -393,6 +392,11 @@ Where each _path_:
 | macAddress | direction |  numLinks | quality | rssiSrcDest | rssiDestSrc |
 |------------|-----------|-----------|---------|-------------|-------------|
 |         8B |     INT8U |     INT8U |   INT8U |        INT8 |        INT8 |
+
+#### JUDD_DTYPE_T2D2R1N1
+| temperature |  depth | numReadings | retries |
+|-------------|--------|-------------|---------|
+|       INT16 | INT16U |       INT8U |   INT8U |
 
 #### DUST_OAP_TEMPSAMPLE
 
