@@ -109,7 +109,7 @@ with open(REGISTRY_FILE, 'w') as reg_file:
         # write columns
 
         reg_file.write("\n#### {0}\n\n{1}|\n{2}|\n{3}|\n".format(
-            SolDefines.solTypeToTypeName(SolDefines,item["type"]),
+            SolDefines.solTypeToTypeName(SolDefines,item["type"])[len("SOL_TYPE_"):],
             fields_lines,
             scores_lines,
             struct_lines,

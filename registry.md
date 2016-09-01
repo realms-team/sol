@@ -54,253 +54,253 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
-#### SOL_TYPE_DISTANCE_JUDD_RS232_RAW
+#### DISTANCE_JUDD_RS232_RAW
 
 | airtemp | travel_time | distance | retries |
 |---------|-------------|----------|---------|
 |  INT16U |      INT16U |   INT16U |   INT8U |
 
-#### SOL_TYPE_DISTANCE_JUDD_RS232_STATS
+#### DISTANCE_JUDD_RS232_STATS
 
 | airtemp | travel_time | distance | retries | count |    std |
 |---------|-------------|----------|---------|-------|--------|
 |  INT16U |      INT16U |   INT16U |   INT8U | INT8U | INT32U |
 
-#### SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_RAW
+#### SNOW_MAXBOTIX_MB7554_RS232_RAW
 
 | distance |
 |----------|
 |   INT16U |
 
-#### SOL_TYPE_SNOW_MAXBOTIX_MB7554_RS232_STATS
+#### SNOW_MAXBOTIX_MB7554_RS232_STATS
 
 | distance | count |    std |
 |----------|-------|--------|
 |   INT16U | INT8U | INT32U |
 
-#### SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_RAW
+#### TEMPRH_SENSERION_SHT15_RS232_RAW
 
 |   temp |     rH |
 |--------|--------|
 | INT32U | INT32U |
 
-#### SOL_TYPE_TEMPRH_SENSERION_SHT15_RS232_STATS
+#### TEMPRH_SENSERION_SHT15_RS232_STATS
 
 |   temp |     rH | count | std_temp | std_rH |
 |--------|--------|-------|----------|--------|
 | INT32U | INT32U | INT8U |    INT8U | INT32U |
 
-#### SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_RAW
+#### TEMPRH_SENSERION_SHT25_RS232_RAW
 
 |   temp |     rH |
 |--------|--------|
 | INT32U | INT32U |
 
-#### SOL_TYPE_TEMPRH_SENSERION_SHT25_RS232_STATS
+#### TEMPRH_SENSERION_SHT25_RS232_STATS
 
 |   temp |     rH | count | std_temp | std_rH |
 |--------|--------|-------|----------|--------|
 | INT32U | INT32U | INT8U |   INT32U | INT32U |
 
-#### SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_RAW
+#### SOLAR_HUKSEFLUX_LP25_AV_RAW
 
 |   Vout |
 |--------|
 | INT32U |
 
-#### SOL_TYPE_SOLAR_HUKSEFLUX_LP25_AV_STATS
+#### SOLAR_HUKSEFLUX_LP25_AV_STATS
 
 |   Vout | count |    std |
 |--------|-------|--------|
 | INT32U | INT8U | INT32U |
 
-#### SOL_TYPE_SOIL_DECAGON_GS3_RS232_RAW
+#### SOIL_DECAGON_GS3_RS232_RAW
 
 | moisture | soil_temp | soil_ec |
 |----------|-----------|---------|
 |   INT32U |    INT32U |  INT32U |
 
-#### SOL_TYPE_SOIL_DECAGON_GS3_RS232_STATS
+#### SOIL_DECAGON_GS3_RS232_STATS
 
 | moisture | soil_temp | soil_ec | count |    std |
 |----------|-----------|---------|-------|--------|
 |   INT32U |    INT32U |  INT32U | INT8U | INT32U |
 
-#### SOL_TYPE_DUST_NOTIFDATA
+#### DUST_NOTIFDATA
 
 | srcPort | dstPort |
 |---------|---------|
 |  INT16U |  INT16U |
 
-#### SOL_TYPE_DUST_NOTIF_HRDEVICE
+#### DUST_NOTIF_HRDEVICE
 
 | charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
 |--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
 | INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
 
-#### SOL_TYPE_DUST_EVENTCOMMANDFINISHED
+#### DUST_EVENTCOMMANDFINISHED
 
 | callbackId |    rc |
 |------------|-------|
 |     INT32U | INT8U |
 
-#### SOL_TYPE_DUST_EVENTPATHCREATE
+#### DUST_EVENTPATHCREATE
 
 | source |   dest | direction |
 |--------|--------|-----------|
 | INT64U | INT64U |     INT8U |
 
-#### SOL_TYPE_DUST_EVENTPATHDELETE
+#### DUST_EVENTPATHDELETE
 
 | source |   dest | direction |
 |--------|--------|-----------|
 | INT64U | INT64U |     INT8U |
 
-#### SOL_TYPE_DUST_EVENTPING
+#### DUST_EVENTPING
 
 | callbackId | macAddress |  delay | voltage | temperature |
 |------------|------------|--------|---------|-------------|
 |     INT32U |     INT64U | INT32U |  INT16U |       INT8U |
 
-#### SOL_TYPE_DUST_EVENTNETWORKTIME
+#### DUST_EVENTNETWORKTIME
 
 | uptime | utcTime |   asn | asnOffset |
 |--------|---------|-------|-----------|
 | INT32U |  INT64U | 5INT8 |      INT8 |
 
-#### SOL_TYPE_DUST_EVENTNETWORKRESET
+#### DUST_EVENTNETWORKRESET
 
 |
 |
 |
 
-#### SOL_TYPE_DUST_EVENTMOTEJOIN
+#### DUST_EVENTMOTEJOIN
 
 | macAddress |
 |------------|
 |     INT64U |
 
-#### SOL_TYPE_DUST_EVENTMOTECREATE
+#### DUST_EVENTMOTECREATE
 
 | macAddress | moteId |
 |------------|--------|
 |     INT64U | INT16U |
 
-#### SOL_TYPE_DUST_EVENTMOTEDELETE
+#### DUST_EVENTMOTEDELETE
 
 | macAddress | moteId |
 |------------|--------|
 |     INT64U | INT16U |
 
-#### SOL_TYPE_DUST_EVENTMOTELOST
+#### DUST_EVENTMOTELOST
 
 | macAddress |
 |------------|
 |     INT64U |
 
-#### SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
+#### DUST_EVENTMOTEOPERATIONAL
 
 | macAddress |
 |------------|
 |     INT64U |
 
-#### SOL_TYPE_DUST_EVENTMOTERESET
+#### DUST_EVENTMOTERESET
 
 | macAddress |
 |------------|
 |     INT64U |
 
-#### SOL_TYPE_DUST_EVENTPACKETSENT
+#### DUST_EVENTPACKETSENT
 
 | callbackId |    rc |
 |------------|-------|
 |     INT32U | INT8U |
 
-#### SOL_TYPE_JUDD_DTYPE_T2D2R1N1
+#### JUDD_DTYPE_T2D2R1N1
 
 | temperature |  depth | numReadings | retries |
 |-------------|--------|-------------|---------|
 |       INT16 | INT16U |       INT8U |   INT8U |
 
-#### SOL_TYPE_SHT15_DTYPE_T4RH4N1
+#### SHT15_DTYPE_T4RH4N1
 
 | temperature |    rH | numReadings |
 |-------------|-------|-------------|
 |       INT32 | INT32 |       INT8U |
 
-#### SOL_TYPE_DUST_OAP_TEMPSAMPLE
+#### DUST_OAP_TEMPSAMPLE
 
 | temperature |
 |-------------|
 |       INT16 |
 
-#### SOL_TYPE_SOLMANAGER_STATS
+#### SOLMANAGER_STATS
 
 | sol_version | solmanager_version | sdk_version |
 |-------------|--------------------|-------------|
 |      INT32U |             INT32U |      INT32U |
 
-#### SOL_TYPE_SENS_MB7363_D2S2N1L1G1
+#### SENS_MB7363_D2S2N1L1G1
 
 | mean_d2g |  stdev |  Nval |  Nltm |  NgtM |
 |----------|--------|-------|-------|-------|
 |   INT16U | INT16U | INT8U | INT8U | INT8U |
 
-#### SOL_TYPE_SENS_GS3_I1D4T4E4N1
+#### SENS_GS3_I1D4T4E4N1
 
 | sub_id | dielect |  temp | eleCond |  Nval |
 |--------|---------|-------|---------|-------|
 |  INT8U |   INT32 | INT32 |   INT32 | INT8U |
 
-#### SOL_TYPE_SENS_SHT25_T2N1H2N1
+#### SENS_SHT25_T2N1H2N1
 
 | temp_raw | t_Nval | rh_raw | rh_Nval |
 |----------|--------|--------|---------|
 |   INT16U |  INT8U | INT16U |   INT8U |
 
-#### SOL_TYPE_SENS_NEOVBAT_V2N1
+#### SENS_NEOVBAT_V2N1
 
 | voltage |     N |
 |---------|-------|
 |   INT16 | INT8U |
 
-#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_0
+#### SENS_GS3_I1D4T4E4N1_0
 
 | dielect |  temp | eleCond |  Nval |
 |---------|-------|---------|-------|
 |   INT32 | INT32 |   INT32 | INT8U |
 
-#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_1
+#### SENS_GS3_I1D4T4E4N1_1
 
 | dielect |  temp | eleCond |  Nval |
 |---------|-------|---------|-------|
 |   INT32 | INT32 |   INT32 | INT8U |
 
-#### SOL_TYPE_SENS_GS3_I1D4T4E4N1_2
+#### SENS_GS3_I1D4T4E4N1_2
 
 | dielect |  temp | eleCond |  Nval |
 |---------|-------|---------|-------|
 |   INT32 | INT32 |   INT32 | INT8U |
 
-#### SOL_TYPE_SENS_LP02_R4N1
+#### SENS_LP02_R4N1
 
 | irradiance |     N |
 |------------|-------|
 |      INT32 | INT8U |
 
-#### SOL_TYPE_SENS_ECTM
+#### SENS_ECTM
 
 | die_raw | EC_raw | temp_raw | depth |
 |---------|--------|----------|-------|
 |   INT32 |  INT32 |    INT32 | INT32 |
 
-#### SOL_TYPE_SENS_MPS1
+#### SENS_MPS1
 
 | die_raw | depth |
 |---------|-------|
 |   INT32 | INT32 |
 
-#### SOL_TYPE_ADXL362_FFT_Z
+#### ADXL362_FFT_Z
 
 | conf1 | conf2 |     f0 |     f1 |     f2 |     f3 |     f4 |     m0 |     m1 |     m2 |     m3 |     m4 |
 |-------|-------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
