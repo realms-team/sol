@@ -46,8 +46,7 @@ Each group of Objects consists of the following fields:
 
 Some rules:
 * all multi-byte value are encoded "big endian" (a.k.a "network order")
-* when chaining Objects in a packet, a "more" header SHOULD be inserted for a more compact representation.
-* when chaining Objects in a binary file, each MUST be frames using HDLC.
+* when saving Objects in a binary file, each Object MUST be framed using HDLC.
 
 #### SOL Header
 
@@ -77,6 +76,7 @@ Some rules:
     * `b10`: 2-byte length field present
     * `b11`: elided. The length is recovered from the length of the packet or HDLC frame.
 
+#### Object List
 
 ### Example transmission use cases
 
