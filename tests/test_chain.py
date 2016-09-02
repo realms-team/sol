@@ -848,7 +848,7 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
-    # SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+    # SOL_TYPE_JUDD_T2D2R1N1,
     {
         "objects": [
             {
@@ -892,7 +892,7 @@ SOL_CHAIN_EXAMPLE = [
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
                         },
-                        "measurement": 'SOL_TYPE_JUDD_DTYPE_T2D2R1N1',
+                        "measurement": 'SOL_TYPE_JUDD_T2D2R1N1',
                         "fields"     : {
                             'temperature': 0x0a33,
                             'depth': 0x0b44,
@@ -1249,7 +1249,7 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
-    # MULTI-TTLV (VBAT_DTYPE_V2N1, SENS_SHT25_T2N1H2N1, SENS_GS3_I1D4T4E4N1, SENS_MB7363_D2S2N1L1G1)
+    # MULTI-TTLV (VBAT_V2N1, SENS_SHT25_T2N1H2N1, SENS_GS3_I1D4T4E4N1, SENS_MB7363_D2S2N1L1G1)
     {
         "dust": {
             "notif" :
@@ -1262,7 +1262,7 @@ SOL_CHAIN_EXAMPLE = [
                     data         = ( 0x20,"                                     + # multi TTLV 0010 0000
                                     "0x05, 0x05, 0x05, 0x05,"                   + # epoch
                                     "0x04,"                                     + # 5 objects
-                                    "0x32, 0x00, 0x00, 0x01,"                   + # 1. VBAT_DTYPE_V2N1
+                                    "0x32, 0x00, 0x00, 0x01,"                   + # 1. VBAT_V2N1
                                     "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # 2. SENS_SHT25_T2N1H2N1
                                     "0x30, 0x00, 0x0a, 0xd7, 0x23, 0x40, 0x66," + # 3. SENS_GS3_I1D4T4E4N1
                                     "0x66, 0xb2, 0x41, 0x00, 0x00, 0x80, 0x3f," +
