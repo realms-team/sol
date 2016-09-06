@@ -51,6 +51,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x37` | [`SENS_ECTM`](#sens_ectm)                                                   |
 |   `0x38` | [`SENS_MPS1`](#sens_mps1)                                                   |
 |   `0x39` | [`ADXL362_FFT_Z`](#adxl362_fft_z)                                           |
+|   `0x40` | [`TEMPRH_SHT31`](#temprh_sht31)                                             |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -305,3 +306,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 | conf1 | conf2 |     f0 |     f1 |     f2 |     f3 |     f4 |     m0 |     m1 |     m2 |     m3 |     m4 |
 |-------|-------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | INT8U | INT8U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U |
+
+#### TEMPRH_SHT31
+
+| temp_raw | rh_raw |
+|----------|--------|
+|   INT32U | INT32U |

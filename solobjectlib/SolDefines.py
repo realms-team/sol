@@ -49,6 +49,7 @@ SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
+SOL_TYPE_TEMPRH_SHT31                       = 0x40
 
 
 def solTypeToTypeName(solDefinesClass,type_id):
@@ -413,5 +414,11 @@ sol_types = [
         'description':  'highest 5 frequency bins and magnitudes',
         'structure':    '<BBHHHHHHHHHH',
         'fields':       ['conf1', 'conf2', 'f0', 'f1', 'f2', 'f3', 'f4', 'm0', 'm1', 'm2', 'm3', 'm4'],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SHT31,
+        'description':  'temperature and humidity sensor',
+        'structure':    '>II',
+        'fields':       ['temp_raw', 'rh_raw'],
     },
 ]
