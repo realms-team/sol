@@ -36,8 +36,8 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x1e` | [`DUST_EVENTMOTERESET`](#dust_eventmotereset)                               |
 |   `0x1f` | [`DUST_EVENTPACKETSENT`](#dust_eventpacketsent)                             |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
-|   `0x22` | [`JUDD_DTYPE_T2D2R1N1`](#judd_dtype_t2d2r1n1)                               |
-|   `0x25` | [`SHT15_DTYPE_T4RH4N1`](#sht15_dtype_t4rh4n1)                               |
+|   `0x22` | [`JUDD_T2D2R1N1`](#judd_t2d2r1n1)                                           |
+|   `0x25` | [`SHT15_T4RH4N1`](#sht15_t4rh4n1)                                           |
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
 |   `0x29` | [`SENS_MB7363_D2S2N1L1G1`](#sens_mb7363_d2s2n1l1g1)                         |
@@ -216,13 +216,13 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |------------|-------|
 |     INT32U | INT8U |
 
-#### JUDD_DTYPE_T2D2R1N1
+#### JUDD_T2D2R1N1
 
 | temperature |  depth | numReadings | retries |
 |-------------|--------|-------------|---------|
 |       INT16 | INT16U |       INT8U |   INT8U |
 
-#### SHT15_DTYPE_T4RH4N1
+#### SHT15_T4RH4N1
 
 | temperature |    rH | numReadings |
 |-------------|-------|-------------|
