@@ -1474,6 +1474,70 @@ SOL_CHAIN_EXAMPLE = [
                     }
             }
         ]
+    },
+    # get timestamp from Dust Message (with TEMPRH_SHT31)
+    {
+        "dust": {
+            "notif" :
+                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(     \
+                    utcSecs      = 1111,                                        \
+                    utcUsecs     = 222,                                         \
+                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
+                    srcPort      = 0xf0ba,                                      \
+                    dstPort      = 0xf0ba,                                      \
+                    data         = ( 0x08,"                                     + # SOL Header 0000 1000
+                                    "0x40,"                                     + # 1. TEMPRH_SHT31
+                                    "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
+                                    "0x00, 0x00, 0x00, 0x02, "                  + # value--rh_raw
+                                   "),                                           \
+                )",
+            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            },
+        "objects": [
+            {
+                "json" : {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x40,
+                    "value"      : {
+                        "temp_raw"       : 1,
+                        "rh_raw"         : 2,
+                    },
+                },
+                "bin" :
+                    [
+                        #ver   type   MAC    ts    typelen length
+                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x40,                                      # type
+                        0x00,0x00,0x00,0x01,                       # value--temp_raw
+                        0x00,0x00,0x00,0x02                        # value--rh_raw
+                    ],
+                "http":
+                    '{                                             \
+                        "v" : 0,                                   \
+                        "o" : [                                    \
+                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAg==" \
+                        ]                                          \
+                    }',
+                "influxdb":
+                    {
+                        "time"       : TIMESTAMP*1000000000,
+                        "tags"       : {
+                            'mac'    : '01-02-03-04-05-06-07-08',
+                            'site'      : 'super_site',
+                            'latitude'  : 55.5555,
+                            'longitude' : -44.4444,
+                        },
+                        "measurement": 'SOL_TYPE_TEMPRH_SHT31',
+                        "fields"     : {
+                            "temp_raw"      : 1,
+                            "rh_raw"        : 2,
+                        },
+                    },
+            },
+        ]
     }
 ]
 
