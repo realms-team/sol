@@ -1485,7 +1485,7 @@ SOL_CHAIN_EXAMPLE = [
                     macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
                     srcPort      = 0xf0ba,                                      \
                     dstPort      = 0xf0ba,                                      \
-                    data         = ( 0x28,"                                     + # SOL Header 0000 1000
+                    data         = ( 0x28,"                                     + # SOL Header 0010 1000
                                     "0x02,"                                     + # object number
                                     "0x40,"                                     + # 1. TEMPRH_SHT31
                                     "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
