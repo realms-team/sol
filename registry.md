@@ -309,6 +309,6 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### TEMPRH_SHT31
 
-| temp_raw | rh_raw |
-|----------|--------|
-|   INT32U | INT32U |
+| temp_raw | rh_raw | height |
+|----------|--------|--------|
+|   INT32U | INT32U | INT16U |

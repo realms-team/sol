@@ -418,7 +418,7 @@ sol_types = [
     {
         'type':         SOL_TYPE_TEMPRH_SHT31,
         'description':  'temperature and humidity sensor',
-        'structure':    '>II',
-        'fields':       ['temp_raw', 'rh_raw'],
+        'structure':    '>IIH',
+        'fields':       ['temp_raw', 'rh_raw', 'height'],
     },
 ]
