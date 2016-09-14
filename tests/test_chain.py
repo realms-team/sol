@@ -1490,9 +1490,11 @@ SOL_CHAIN_EXAMPLE = [
                                     "0x40,"                                     + # 1. TEMPRH_SHT31
                                     "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
                                     "0x00, 0x00, 0x00, 0x02, "                  + # value--rh_raw
+                                    "0x00, 0x03, "                              + # value--height
                                     "0x40,"                                     + # 2. TEMPRH_SHT31
                                     "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
                                     "0x00, 0x00, 0x00, 0x02, "                  + # value--rh_raw
+                                    "0x00, 0x03, "                              + # value--height
                                    "),                                           \
                 )",
             "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
@@ -1506,6 +1508,7 @@ SOL_CHAIN_EXAMPLE = [
                     "value"      : {
                         "temp_raw"       : 1,
                         "rh_raw"         : 2,
+                        "height"         : 3,
                     },
                 },
                 "bin" :
@@ -1516,13 +1519,14 @@ SOL_CHAIN_EXAMPLE = [
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
                         0x00,0x00,0x00,0x01,                       # value--temp_raw
-                        0x00,0x00,0x00,0x02                        # value--rh_raw
+                        0x00,0x00,0x00,0x02,                       # value--rh_raw
+                        0x00,0x03                                  # value--rh_raw
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAg==" \
+                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAgAD"     \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1538,6 +1542,7 @@ SOL_CHAIN_EXAMPLE = [
                         "fields"     : {
                             "temp_raw"      : 1,
                             "rh_raw"        : 2,
+                            "height"         : 3,
                         },
                     },
             },
@@ -1549,6 +1554,7 @@ SOL_CHAIN_EXAMPLE = [
                     "value"      : {
                         "temp_raw"       : 1,
                         "rh_raw"         : 2,
+                        "height"         : 3,
                     },
                 },
                 "bin" :
@@ -1559,13 +1565,14 @@ SOL_CHAIN_EXAMPLE = [
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
                         0x00,0x00,0x00,0x01,                       # value--temp_raw
-                        0x00,0x00,0x00,0x02                        # value--rh_raw
+                        0x00,0x00,0x00,0x02,                       # value--rh_raw
+                        0x00,0x03                                  # value--height
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAg==" \
+                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAgAD"     \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1581,6 +1588,7 @@ SOL_CHAIN_EXAMPLE = [
                         "fields"     : {
                             "temp_raw"      : 1,
                             "rh_raw"        : 2,
+                            "height"        : 3,
                         },
                     },
             },
