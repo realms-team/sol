@@ -1,6 +1,10 @@
 #ifndef SOL_H
 #define SOL_H
 
+//=========================== includes ========================================
+
+#include <stdint.h>
+
 //=========================== defines =========================================
 
 /// \brief The SOL default UDP port.
