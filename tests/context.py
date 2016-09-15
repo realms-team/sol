@@ -8,3 +8,8 @@ here = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
 
 from solobjectlib import Sol
+
+# =========================== defines =========================================
+
+# C implementation PATH
+CLIB_PATH = os.path.join(here, '..', 'sol_c')
