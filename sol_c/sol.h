@@ -8,9 +8,9 @@
 //=========================== defines =========================================
 
 /// \brief The SOL default UDP port.
-#define SOL_PORT 0xF0BA
+const uint16_t SOL_PORT = 0xF0BA;
 
-#define SOL_TYPE_TEMPRH_SHT31                   = 0x40
+const uint8_t SOL_TYPE_TEMPRH_SHT31 = 0x40;
 
 //=========================== function pointers/structs =======================
 
@@ -37,7 +37,7 @@ typedef struct __attribute__((__packed__)) {
 
 //=========================== prototypes ======================================
 
-void       sol_create_MTtlv();
+void create_object(uint8_t type, uint8_t length, uint8_t value, sol_MTtlv_t* sol_obj);
 
 #endif
 
