@@ -614,8 +614,8 @@ class Sol(object):
                                 dstPort     = dust_notif.dstPort,
                                 # data = solheader + timestamp + object
                                 data        = tuple([sol_header])+
-                                              dust_notif.data[solheader_size:solheader_size+ts_offset]+
-                                              dust_notif.data[curr_ptr:curr_ptr+obj_size+1]
+                                              tuple(dust_notif.data[solheader_size:solheader_size+ts_offset])+
+                                              tuple(dust_notif.data[curr_ptr:curr_ptr+obj_size+1])
                         )
                     )
                     curr_ptr   += obj_size+1
