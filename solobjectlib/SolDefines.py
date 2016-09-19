@@ -428,7 +428,7 @@ sol_types = [
                 },
                 {
                     'field':     "temp_phys",
-                    'function': lambda x:  (x*175/0xffff)-45+x,
+                    'function': lambda x:  (int(x)*175/0xffff)-45+x,
                     'args':     ['temp_raw'],
                 },
                 {
