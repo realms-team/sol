@@ -1488,13 +1488,13 @@ SOL_CHAIN_EXAMPLE = [
                     data         = ( 0x28,"                                     + # SOL Header 0010 1000
                                     "0x02,"                                     + # object number
                                     "0x40,"                                     + # 1. TEMPRH_SHT31
-                                    "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
-                                    "0x00, 0x00, 0x00, 0x02, "                  + # value--rh_raw
-                                    "0x00, 0x03, "                              + # value--height
+                                    "0x00, 0x01, "                              + # value--temp_raw
+                                    "0x00, 0x02, "                              + # value--rh_raw
+                                    "0x03, "                                    + # value--id
                                     "0x40,"                                     + # 2. TEMPRH_SHT31
-                                    "0x00, 0x00, 0x00, 0x01, "                  + # value--temp_raw
-                                    "0x00, 0x00, 0x00, 0x02, "                  + # value--rh_raw
-                                    "0x00, 0x03, "                              + # value--height
+                                    "0x00, 0x01, "                              + # value--temp_raw
+                                    "0x00, 0x02, "                              + # value--rh_raw
+                                    "0x03, "                                    + # value--id
                                    "),                                           \
                 )",
             "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
@@ -1508,7 +1508,7 @@ SOL_CHAIN_EXAMPLE = [
                     "value"      : {
                         "temp_raw"       : 1,
                         "rh_raw"         : 2,
-                        "height"         : 3,
+                        "id"             : 3,
                     },
                 },
                 "bin" :
@@ -1518,15 +1518,15 @@ SOL_CHAIN_EXAMPLE = [
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
-                        0x00,0x00,0x00,0x01,                       # value--temp_raw
-                        0x00,0x00,0x00,0x02,                       # value--rh_raw
-                        0x00,0x03                                  # value--rh_raw
+                        0x00,0x01,                                 # value--temp_raw
+                        0x00,0x02,                                 # value--rh_raw
+                        0x03                                       # value--id
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAgAD"     \
+                            "EwECAwQFBgcIBQUFBUAAAQACAw=="         \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1542,7 +1542,7 @@ SOL_CHAIN_EXAMPLE = [
                         "fields"     : {
                             "temp_raw"      : 1,
                             "rh_raw"        : 2,
-                            "height"         : 3,
+                            "id"            : 3,
                         },
                     },
             },
@@ -1554,7 +1554,7 @@ SOL_CHAIN_EXAMPLE = [
                     "value"      : {
                         "temp_raw"       : 1,
                         "rh_raw"         : 2,
-                        "height"         : 3,
+                        "id"             : 3,
                     },
                 },
                 "bin" :
@@ -1564,15 +1564,15 @@ SOL_CHAIN_EXAMPLE = [
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
-                        0x00,0x00,0x00,0x01,                       # value--temp_raw
-                        0x00,0x00,0x00,0x02,                       # value--rh_raw
-                        0x00,0x03                                  # value--height
+                        0x00,0x01,                                 # value--temp_raw
+                        0x00,0x02,                                 # value--rh_raw
+                        0x03                                       # value--id
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAAABAAAAAgAD"     \
+                            "EwECAwQFBgcIBQUFBUAAAQACAw=="         \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1588,7 +1588,7 @@ SOL_CHAIN_EXAMPLE = [
                         "fields"     : {
                             "temp_raw"      : 1,
                             "rh_raw"        : 2,
-                            "height"        : 3,
+                            "id"            : 3,
                         },
                     },
             },
