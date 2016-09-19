@@ -1488,12 +1488,12 @@ SOL_CHAIN_EXAMPLE = [
                     data         = ( 0x28,"                                     + # SOL Header 0010 1000
                                     "0x02,"                                     + # object number
                                     "0x40,"                                     + # 1. TEMPRH_SHT31
-                                    "0x00, 0x01, "                              + # value--temp_raw
-                                    "0x00, 0x02, "                              + # value--rh_raw
+                                    "0x63, 0x87, "                              + # value--temp_raw
+                                    "0x9d, 0x27, "                              + # value--rh_raw
                                     "0x03, "                                    + # value--id
                                     "0x40,"                                     + # 2. TEMPRH_SHT31
-                                    "0x00, 0x01, "                              + # value--temp_raw
-                                    "0x00, 0x02, "                              + # value--rh_raw
+                                    "0x63, 0x87, "                              + # value--temp_raw
+                                    "0x9d, 0x27, "                              + # value--rh_raw
                                     "0x03, "                                    + # value--id
                                    "),                                           \
                 )",
@@ -1506,8 +1506,8 @@ SOL_CHAIN_EXAMPLE = [
                     "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                     "type"       : 0x40,
                     "value"      : {
-                        "temp_raw"       : 1,
-                        "rh_raw"         : 2,
+                        "temp_raw"       : 0x6387,
+                        "rh_raw"         : 0x9d27,
                         "id"             : 3,
                     },
                 },
@@ -1518,15 +1518,15 @@ SOL_CHAIN_EXAMPLE = [
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
-                        0x00,0x01,                                 # value--temp_raw
-                        0x00,0x02,                                 # value--rh_raw
+                        0x63,0x87,                                 # value--temp_raw
+                        0x9d,0x27,                                 # value--rh_raw
                         0x03                                       # value--id
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAQACAw=="         \
+                            "EwECAwQFBgcIBQUFBUBjh50nAw=="         \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1537,11 +1537,14 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            'id'        : 3,
                         },
                         "measurement": 'SOL_TYPE_TEMPRH_SHT31',
                         "fields"     : {
-                            "temp_raw"      : 1,
-                            "rh_raw"        : 2,
+                            "temp_raw"      : 0x6387,
+                            "rh_raw"        : 0x9d27,
+                            "temp_phys"     : 23,
+                            "rh_phys"       : 61,
                             "id"            : 3,
                         },
                     },
@@ -1552,8 +1555,8 @@ SOL_CHAIN_EXAMPLE = [
                     "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                     "type"       : 0x40,
                     "value"      : {
-                        "temp_raw"       : 1,
-                        "rh_raw"         : 2,
+                        "temp_raw"       : 0x6387,
+                        "rh_raw"         : 0x9d27,
                         "id"             : 3,
                     },
                 },
@@ -1564,15 +1567,15 @@ SOL_CHAIN_EXAMPLE = [
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
                         0x05,0x05,0x05,0x05,                       # timestamp
                         0x40,                                      # type
-                        0x00,0x01,                                 # value--temp_raw
-                        0x00,0x02,                                 # value--rh_raw
+                        0x63,0x87,                                 # value--temp_raw
+                        0x9d,0x27,                                 # value--rh_raw
                         0x03                                       # value--id
                     ],
                 "http":
                     '{                                             \
                         "v" : 0,                                   \
                         "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUAAAQACAw=="         \
+                            "EwECAwQFBgcIBQUFBUBjh50nAw=="         \
                         ]                                          \
                     }',
                 "influxdb":
@@ -1583,11 +1586,14 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            'id'        : 3,
                         },
                         "measurement": 'SOL_TYPE_TEMPRH_SHT31',
                         "fields"     : {
-                            "temp_raw"      : 1,
-                            "rh_raw"        : 2,
+                            "temp_raw"      : 0x6387,
+                            "rh_raw"        : 0x9d27,
+                            "temp_phys"     : 23,
+                            "rh_phys"       : 61,
                             "id"            : 3,
                         },
                     },
