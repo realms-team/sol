@@ -34,8 +34,8 @@ SOL_TYPE_DUST_EVENTMOTEOPERATIONAL          = 0x1d
 SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
-SOL_TYPE_JUDD_DTYPE_T2D2R1N1                = 0x22
-SOL_TYPE_SHT15_DTYPE_T4RH4N1                = 0x25
+SOL_TYPE_JUDD_T2D2R1N1                      = 0x22
+SOL_TYPE_SHT15_T4RH4N1                      = 0x25
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
 SOL_TYPE_SENS_MB7363_D2S2N1L1G1             = 0x29
@@ -49,6 +49,7 @@ SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
+SOL_TYPE_TEMPRH_SHT31                       = 0x40
 
 
 def solTypeToTypeName(solDefinesClass,type_id):
@@ -292,20 +293,17 @@ sol_types = [
         'fields':       ['callbackId', 'rc'],
     },
     {
-        'type':         SOL_TYPE_JUDD_DTYPE_T2D2R1N1,
+        'type':         SOL_TYPE_JUDD_T2D2R1N1,
         'description':  'ultrasonic snow depth and temperature sensor',
         'structure':    '>hHBB',
         'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
     },
-    
     {
-        'type':         SOL_TYPE_SHT15_DTYPE_T4RH4N1,
+        'type':         SOL_TYPE_SHT15_T4RH4N1,
         'description':  'temperature and relative humidity sensor',
         'structure':    '<ffB',
         'fields':       ['temperature', 'rH', 'numReadings'],
     },
-    
-    
     {
         'type':         SOL_TYPE_DUST_OAP_TEMPSAMPLE,
         'description':  '',
@@ -416,5 +414,28 @@ sol_types = [
         'description':  'highest 5 frequency bins and magnitudes',
         'structure':    '<BBHHHHHHHHHH',
         'fields':       ['conf1', 'conf2', 'f0', 'f1', 'f2', 'f3', 'f4', 'm0', 'm1', 'm2', 'm3', 'm4'],
-    },    
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SHT31,
+        'description':  'temperature and humidity sensor',
+        'structure':    '>HHB',
+        'fields':       ['temp_raw', 'rh_raw', 'id'],
+        'apply':        [
+                {
+                    'tag':     "id",
+                    'function': lambda x: x,
+                    'args':     ['id'],
+                },
+                {
+                    'field':     "temp_phys",
+                    'function': lambda x:  (x*175/0xffff)-45,
+                    'args':     ['temp_raw'],
+                },
+                {
+                    'field':     "rh_phys",
+                    'function': lambda x:  x*100/0xffff,
+                    'args':     ['rh_raw'],
+                },
+            ],
+    },
 ]

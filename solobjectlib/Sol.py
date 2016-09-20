@@ -588,17 +588,19 @@ class Sol(object):
                 # get time
                 ts_sec  = 0
                 ts_usec = 0
-                if header_T == 0: # timestamp from obj
+                ts_offset = 0
+                if header_S == 0: # timestamp from smip header
                     ts_sec  = dust_notif.data[0:ts_size]
                     ts_usec = 0
+                    ts_offset = ts_size
                 else: # timestamp from dust notif
                     ts_sec  = dust_notif.utcSecs
                     ts_user = dust_notif.utcUsecs
 
                 # get number of objects
-                obj_number  = dust_notif.data[ts_size+objnum_size]
+                obj_number  = dust_notif.data[ts_offset+objnum_size]
 
-                curr_ptr    = solheader_size + ts_size + objnum_size
+                curr_ptr    = solheader_size + ts_offset + objnum_size
                 for i in range(0,obj_number):
                     obj_type    = dust_notif.data[curr_ptr]
                     sol_item    = SolDefines.solStructure(obj_type)
@@ -611,8 +613,9 @@ class Sol(object):
                                 srcPort     = dust_notif.srcPort,
                                 dstPort     = dust_notif.dstPort,
                                 # data = solheader + timestamp + object
-                                data        = dust_notif.data[:solheader_size+ts_size]+
-                                              dust_notif.data[curr_ptr:curr_ptr+obj_size+1]
+                                data        = tuple([sol_header])+
+                                              tuple(dust_notif.data[solheader_size:solheader_size+ts_offset])+
+                                              tuple(dust_notif.data[curr_ptr:curr_ptr+obj_size+1])
                         )
                     )
                     curr_ptr   += obj_size+1
@@ -807,10 +810,10 @@ class Sol(object):
         sol_ts      = None
 
         # check for timestamp flag in SOL_HEADER
-        header_offset = SolDefines.SOL_HEADER_OFFSET
-        ts_offset = SolDefines.SOL_TIMESTAMP_OFFSET
-        header_ts_flag = dust_notif.data[0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
-        if header_ts_flag == SolDefines.SOL_HDR_S_EPOCH:
+        header_offset   = SolDefines.SOL_HEADER_OFFSET
+        ts_offset       = SolDefines.SOL_TIMESTAMP_OFFSET
+        header_S        = dust_notif.data[0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
+        if header_S == SolDefines.SOL_HDR_S_EPOCH:
             ts = list(dust_notif.data[ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE])
             ts.reverse()
             sol_ts      = Sol._list_to_num(ts)
