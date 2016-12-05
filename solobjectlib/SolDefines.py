@@ -1,4 +1,4 @@
-SOL_PORT                = 0xf0ba
+SOL_PORT                                    = 0xf0ba
 
 # type names
 
@@ -52,20 +52,21 @@ SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
 
 
-def solTypeToTypeName(solDefinesClass,type_id):
+def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
-        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
+        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
             return n
     raise ValueError("SOL type %s does not exist" % type_id)
 
+
 def solStructure(type_id):
-    '''
+    """
     Return the SOL structure according to the given type id
     If the element is not found, it raises a ValueError.
 
     :return: a dictionary that contains the following keys:
         type, description, structure, fields
-    '''
+    """
     sol_item = {}
     for item in sol_types:
         if item['type'] == type_id:
@@ -212,7 +213,8 @@ sol_types = [
         'type':         SOL_TYPE_DUST_NOTIF_HRDEVICE,
         'description':  '',
         'structure':    '>IBbHHHHHBBBIB',
-        'fields':       ['charge','queueOcc','temperature','batteryVoltage','numTxOk','numTxFail','numRxOk','numRxLost','numMacDropped','numTxBad','badLinkFrameId','badLinkSlot','badLinkOffset'],
+        'fields':       ['charge', 'queueOcc', 'temperature', 'batteryVoltage', 'numTxOk', 'numTxFail', 'numRxOk',
+                         'numRxLost', 'numMacDropped', 'numTxBad', 'badLinkFrameId', 'badLinkSlot', 'badLinkOffset'],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTCOMMANDFINISHED,
@@ -236,13 +238,13 @@ sol_types = [
         'type':         SOL_TYPE_DUST_EVENTPING,
         'description':  '',
         'structure':    '>IQIHB',
-        'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
+        'fields':       ['callbackId', 'macAddress', 'delay', 'voltage', 'temperature'],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTNETWORKTIME,
         'description':  '',
         'structure':    '>IQ5pH',
-        'fields':       ['uptime','utcTime', 'asn', 'asnOffset'],
+        'fields':       ['uptime', 'utcTime', 'asn', 'asnOffset'],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTNETWORKRESET,
@@ -387,7 +389,7 @@ sol_types = [
         'type':         SOL_TYPE_SENS_ECTM,
         'description':  'Decagon ECTM soil moisture and temp',
         'structure':    '<iiif',
-        'fields':       ['die_raw','EC_raw','temp_raw','depth'],
+        'fields':       ['die_raw', 'EC_raw', 'temp_raw', 'depth'],
         'apply':        [
                 {
                     'tag':     "depth",
@@ -400,7 +402,7 @@ sol_types = [
         'type':         SOL_TYPE_SENS_MPS1,
         'description':  'Decagon MPS1 soil matric potential',
         'structure':    '<ff',
-        'fields':       ['die_raw','depth'],
+        'fields':       ['die_raw', 'depth'],
         'apply':        [
                 {
                     'tag':     "depth",
