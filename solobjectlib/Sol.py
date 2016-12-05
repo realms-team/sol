@@ -72,8 +72,11 @@ class Sol(object):
         """
         Convert a single Dust serial API notification into a list of JSON SOL Object.
 
+        :param str notif_name: The dust notification name (ex: "notifData")
         :param dict dust_notif: The Dust serial API notification as
             created by the SmartMesh SDK
+        :param list macManager: A list of byte containing the MAC address of the manager
+        :param int timestamp: the Unix epoch of the message creation in seconds (UTC)
         :return: A list of SOL Object in JSON format
         :rtype: list
         """
@@ -208,6 +211,7 @@ class Sol(object):
         Convert a binary SOL object into a JSON SOL Object.
 
         :param list sol_bin: binary SOL object
+        :param list mac: A list of byte containing the MAC address of the that created the object
         :return: JSON SOL Objects
         :rtpe: list
         """
@@ -292,6 +296,7 @@ class Sol(object):
         Convert a JSON SOL object into a InfluxDB point
 
         :param list sol_json: JSON SOL object
+        :param dict tags: A dictionary of tags
         :return: InfluxDB point
         :rtpe: list
         """
@@ -307,8 +312,7 @@ class Sol(object):
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
         elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
-            fields = {}
-            fields["mote"] = []
+            fields = {"mote": []}
             for mote in sol_json["value"]:
                 mote["macAddress"] = FormatUtils.formatBuffer(mote["macAddress"])
                 for path in mote["paths"]:
@@ -362,7 +366,7 @@ class Sol(object):
         """
         Converts an Influxdb query reply into a list of dicts.
 
-        :param sol_influxdb dict: the result of a database query (sush as SELECT * FROM)
+        :param dict sol_influxdb: the result of a database query (sush as SELECT * FROM)
         :return: a list of JSON SOL objects
         :rtype: list
 
