@@ -1623,7 +1623,7 @@ def test_chain(sol_chain_example):
         sol_jsonl  = sol.dust_to_json(
            sol_chain_example["dust"]["notif_name"],
            eval(sol_chain_example["dust"]["notif"]),
-           macManager  = MACMANAGER,
+           mac_manager  = MACMANAGER,
            timestamp   = TIMESTAMP,
         )
     else:
