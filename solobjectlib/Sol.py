@@ -639,7 +639,7 @@ class Sol(object):
         else:
             (sol_type,sol_value) = self._get_sol_json_value_generic(dust_notif)
 
-        if (sol_type==None or sol_value==None):
+        if (sol_type is None or sol_value is None):
             raise NotImplementedError()
 
         return (sol_type,sol_ts,sol_value)
@@ -792,7 +792,7 @@ class Sol(object):
         elif getattr(dust_notif,'dstPort')==SolDefines.SOL_PORT:
             (sol_type,sol_ts,sol_value) = self._get_sol_json_value_SOL(dust_notif)
 
-        if sol_type==None and sol_value==None:
+        if sol_type is None and sol_value is None:
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
             sol_value   = self._fields_to_json_with_structure(
                 SolDefines.SOL_TYPE_DUST_NOTIFDATA,
@@ -838,7 +838,7 @@ class Sol(object):
                 self.connSerial.NOTIFDATA,
                 dust_notif
             )
-            if self.oap_mac!=None and self.oap_notif!=None:
+            if self.oap_mac is not None and self.oap_notif is not None:
                 if type(self.oap_notif)==OAPNotif.OAPTempSample:
                     sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
                     sol_value = self._fields_to_json_with_structure(
