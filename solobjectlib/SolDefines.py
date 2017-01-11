@@ -323,6 +323,13 @@ sol_types = [
         'description':  'mean & stddev of Nval d2g readings',
         'structure':    '<HHBBB',
         'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],    
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
