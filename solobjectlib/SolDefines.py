@@ -325,17 +325,39 @@ sol_types = [
         'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
         'apply':        [
                 {
+                    'tag':     "mean_d2g",
+                    'function': lambda x: x,
+                    'args':     ['mean_d2g'],
+                },            
+                {
                     'tag':     "Nval",
                     'function': lambda x: x,
                     'args':     ['Nval'],
+                },
+                {
+                    'tag':     "stdev",
+                    'function': lambda x: x,
+                    'args':     ['stdev'],
                 }
-            ],    
-    },
+            ],             
+    },  
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
         'description':  'soil moisture. sub_id indicates depth',
         'structure':    '<BfffB',
         'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "sub_id",
+                    'function': lambda x: x,
+                    'args':     ['sub_id'],
+                },
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],        
     },
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
@@ -353,6 +375,16 @@ sol_types = [
                     'function': lambda x:  -6 + 125*(float(x)/65536),
                     'args':     ['rh_raw'],
                 },
+                {
+                    'tag':     "t_Nval",
+                    'function': lambda x: x,
+                    'args':     ['t_Nval'],
+                },
+                {
+                    'tag':     "rh_Nval",
+                    'function': lambda x: x,
+                    'args':     ['rh_Nval'],
+                }
             ]
     },
     {
@@ -365,6 +397,11 @@ sol_types = [
                     'field':     "vol_phys",
                     'function': lambda x: float(x)*0.11,
                     'args':     ['voltage'],
+                },
+                {
+                    'tag':     "N",
+                    'function': lambda x: x,
+                    'args':     ['N'],
                 }
             ]
     },
@@ -373,18 +410,39 @@ sol_types = [
         'description':  'soil moisture at depth 0',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],    
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_1,
         'description':  'soil moisture at depth 1',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],        
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_2,
         'description':  'soil moisture at depth 2',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],        
     },
     {
         'type':         SOL_TYPE_SENS_LP02_R4N1,
