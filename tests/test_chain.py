@@ -1185,6 +1185,8 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            't_Nval'    : 0x01,
+                            'rh_Nval'   : 0x01,
                         },
                         "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
                         "fields"     : {
@@ -1309,6 +1311,7 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            "N"         : 1,
                         },
                         "measurement": 'SOL_TYPE_SENS_NEOVBAT_V2N1',
                         "fields"     : {
@@ -1357,6 +1360,8 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            't_Nval'    : 0x01,
+                            'rh_Nval'   : 0x01,
                         },
                         "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
                         "fields"     : {
@@ -1410,6 +1415,8 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            'sub_id'    : 0x00,
+                            'Nval'      : 0x01,
                         },
                         "measurement": 'SOL_TYPE_SENS_GS3_I1D4T4E4N1',
                         "fields"     : {
@@ -1462,6 +1469,9 @@ SOL_CHAIN_EXAMPLE = [
                             'site'      : 'super_site',
                             'latitude'  : 55.5555,
                             'longitude' : -44.4444,
+                            'mean_d2g'  : 0x021b,
+                            'stdev'     : 0x0001,
+                            'Nval'      : 0x1b,
                         },
                         "measurement": 'SOL_TYPE_SENS_MB7363_D2S2N1L1G1',
                         "fields"     : {
