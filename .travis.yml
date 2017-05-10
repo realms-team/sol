@@ -5,10 +5,10 @@ python:
 before_install:
 
 install:
-  - wget https://github.com/twatteyne/smartmeshsdk/archive/master.zip 
-  - unzip master.zip
+  - git clone --branch=develop https://github.com/twatteyne/smartmeshsdk.git realms-team/smartmeshsdk
   - pwd
   - ls
+  - ls realms-team/smartmeshsdk
   - pip install -r requirements.txt
 
 script:
