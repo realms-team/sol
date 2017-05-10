@@ -19,7 +19,7 @@ TAGS         = {
 
 #============================ fixtures ==============================
 
-SOL_CHAIN_EXAMPLE = [
+[
     # SOL_TYPE_DUST_NOTIF_DATA_NOT_OAP
     {
         "dust": {
@@ -403,108 +403,118 @@ SOL_CHAIN_EXAMPLE = [
         },
         "objects" : [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x11,
-                        "value"      : {
-                            'neighbors': [
-                                {
-                                    'neighborFlag': 0,
-                                    u'neighborId': 4,
-                                    u'numRxPackets': 2,
-                                    u'numTxFailures': 0,
-                                    u'numTxPackets': 103,
-                                    u'rssi': -33,
-                                },
-                                {
-                                    u'neighborFlag': 0,
-                                    u'neighborId': 1,
-                                    u'numRxPackets': 4,
-                                    u'numTxFailures': 14,
-                                    u'numTxPackets': 193,
-                                    u'rssi': -60,
-                                },
-                                {
-                                    u'neighborFlag': 0,
-                                    u'neighborId': 6,
-                                    u'numRxPackets': 40,
-                                    u'numTxFailures': 0,
-                                    u'numTxPackets': 0,
-                                    u'rssi': -28
-                                },
-                                {
-                                    u'neighborFlag': 0,
-                                    u'neighborId': 7,
-                                    u'numRxPackets': 98,
-                                    u'numTxFailures': 0,
-                                    u'numTxPackets': 0,
-                                    u'rssi': -58,
-                                },
-                                {
-                                    u'neighborFlag': 0,
-                                    u'neighborId': 12,
-                                    u'numRxPackets': 97,
-                                    u'numTxFailures': 0,
-                                    u'numTxPackets': 0,
-                                    u'rssi': -36,
-                                },
-                            ],
-                            u'numItems': 5,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x11,
+                    "value"      : {
+                        'neighbors': [
+                            {
+                                'neighborFlag': 0,
+                                u'neighborId': 4,
+                                u'numRxPackets': 2,
+                                u'numTxFailures': 0,
+                                u'numTxPackets': 103,
+                                u'rssi': -33,
+                            },
+                            {
+                                u'neighborFlag': 0,
+                                u'neighborId': 1,
+                                u'numRxPackets': 4,
+                                u'numTxFailures': 14,
+                                u'numTxPackets': 193,
+                                u'rssi': -60,
+                            },
+                            {
+                                u'neighborFlag': 0,
+                                u'neighborId': 6,
+                                u'numRxPackets': 40,
+                                u'numTxFailures': 0,
+                                u'numTxPackets': 0,
+                                u'rssi': -28
+                            },
+                            {
+                                u'neighborFlag': 0,
+                                u'neighborId': 7,
+                                u'numRxPackets': 98,
+                                u'numTxFailures': 0,
+                                u'numTxPackets': 0,
+                                u'rssi': -58,
+                            },
+                            {
+                                u'neighborFlag': 0,
+                                u'neighborId': 12,
+                                u'numRxPackets': 97,
+                                u'numTxFailures': 0,
+                                u'numTxPackets': 0,
+                                u'rssi': -36,
+                            },
+                        ],
+                        u'numItems': 5,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x11,                                      # type
-                        5, 0, 4, 0, 223, 0, 103, 0, 0, 0, 2, 0, 1, 0, 196, 0, 193, 0, 14, 0, 4, 0, 6, 0, 228, 0, 0, 0, 0, 0, 40, 0, 7, 0, 198, 0, 0, 0, 0, 0, 98, 0, 12, 0, 220, 0, 0, 0, 0, 0, 97   # value
-                    ],
-                "http":
-                    {
-                        "v" : 0,
-                        "o" : [
-                            "EwECAwQFBgcIEhMUFREFAAQA3wBnAAAAAgABAMQAwQAOAAQABgDkAAAAAAAoAAcAxgAAAAAAYgAMANwAAAAAAGE=",
-                        ]
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x11,                                      # type
+                    5, 0, 4, 0, 223, 0, 103, 0, 0, 0, 2, 0, 1, 0, 196, 0, 193, 0, 14, 0, 4, 0, 6, 0, 228, 0, 0, 0, 0, 0, 40, 0, 7, 0, 198, 0, 0, 0, 0, 0, 98, 0, 12, 0, 220, 0, 0, 0, 0, 0, 97   # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFREFAAQA3wBnAAAAAgABAMQAwQAOAAQABgDkAAAAAAAoAAcAxgAAAAAAYgAMANwAAAAAAGE=",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
-                        "fields"     : {
-                            'neighbors:3:neighborId':           3,
-                            'neighbors:3:neighborFlag':       0,
-                            'neighbors:3:rssi':               -33,
-                            'neighbors:3:numTxPackets':       0,
-                            'neighbors:3:numTxFailures':      0,
-                            'neighbors:3:numRxPackets':       47,
-                            'neighbors:1:neighborId':         1,
-                            'neighbors:1:neighborFlag':       0,
-                            'neighbors:1:rssi':               -47,
-                            'neighbors:1:numTxPackets':       76,
-                            'neighbors:1:numTxFailures':      1,
-                            'neighbors:1:numRxPackets':       2,
-                            'neighbors:4:neighborId':         4,
-                            'neighbors:4:neighborFlag':       0,
-                            'neighbors:4:rssi':               -45,
-                            'neighbors:4:numTxPackets':       30,
-                            'neighbors:4:numTxFailures':      0,
-                            'neighbors:4:numRxPackets':       1,
-                            'numItems':             3,
-                        },
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
+                    "fields"     : {
+                        'neighbors:4:neighborFlag': 0,
+                        'neighbors:4:neighborId': 4,
+                        'neighbors:4:numRxPackets': 2,
+                        'neighbors:4:numTxFailures': 0,
+                        'neighbors:4:numTxPackets': 103,
+                        'neighbors:4:rssi': -33,
+                        'neighbors:1:neighborFlag': 0,
+                        'neighbors:1:neighborId': 1,
+                        'neighbors:1:numRxPackets': 4,
+                        'neighbors:1:numTxFailures': 14,
+                        'neighbors:1:numTxPackets': 193,
+                        'neighbors:1:rssi': -60,
+                        'neighbors:6:neighborFlag': 0,
+                        'neighbors:6:neighborId': 6,
+                        'neighbors:6:numRxPackets': 40,
+                        'neighbors:6:numTxFailures': 0,
+                        'neighbors:6:numTxPackets': 0,
+                        'neighbors:6:rssi': -28,
+                        'neighbors:7:neighborFlag': 0,
+                        'neighbors:7:neighborId': 7,
+                        'neighbors:7:numRxPackets': 98,
+                        'neighbors:7:numTxFailures': 0,
+                        'neighbors:7:numTxPackets': 0,
+                        'neighbors:7:rssi': -58,
+                        'neighbors:12:neighborFlag': 0,
+                        'neighbors:12:neighborId': 12,
+                        'neighbors:12:numRxPackets': 97,
+                        'neighbors:12:numTxFailures': 0,
+                        'neighbors:12:numTxPackets': 0,
+                        'neighbors:12:rssi': -36,
+                        'numItems': 5,
                     },
+                },
             }
         ]
     },
+]
+SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust": {
