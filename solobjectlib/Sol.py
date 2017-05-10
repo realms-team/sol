@@ -698,32 +698,29 @@ class Sol(object):
     # other
     
     def _dust_other_notif_to_sol_json(self, dust_notif):
-        sol_typeName    = self._dust_notifName_to_sol_typeName(str(type(dust_notif)))
+        sol_typeName    = self._dust_notifName_to_sol_typeName(dust_notif['name'])
         sol_type        = getattr(SolDefines, sol_typeName)
         sol_value       = self._fields_to_json_with_structure(
             sol_type,
-            dust_notif._asdict(),
+            dust_notif,
         )
 
         return sol_type, sol_value
     
     def _dust_notifName_to_sol_typeName(self, notifName):
-        n = notifName.split('.')[-1][:-2]
-        assert n.startswith('Tuple_')
-        n = n[len('Tuple_'):]
-        n = n.upper()
-        n = 'SOL_TYPE_DUST_{0}'.format(n)
-        return n
+        return 'SOL_TYPE_DUST_{0}'.format(notifName.upper())
 
-    def _fields_to_json_with_structure(self, sol_type, fields):
+    def _fields_to_json_with_structure(self, sol_type, dust_notif):
 
         sol_struct          = SolDefines.solStructure(sol_type)
-
+        
         returnVal       = {}
         for name in sol_struct['fields']:
-            returnVal[name] = fields[name]
+            returnVal[name] = dust_notif['fields'][name]
+            if name in ['source','dest']:
+                returnVal[name] = FormatUtils.format_mac_string_to_bytes(returnVal[name])
         if 'extrafields' in sol_struct:
-            returnVal[sol_struct['extrafields']] = fields[sol_struct['extrafields']]
+            returnVal[sol_struct['extrafields']] = dust_notif['fields'][sol_struct['extrafields']]
 
         for (k, v) in returnVal.items():
             if type(v) == tuple:
