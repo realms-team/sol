@@ -6,9 +6,9 @@ before_install:
 
 install:
   - git clone --branch=develop https://github.com/twatteyne/smartmeshsdk.git realms-team/smartmeshsdk
-  - pwd
-  - ls
+  - ls realms-team/
   - ls realms-team/smartmeshsdk
+  - ls realms-team/sol
   - pip install -r requirements.txt
 
 script:
