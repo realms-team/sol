@@ -717,7 +717,7 @@ class Sol(object):
         returnVal       = {}
         for name in sol_struct['fields']:
             returnVal[name] = dust_notif['fields'][name]
-            if name in ['source','dest']:
+            if name in ['source','dest','macAddress']:
                 returnVal[name] = FormatUtils.format_mac_string_to_bytes(returnVal[name])
         if 'extrafields' in sol_struct:
             returnVal[sol_struct['extrafields']] = dust_notif['fields'][sol_struct['extrafields']]
