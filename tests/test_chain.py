@@ -867,132 +867,120 @@ TAGS         = {
             }
         ]
     },
-]
-SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with positive temperature value)
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
-                    utcSecs      = 1111,                                      \
-                    utcUsecs     = 222,                                       \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
-                    srcPort      = 0xf0b9,                                    \
-                    dstPort      = 0xf0b9,                                    \
-                    data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
-                                      0,   0,   0,  61,  34, 107,  74,   0,   \
-                                     13, 104, 164,   0,   0, 117,  48,   1,   \
-                                     16,0x0a,0x33                             \
-                                   ),                                         \
-                )",
-            "notif_name":IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name': u'oap',
+            'mac': u'01-02-03-04-05-06-07-08',
+            'fields': {
+                'channel': [5],
+                'channel_str': u'temperature',
+                'num_samples': 1,
+                'packet_timestamp': [262570839552L, 116116480],
+                'rate': 30000,
+                'received_timestamp': u'2017-05-07 14:53:44.753000',
+                'sample_size': 16,
+                'samples': [0x0a33],
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x27,
-                        "value"      : {
-                            'temperature': 0x0a33,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x27,
+                    "value"      : {
+                        'temperature': 0x0a33,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x27,                                      # type
-                        0x0a,0x33,                                 # value
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x27,                                      # type
+                    0x0a,0x33,                                 # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFScKMw==",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBScKMw=="             \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
-                        "fields"     : {
-                            'temperature': 0x0a33,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
+                    "fields"     : {
+                        'temperature': 0x0a33,
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with negative temperature value)
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(         \
-                    utcSecs      = 1111,                                      \
-                    utcUsecs     = 222,                                       \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
-                    srcPort      = 0xf0b9,                                    \
-                    dstPort      = 0xf0b9,                                    \
-                    data         = (  0,   0,   5,   0, 255,   1,   5,   0,   \
-                                      0,   0,   0,  61,  34, 107,  74,   0,   \
-                                     13, 104, 164,   0,   0, 117,  48,   1,   \
-                                     16,0xff,0xff                             \
-                                   ),                                         \
-                )",
-            "notif_name" : IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name': u'oap',
+            'mac': u'01-02-03-04-05-06-07-08',
+            'fields': {
+                'channel': [5],
+                'channel_str': u'temperature',
+                'num_samples': 1,
+                'packet_timestamp': [262570839552L, 116116480],
+                'rate': 30000,
+                'received_timestamp': u'2017-05-07 14:53:44.753000',
+                'sample_size': 16,
+                'samples': [-123],
             },
-        "objects" : [
+        },
+        "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x27,
-                        "value"      : {
-                            'temperature': -1,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x27,
+                    "value"      : {
+                        'temperature': -123,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x27,                                      # type
-                        0xff,0xff,                                 # value
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x27,                                      # type
+                    255, 133,                                  # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFSf/hQ==",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBSf//w=="             \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
-                        "fields"     : {
-                            'temperature': -1,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
+                    "fields"     : {
+                        'temperature': -123,
+                    },
+                },
+            },
+        ],
     },
+]
+SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_JUDD_T2D2R1N1,
     {
         "objects": [

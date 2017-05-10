@@ -89,7 +89,7 @@ class Sol(object):
                 ]:
                 sol_mac = d_n['fields']['macAddress']
             elif d_n['name'] in [
-                    'hr',
+                    'hr', 'oap',
                 ]:
                 sol_mac = FormatUtils.format_mac_string_to_bytes(d_n['mac'])
             else:
@@ -673,7 +673,6 @@ class Sol(object):
     # oap
     
     def _dust_oap_to_sol_json(self, dust_notif):
-        sol_ts     = int(time.time()) # TODO: change by generation time
         if dust_notif['fields']['channel_str'] == 'temperature':
             sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
             sol_value = {
@@ -693,7 +692,7 @@ class Sol(object):
             }
         else:
             raise NotImplementedError()
-        return (sol_type, sol_ts, sol_value)
+        return (sol_type, sol_value)
     
     # other
     
