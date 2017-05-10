@@ -50,7 +50,8 @@ SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
-
+SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
+SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
