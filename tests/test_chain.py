@@ -513,8 +513,6 @@ TAGS         = {
             }
         ]
     },
-]
-SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust": {
@@ -573,62 +571,60 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTPATHDELETE
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventPathDelete(   \
-                    eventId      = 0x11223344,                                \
-                    source       = [1,1,1,1,1,1,1,1],                         \
-                    dest         = [2,2,2,2,2,2,2,2],                         \
-                    direction    = 3,                                         \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.EVENTPATHDELETE,
+            'name': u'eventPathDelete',
+            'manager': u'COM6',
+            'fields': {
+                'source':    '01-01-01-01-01-01-01-01',
+                'dest':      '02-02-02-02-02-02-02-02',
+                'direction': 3,
+                'eventId':   7,
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : MACMANAGER,
-                        "type"       : 0x15,
-                        "value"      : {
-                            'source'      : [1,1,1,1,1,1,1,1],
-                            'dest'        : [2,2,2,2,2,2,2,2],
-                            'direction'   : 3,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x15,
+                    "value"      : {
+                        'source'      : [1,1,1,1,1,1,1,1],
+                        'dest'        : [2,2,2,2,2,2,2,2],
+                        'direction'   : 3,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x15,                                      # type
-                        0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
-                        0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
-                        0x03,
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x15,                                      # type
+                    0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                    0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
+                    0x03,
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFRUBAQEBAQEBAQICAgICAgICAw==",
                     ],
-                "http":
-                    '{                                                       \
-                        "v" : 0,                                             \
-                        "o" : [                                              \
-                            "EwMDAwMDAwMDBQUFBRUBAQEBAQEBAQICAgICAgICAw=="   \
-                        ]                                                    \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '03-03-03-03-03-03-03-03',
-                        },
-                        "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
-                        "fields"     : {
-                            'source'      : '01-01-01-01-01-01-01-01',
-                            'dest'        : '02-02-02-02-02-02-02-02',
-                            'direction'   : 3,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '03-03-03-03-03-03-03-03',
                     },
+                    "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
+                    "fields"     : {
+                        'source'      : '01-01-01-01-01-01-01-01',
+                        'dest'        : '02-02-02-02-02-02-02-02',
+                        'direction'   : 3,
+                    },
+                },
             }
         ]
     },
+]
+SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTEJOIN
     {
         "dust":{
