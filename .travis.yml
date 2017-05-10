@@ -5,10 +5,11 @@ python:
 before_install:
 
 install:
-  - git clone --branch=develop https://github.com/twatteyne/smartmeshsdk.git /home/travis/build/realms-team/smartmeshsdk
+  - git clone --branch=master https://github.com/twatteyne/smartmeshsdk.git /home/travis/build/realms-team/smartmeshsdk
   - pwd
   - ls /home/travis/build/realms-team/
   - ls /home/travis/build/realms-team/smartmeshsdk
+  - ls /home/travis/build/realms-team/sol
   - pip install -r requirements.txt
 
 script:
