@@ -721,48 +721,43 @@ TAGS         = {
             }
         ]
     },
-]
-SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTEDELETE
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteDelete(   \
-                    eventId      = 0x11223344,                                \
-                    macAddress   = [1,1,1,1,1,1,1,1],                         \
-                    moteId       = 0x0202,                                    \
-                )",
-            "notif_name" : IpMgrConnectorSerial.IpMgrConnectorSerial.EVENTMOTEDELETE,
+            'manager': u'COM6',
+            'name': u'eventMoteDelete',
+            'fields': {
+                'eventId': 0x11223344,
+                'macAddress': '01-01-01-01-01-01-01-01',
+                'moteId': 0x0202,
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : MACMANAGER,
-                        "type"       : 0x1b,
-                        "value"      : {
-                            'macAddress'  : [1,1,1,1,1,1,1,1],
-                            'moteId'      : 0x0202,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x1b,
+                    "value"      : {
+                        'macAddress'  : [1,1,1,1,1,1,1,1],
+                        'moteId'      : 0x0202,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x1b,                                      # type
-                        0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
-                        0x02,0x02,
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x1b,                                      # type
+                    0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                    0x02,0x02,
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFRsBAQEBAQEBAQIC",
                     ],
-                "http":
-                    '{                                                       \
-                        "v" : 0,                                             \
-                        "o" : [                                              \
-                            "EwMDAwMDAwMDBQUFBRsBAQEBAQEBAQIC"   \
-                        ]                                                    \
-                    }',
+                },
                 "influxdb":
                     {
                         "time"       : TIMESTAMP*1000000000,
@@ -781,105 +776,99 @@ SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_EVENTMOTELOST
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteLost(     \
-                    eventId      = 0x11223344,                                \
-                    macAddress   = [1,1,1,1,1,1,1,1],                         \
-                )",
-            "notif_name" : IpMgrConnectorSerial.IpMgrConnectorSerial.EVENTMOTELOST,
+            'manager': u'COM6',
+            'name': u'eventMoteLost',
+            'fields': {
+                'eventId': 0x11223344,
+                'macAddress': '01-01-01-01-01-01-01-01',
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : MACMANAGER,
-                        "type"       : 0x1c,
-                        "value"      : {
-                            'macAddress'  : [1,1,1,1,1,1,1,1],
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x1c,
+                    "value"      : {
+                        'macAddress'  : [1,1,1,1,1,1,1,1],
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x1c,                                      # type
-                        0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
-                    ],
-                "http":
-                    '{                                                       \
-                        "v" : 0,                                             \
-                        "o" : [                                              \
-                            "EwMDAwMDAwMDBQUFBRwBAQEBAQEBAQ=="   \
-                        ]                                                    \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '03-03-03-03-03-03-03-03',
-                        },
-                        "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
-                        "fields"     : {
-                            'macAddress'  : '01-01-01-01-01-01-01-01',
-                        },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x1c,                                      # type
+                    0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFRwBAQEBAQEBAQ==",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '03-03-03-03-03-03-03-03',
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
+                    "fields"     : {
+                        'macAddress'  : '01-01-01-01-01-01-01-01',
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_DUST_EVENTMOTEOPERATIONAL
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_eventMoteOperational(     \
-                    eventId      = 0x11223344,                                \
-                    macAddress   = [1,1,1,1,1,1,1,1],                         \
-                )",
-            "notif_name" : IpMgrConnectorSerial.IpMgrConnectorSerial.EVENTMOTEOPERATIONAL,
+            'manager': u'COM6',
+            'name': u'eventMoteOperational',
+            'fields': {
+                'eventId': 0x11223344,
+                'macAddress': '01-01-01-01-01-01-01-01',
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : MACMANAGER,
-                        "type"       : 0x1d,
-                        "value"      : {
-                            'macAddress'  : [1,1,1,1,1,1,1,1],
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x1d,
+                    "value"      : {
+                        'macAddress'  : [1,1,1,1,1,1,1,1],
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x1d,                                      # type
-                        0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
-                    ],
-                "http":
-                    '{                                                       \
-                        "v" : 0,                                             \
-                        "o" : [                                              \
-                            "EwMDAwMDAwMDBQUFBR0BAQEBAQEBAQ=="   \
-                        ]                                                    \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '03-03-03-03-03-03-03-03',
-                        },
-                        "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
-                        "fields"     : {
-                            'macAddress'  : '01-01-01-01-01-01-01-01',
-                        },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x1d,                                      # type
+                    0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFR0BAQEBAQEBAQ==",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '03-03-03-03-03-03-03-03',
                     },
+                    "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
+                    "fields"     : {
+                        'macAddress'  : '01-01-01-01-01-01-01-01',
+                    },
+                },
             }
         ]
     },
+]
+SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_OAP_TEMPSAMPLE (with positive temperature value)
     {
         "dust": {
