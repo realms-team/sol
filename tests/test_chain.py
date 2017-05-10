@@ -8,7 +8,7 @@ from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 #============================ defines ===============================
 
 MACMANAGER   = [3,3,3,3,3,3,3,3]
-TIMESTAMP    = 0x05050505
+TIMESTAMP    = 0x12131415
 TAGS_DEFAULT = { "mac" : "03-03-03-03-03-03-03-03"}
 TAGS         = {
     "mac"       : "01-02-03-04-05-06-07-08",
@@ -20,20 +20,20 @@ TAGS         = {
 #============================ fixtures ==============================
 
 SOL_CHAIN_EXAMPLE = [
-    # SOL_TYPE_DUST_NOTIF_DATA_RAW
+    # SOL_TYPE_DUST_NOTIF_DATA_NOT_OAP
     {
         "dust": {
-            "notif"     :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(    \
-                    utcSecs      = 1111,                                 \
-                    utcUsecs     = 222,                                  \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],             \
-                    srcPort      = 0x0102,                               \
-                    dstPort      = 0x0304,                               \
-                    data         = (0x05,0x06,0x07,0x08),                \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name':     'notifData',
+            'manager':  'COM6',
+            'fields' : {
+                'utcSecs':    0x11111111,
+                'utcUsecs':   0x22222222,
+                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'srcPort':    0x0102,
+                'dstPort':    0x0304,
+                'data':       [0x05,0x06,0x07,0x08],
             },
+        },
         "objects": [
             {
                 "json":
@@ -52,17 +52,17 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x0e,                                      # type
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # value
                     ],
                 "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBQ4BAgMEBQYHCA=="     \
-                        ]                                          \
-                    }',
+                    {
+                        "v" : 0,
+                        "o" : [
+                            "EwECAwQFBgcIEhMUFQ4BAgMEBQYHCA=="
+                        ]
+                    },
                 "influxdb":
                     {
                         "time"          : TIMESTAMP*1000000000,
@@ -82,97 +82,325 @@ SOL_CHAIN_EXAMPLE = [
                             'data:3'    : 0x08,
                         },
                     },
-            }
-        ]
+            },
+        ],
     },
-    # SOL_TYPE_DUST_NOTIF_HRDEVICE
+    # SOL_TYPE_DUST_NOTIF_DATA_OAP
     {
         "dust": {
-            "notif":
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
-                    payload      = [128, 24, 0, 0, 0, 40, 49, 25, 11,119, 0, 26, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],            \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFHEALTHREPORT,
+            'name':     'notifData',
+            'manager':  'COM6',
+            'fields' : {
+                'utcSecs':    0x11111111,
+                'utcUsecs':   0x22222222,
+                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'srcPort':    0xf0b9,
+                'dstPort':    0xf0b9,
+                'data':       [0x05,0x06,0x07,0x08],
             },
+        },
+        "objects": [],
+    },
+    # SOL_TYPE_DUST_NOTIF_HRDEVICE+SOL_TYPE_DUST_NOTIF_HRDISCOVERED
+    {
+        "dust": {
+            'hr': {
+                'Device': {
+                    'badLinkFrameId':  0,
+                    'badLinkOffset':   0,
+                    'badLinkSlot':     0,
+                    'batteryVoltage':  2949,
+                    'charge':          377,
+                    'numMacCrcErr':    1,
+                    'numMacDropped':   0,
+                    'numMacMicErr':    0,
+                    'numNetMicErr':    0,
+                    'numRxLost':       0,
+                    'numRxOk':         5,
+                    'numTxBad':        0,
+                    'numTxFail':       0,
+                    'numTxOk':         58,
+                    'queueOcc':        49,
+                    'temperature':     21,
+                },
+               'Discovered': {
+                    'discoveredNeighbors': [
+                        {
+                            u'neighborId': 3,
+                            u'numRx': 2,
+                            u'rssi': -37,
+                        },
+                        {
+                            u'neighborId': 7,
+                            u'numRx': 1,
+                            u'rssi': -62
+                        },
+                        {
+                            u'neighborId': 10,
+                            u'numRx': 3,
+                            u'rssi': -38
+                        },
+                        {
+                            u'neighborId': 12,
+                            u'numRx': 1,
+                            u'rssi': -36
+                        },
+                        {
+                            u'neighborId': 5,
+                            u'numRx': 1,
+                            u'rssi': -35,
+                        },
+                        {
+                            u'neighborId': 8,
+                            u'numRx': 1,
+                            u'rssi': -39,
+                        },
+                        {
+                            u'neighborId': 9,
+                            u'numRx': 1,
+                            u'rssi': -44,
+                        },
+                        {
+                            u'neighborId': 11,
+                            u'numRx': 1,
+                            u'rssi': -49
+                        },
+                    ],
+                    u'numItems': 8,
+                    u'numJoinParents': 8,
+                },
+            },
+            'mac': u'01-02-03-04-05-06-07-08',
+            'name': u'hr',
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x10,
-                        "value"      : {
-                            'charge':             40,
-                            'queueOcc':           49,
-                            'temperature':        25,
-                            'batteryVoltage':     2935,
-                            'numTxOk':            26,
-                            'numTxFail':          0,
-                            'numRxOk':            9,
-                            'numRxLost':          0,
-                            'numMacDropped':      0,
-                            'numTxBad':           0,
-                            'badLinkFrameId':     0,
-                            'badLinkSlot':        0,
-                            'badLinkOffset':      0,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "type"       : 0x10,
+                    "value"      : {
+                        'badLinkFrameId':  0,
+                        'badLinkOffset':   0,
+                        'badLinkSlot':     0,
+                        'batteryVoltage':  2949,
+                        'charge':          377,
+                        'numMacCrcErr':    1,
+                        'numMacDropped':   0,
+                        'numMacMicErr':    0,
+                        'numNetMicErr':    0,
+                        'numRxLost':       0,
+                        'numRxOk':         5,
+                        'numTxBad':        0,
+                        'numTxFail':       0,
+                        'numTxOk':         58,
+                        'queueOcc':        49,
+                        'temperature':     21,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
-                        0x10,                                      # type
-                        0, 0, 0, 40, 49, 25, 11,119, 0, 26, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   # value
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBRAAAAAoMRkLdwAaAAAACQAAAAAAAAAAAAA="     \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
-                        "fields"     : {
-                            'charge':             40,
-                            'queueOcc':           49,
-                            'temperature':        25,
-                            'batteryVoltage':     2935,
-                            'numTxOk':            26,
-                            'numTxFail':          0,
-                            'numRxOk':            9,
-                            'numRxLost':          0,
-                            'numMacDropped':      0,
-                            'numTxBad':           0,
-                            'badLinkFrameId':     0,
-                            'badLinkSlot':        0,
-                            'badLinkOffset':      0,
-                        },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x10,                                      # type
+                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1  # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-                }
-        ]
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
+                    "fields"     : {
+                        'badLinkFrameId':  0,
+                        'badLinkOffset':   0,
+                        'badLinkSlot':     0,
+                        'batteryVoltage':  2949,
+                        'charge':          377,
+                        'numMacCrcErr':    1,
+                        'numMacDropped':   0,
+                        'numMacMicErr':    0,
+                        'numNetMicErr':    0,
+                        'numRxLost':       0,
+                        'numRxOk':         5,
+                        'numTxBad':        0,
+                        'numTxFail':       0,
+                        'numTxOk':         58,
+                        'queueOcc':        49,
+                        'temperature':     21,
+                    },
+                },
+            },
+            {
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "type"       : 0x12,
+                    "value"      : {
+                        'discoveredNeighbors': [
+                            {
+                                u'neighborId': 3,
+                                u'numRx': 2,
+                                u'rssi': -37,
+                            },
+                            {
+                                u'neighborId': 7,
+                                u'numRx': 1,
+                                u'rssi': -62
+                            },
+                            {
+                                u'neighborId': 10,
+                                u'numRx': 3,
+                                u'rssi': -38
+                            },
+                            {
+                                u'neighborId': 12,
+                                u'numRx': 1,
+                                u'rssi': -36
+                            },
+                            {
+                                u'neighborId': 5,
+                                u'numRx': 1,
+                                u'rssi': -35,
+                            },
+                            {
+                                u'neighborId': 8,
+                                u'numRx': 1,
+                                u'rssi': -39,
+                            },
+                            {
+                                u'neighborId': 9,
+                                u'numRx': 1,
+                                u'rssi': -44,
+                            },
+                            {
+                                u'neighborId': 11,
+                                u'numRx': 1,
+                                u'rssi': -49
+                            },
+                        ],
+                        u'numItems': 8,
+                        u'numJoinParents': 8,
+                    },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x12,                                      # type
+                    8, 8, 0, 3, 219, 2, 0, 7, 194, 1, 0, 10, 218, 3, 0, 12, 220, 1, 0, 5, 221, 1, 0, 8, 217, 1, 0, 9, 212, 1, 0, 11, 207, 1,   # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFRIICAAD2wIAB8IBAAraAwAM3AEABd0BAAjZAQAJ1AEAC88B"
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'       : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                    },
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
+                    "fields"     : {
+                        'discoveredNeighbors:0:neighborId': 3,
+                        'discoveredNeighbors:0:numRx': 2,
+                        'discoveredNeighbors:0:rssi': -37,
+                        'discoveredNeighbors:1:neighborId': 7,
+                        'discoveredNeighbors:1:numRx': 1,
+                        'discoveredNeighbors:1:rssi': -62,
+                        'discoveredNeighbors:2:neighborId': 10,
+                        'discoveredNeighbors:2:numRx': 3,
+                        'discoveredNeighbors:2:rssi': -38,
+                        'discoveredNeighbors:3:neighborId': 12,
+                        'discoveredNeighbors:3:numRx': 1,
+                        'discoveredNeighbors:3:rssi': -36,
+                        'discoveredNeighbors:4:neighborId': 5,
+                        'discoveredNeighbors:4:numRx': 1,
+                        'discoveredNeighbors:4:rssi': -35,
+                        'discoveredNeighbors:5:neighborId': 8,
+                        'discoveredNeighbors:5:numRx': 1,
+                        'discoveredNeighbors:5:rssi': -39,
+                        'discoveredNeighbors:6:neighborId': 9,
+                        'discoveredNeighbors:6:numRx': 1,
+                        'discoveredNeighbors:6:rssi': -44,
+                        'discoveredNeighbors:7:neighborId': 11,
+                        'discoveredNeighbors:7:numRx': 1,
+                        'discoveredNeighbors:7:rssi': -49,
+                        'numItems': 8,
+                        'numJoinParents': 8,
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
     {
         "dust": {
-            "notif"     :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
-                    payload      = [129, 31, 3, 0, 3, 0, 223, 0, 0, 0, 0, 0, 47, 0, 1, 0, 209, 0, 76, 0, 1, 0, 2, 0, 4, 0, 211, 0, 30, 0, 0, 0, 1],            \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFHEALTHREPORT,
+            'hr': {
+                'Neighbors': {
+                    'neighbors': [
+                        {
+                            'neighborFlag': 0,
+                            u'neighborId': 4,
+                            u'numRxPackets': 2,
+                            u'numTxFailures': 0,
+                            u'numTxPackets': 103,
+                            u'rssi': -33,
+                        },
+                        {
+                            u'neighborFlag': 0,
+                            u'neighborId': 1,
+                            u'numRxPackets': 4,
+                            u'numTxFailures': 14,
+                            u'numTxPackets': 193,
+                            u'rssi': -60,
+                        },
+                        {
+                            u'neighborFlag': 0,
+                            u'neighborId': 6,
+                            u'numRxPackets': 40,
+                            u'numTxFailures': 0,
+                            u'numTxPackets': 0,
+                            u'rssi': -28
+                        },
+                        {
+                            u'neighborFlag': 0,
+                            u'neighborId': 7,
+                            u'numRxPackets': 98,
+                            u'numTxFailures': 0,
+                            u'numTxPackets': 0,
+                            u'rssi': -58,
+                        },
+                        {
+                            u'neighborFlag': 0,
+                            u'neighborId': 12,
+                            u'numRxPackets': 97,
+                            u'numTxFailures': 0,
+                            u'numTxPackets': 0,
+                            u'rssi': -36,
+                        },
+                    ],
+                    u'numItems': 5,
+                },
             },
+            u'mac': u'01-02-03-04-05-06-07-08',
+            u'name': u'hr',
+        },
         "objects" : [
             {
                 "json":
@@ -181,33 +409,49 @@ SOL_CHAIN_EXAMPLE = [
                         "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
                         "type"       : 0x11,
                         "value"      : {
-                            'numItems': 3,
                             'neighbors': [
                                 {
-                                    'neighborId':       3,
-                                    'neighborFlag':     0,
-                                    'rssi':             -33,
-                                    'numTxPackets':     0,
-                                    'numTxFailures':    0,
-                                    'numRxPackets':     47,
+                                    'neighborFlag': 0,
+                                    u'neighborId': 4,
+                                    u'numRxPackets': 2,
+                                    u'numTxFailures': 0,
+                                    u'numTxPackets': 103,
+                                    u'rssi': -33,
                                 },
                                 {
-                                    'neighborId':       1,
-                                    'neighborFlag':     0,
-                                    'rssi':             -47,
-                                    'numTxPackets':     76,
-                                    'numTxFailures':    1,
-                                    'numRxPackets':     2,
+                                    u'neighborFlag': 0,
+                                    u'neighborId': 1,
+                                    u'numRxPackets': 4,
+                                    u'numTxFailures': 14,
+                                    u'numTxPackets': 193,
+                                    u'rssi': -60,
                                 },
                                 {
-                                    'neighborId':      4,
-                                    'neighborFlag':    0,
-                                    'rssi':            -45,
-                                    'numTxPackets':    30,
-                                    'numTxFailures':   0,
-                                    'numRxPackets':    1,
+                                    u'neighborFlag': 0,
+                                    u'neighborId': 6,
+                                    u'numRxPackets': 40,
+                                    u'numTxFailures': 0,
+                                    u'numTxPackets': 0,
+                                    u'rssi': -28
                                 },
-                            ]
+                                {
+                                    u'neighborFlag': 0,
+                                    u'neighborId': 7,
+                                    u'numRxPackets': 98,
+                                    u'numTxFailures': 0,
+                                    u'numTxPackets': 0,
+                                    u'rssi': -58,
+                                },
+                                {
+                                    u'neighborFlag': 0,
+                                    u'neighborId': 12,
+                                    u'numRxPackets': 97,
+                                    u'numTxFailures': 0,
+                                    u'numTxPackets': 0,
+                                    u'rssi': -36,
+                                },
+                            ],
+                            u'numItems': 5,
                         },
                     },
                 "bin":
@@ -215,17 +459,17 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x11,                                      # type
-                        3, 0, 3, 0, 223, 0, 0, 0, 0, 0, 47, 0, 1, 0, 209, 0, 76, 0, 1, 0, 2, 0, 4, 0, 211, 0, 30, 0, 0, 0, 1,   # value
+                        5, 0, 4, 0, 223, 0, 103, 0, 0, 0, 2, 0, 1, 0, 196, 0, 193, 0, 14, 0, 4, 0, 6, 0, 228, 0, 0, 0, 0, 0, 40, 0, 7, 0, 198, 0, 0, 0, 0, 0, 98, 0, 12, 0, 220, 0, 0, 0, 0, 0, 97   # value
                     ],
                 "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBREDAAMA3wAAAAAALwABANEATAABAAIABADTAB4AAAAB"     \
-                        ]                                          \
-                    }',
+                    {
+                        "v" : 0,
+                        "o" : [
+                            "EwECAwQFBgcIEhMUFREFAAQA3wBnAAAAAgABAMQAwQAOAAQABgDkAAAAAAAoAAcAxgAAAAAAYgAMANwAAAAAAGE=",
+                        ]
+                    },
                 "influxdb":
                     {
                         "time"       : TIMESTAMP*1000000000,
@@ -261,88 +505,6 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
-    # SOL_TYPE_DUST_NOTIF_HRDISCOVERED
-    {
-        "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport( \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                  \
-                    payload      = [130, 14, 3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1],            \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFHEALTHREPORT,
-            },
-        "objects": [
-            {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x12,
-                        "value"      : {
-                            'numJoinParents': 3,
-                            'numItems': 3,
-                            'discoveredNeighbors': [
-                                {
-                                    'neighborId': 6,
-                                    'rssi': -78,
-                                    'numRx': 2,
-                                },
-                                {
-                                    'neighborId': 5,
-                                    'rssi': -87,
-                                    'numRx': 1,
-                                },
-                                {
-                                    'neighborId': 7,
-                                    'rssi': -71,
-                                    'numRx': 1,
-                                },
-                            ]
-                        },
-                    },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
-                        0x12,                                      # type
-                        3, 3, 0, 6, 178, 2, 0, 5, 169, 1, 0, 7, 185, 1,   # value
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBRIDAwAGsgIABakBAAe5AQ=="     \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
-                        "fields"     : {
-                            'discoveredNeighbors:0:neighborId':    6,
-                            'discoveredNeighbors:0:numRx':         2,
-                            'discoveredNeighbors:0:rssi':          -78,
-                            'discoveredNeighbors:1:neighborId':    5,
-                            'discoveredNeighbors:1:numRx':         1,
-                            'discoveredNeighbors:1:rssi':          -87,
-                            'discoveredNeighbors:2:neighborId':    7,
-                            'discoveredNeighbors:2:numRx':         1,
-                            'discoveredNeighbors:2:rssi':          -71,
-                            'numItems':                            3,
-                            'numJoinParents':                      3,
-                        },
-                    },
-            }
-        ]
-    },
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust": {
@@ -373,7 +535,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x14,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                         0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
@@ -432,7 +594,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x15,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                         0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,
@@ -487,7 +649,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x19,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                     ],
@@ -540,7 +702,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x1a,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                         0x02,0x02,
@@ -595,7 +757,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x1b,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                         0x02,0x02,
@@ -648,7 +810,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x1c,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                     ],
@@ -699,7 +861,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x1d,                                      # type
                         0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
                     ],
@@ -758,7 +920,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x27,                                      # type
                         0x0a,0x33,                                 # value
                     ],
@@ -820,7 +982,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x27,                                      # type
                         0xff,0xff,                                 # value
                     ],
@@ -869,7 +1031,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
-                        0x05,0x05,0x05,0x05,                        # timestamp
+                        0x12,0x13,0x14,0x15,                        # timestamp
                         0x22,                                       # type
                         0x0a,0x33,                                  # value_temperature
                         0x0b,0x44,                                  # value_depth
@@ -977,7 +1139,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,        # header
                         0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,        # mac
-                        0x05,0x05,0x05,0x05,                            # timestamp
+                        0x12,0x13,0x14,0x15,                            # timestamp
                         0x20,                                           # type
 
                         # value
@@ -1094,7 +1256,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x28,                                      # type
                         0x01,0x02,0x03,0x04,                       # value_solversion
                         0x05,0x06,0x07,0x08,                       # value_solmanagerversion
@@ -1291,7 +1453,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x32,                                      # type
                         0x00,0x00,                                 # value--voltage
                         0x01,                                      # value--numReadings
@@ -1338,7 +1500,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x31,                                      # type
                         0x3c,0x65,                                 # value--temp_raw
                         0x01,                                      # value--t_Nval
@@ -1392,7 +1554,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x30,                                      # type
                         0x00,                                      # value--id
                         0x0a,0xd7,0x23,0x40,                       # value--dielect
@@ -1446,7 +1608,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x29,                                      # type
                         0x1b, 0x02,                                # value--mean_d2g
                         0x01, 0x00,                                # value--stdDev
@@ -1526,7 +1688,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x40,                                      # type
                         0x63,0x87,                                 # value--temp_raw
                         0x9d,0x27,                                 # value--rh_raw
@@ -1575,7 +1737,7 @@ SOL_CHAIN_EXAMPLE = [
                         #ver   type   MAC    ts    typelen length
                         0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
                         0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x05,0x05,0x05,0x05,                       # timestamp
+                        0x12,0x13,0x14,0x15,                       # timestamp
                         0x40,                                      # type
                         0x63,0x87,                                 # value--temp_raw
                         0x9d,0x27,                                 # value--rh_raw
@@ -1627,24 +1789,27 @@ def test_chain(sol_chain_example):
 
     sol = Sol.Sol()
 
-    sol_json = None
     if "dust" in sol_chain_example:
         # dust->json
         sol_jsonl  = sol.dust_to_json(
-           sol_chain_example["dust"]["notif_name"],
-           eval(sol_chain_example["dust"]["notif"]),
+           sol_chain_example["dust"],
            mac_manager  = MACMANAGER,
-           timestamp   = TIMESTAMP,
+           timestamp    = TIMESTAMP,
         )
     else:
         sol_jsonl = [sol_chain_example["objects"][0]["json"]]
-
+    
+    print sol_jsonl
+    
+    # same number of objects? (for HR)
     assert len(sol_jsonl) == len(sol_chain_example["objects"])
+    
     for (sol_json, example) in zip(sol_jsonl,sol_chain_example["objects"]):
-        assert sol_json==example["json"]
+        # dust->json
         print '=====\ndust->json'
         print sol_json
         print example["json"]
+        assert sol_json==example["json"]
 
         # json->bin
         sol_bin   = sol.json_to_bin(sol_json)
@@ -1658,12 +1823,12 @@ def test_chain(sol_chain_example):
         print '=====\nbin->http'
         print sol_http
         print example["http"]
-        assert json.loads(sol_http)==json.loads(example["http"])
+        assert json.loads(sol_http)==example["http"]
 
         # http->bin
         sol_binl  = sol.http_to_bin(sol_http)
         assert len(sol_binl)==1
-        sol_bin = sol_binl[0]
+        sol_bin   = sol_binl[0]
         print '=====\nhttp->bin'
         print sol_bin
         print example["bin"]

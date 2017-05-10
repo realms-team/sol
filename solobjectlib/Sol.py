@@ -6,8 +6,10 @@ import sys
 import os
 
 here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'external_libs'))
+if __name__ == "__main__":
+    sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
+else:
+    sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
 
 # =========================== imports =========================================
 
@@ -78,7 +80,7 @@ class Sol(object):
 
         notif_list  = self._split_dust_notif(dust_notif)
         sol_jsonl   = []
-
+        
         for d_n in notif_list:
             # get sol_mac
             if d_n['name'] in [
@@ -89,22 +91,21 @@ class Sol(object):
             elif d_n['name'] in [
                     'hr',
                 ]:
-                sol_mac = d_n['mac']
+                sol_mac = FormatUtils.format_mac_string_to_bytes(d_n['mac'])
             else:
                 sol_mac = mac_manager
 
             # get sol_type and sol_value
             try:
-                (sol_type, sol_ts, sol_value) = self._dust_notif_to_sol_json(d_n)
+                (sol_type, sol_value) = self._dust_notif_to_sol_json(d_n)
             except SolDuplicateOapNotificationException:
                 continue
             
             # get sol_ts
-            if sol_ts is None:
-                if timestamp is None:
-                    sol_ts = int(time.time())  # timestamp in seconds
-                else:
-                    sol_ts = timestamp
+            if timestamp is None:
+                sol_ts = int(time.time())  # timestamp in seconds
+            else:
+                sol_ts = timestamp
 
             # create JSON Object
             sol_json = {
@@ -177,11 +178,15 @@ class Sol(object):
         :return: A JSON string to be sent to the server over HTTP.
         :rtype: string
         """
-
-        return_val = {
-            "v":    SolDefines.SOL_HDR_V,
-            "o":    [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
-        }
+        
+        try:
+            return_val = {
+                "v":    SolDefines.SOL_HDR_V,
+                "o":    [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
+            }
+        except:
+            print sol_binl
+            raise
 
         return_val = json.dumps(return_val)
 
@@ -543,28 +548,32 @@ class Sol(object):
         notif_list = []
         
         if dust_notif['name'] == 'hr':
-            dust_notif_copy = copy.deepcopy(dust_notif)
-            for hrName in dust_notif_copy['hr'].keys():
+            for hrName in dust_notif['hr'].keys():
                 assert hrName in ['Device','Discovered','Neighbors']
-            if 'Device' in dust_notif_copy['hr']:
+            if 'Device' in dust_notif['hr']:
+                dust_notif_copy = copy.deepcopy(dust_notif)
                 if 'Discovered' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Discovered']
                 if 'Neighbors' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Neighbors']
-            if 'Discovered' in dust_notif_copy['hr']:
+                notif_list += [dust_notif_copy]
+            if 'Discovered' in dust_notif['hr']:
+                dust_notif_copy = copy.deepcopy(dust_notif)
                 if 'Device' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Device']
                 if 'Neighbors' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Neighbors']
-            if 'Neighbors' in dust_notif_copy['hr']:
+                notif_list += [dust_notif_copy]
+            if 'Neighbors' in dust_notif['hr']:
+                dust_notif_copy = copy.deepcopy(dust_notif)
                 if 'Device' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Device']
                 if 'Discovered' in dust_notif_copy['hr']:
                     del dust_notif_copy['hr']['Discovered']
-            notif_list += [dust_notif_copy]
+                notif_list += [dust_notif_copy]
         else:
             notif_list += [dust_notif]
-
+        
         return notif_list
 
     #===== dust notif to sol json
@@ -572,34 +581,42 @@ class Sol(object):
     def _dust_notif_to_sol_json(self, dust_notif):
 
         if   dust_notif['name'] == 'notifData':
-            (sol_type, sol_ts, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
+            (sol_type, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'hr':
-            (sol_type, sol_ts, sol_value) = self._dust_hr_to_sol_json(dust_notif)
+            (sol_type, sol_value) = self._dust_hr_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'oap':
-            (sol_type, sol_ts, sol_value) = self._dust_oap_to_sol_json(dust_notif)
+            (sol_type, sol_value) = self._dust_oap_to_sol_json(dust_notif)
         else:
-            (sol_type, sol_ts, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
+            (sol_type, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
 
-        return (sol_type, sol_ts, sol_value)
+        return (sol_type, sol_value)
     
     # notifData
     
     def _dust_notifData_to_sol_json(self, dust_notif):
 
         sol_type   = None
-        sol_ts     = int(time.time()) # TODO: change by generation time
         sol_value  = None
 
         if   dust_notif['fields']['dstPort'] == OAPMessage.OAP_PORT:
+            # notifData contains OAP message
+            
             # this notification will already appear as an oap notification
             raise SolDuplicateOapNotificationException()
         elif dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT:
-            (sol_type, sol_ts, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
+            # notifData contains SOL message
+            
+            (sol_type, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
         else:
+            # notifData contains does NOT contain neither OAP nor SOL
+            
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
-            sol_value   = dust_notif['fields']
+            sol_value   = copy.deepcopy(dust_notif['fields'])
+            del(sol_value['macAddress'])
+            del(sol_value['utcSecs'])
+            del(sol_value['utcUsecs'])
 
-        return (sol_type, sol_ts, sol_value)
+        return (sol_type, sol_value)
     
     def _dust_notifData_with_sol_to_sol_json(self, dust_notif):
         """
@@ -635,7 +652,6 @@ class Sol(object):
     
     def _dust_hr_to_sol_json(self, dust_notif):
         sol_type   = None
-        sol_ts     = int(time.time()) # TODO: change by generation time
         sol_value  = None
         if 'Device' in dust_notif['hr']:
             assert 'Neighbors' not in dust_notif['hr']
@@ -652,7 +668,7 @@ class Sol(object):
             assert 'Neighbors' not in dust_notif['hr']
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED
             sol_value   = dust_notif['hr']['Discovered']
-        return (sol_type, sol_ts, sol_value)
+        return (sol_type, sol_value)
     
     # oap
     
@@ -928,5 +944,5 @@ class Sol(object):
 #============================ main ============================================
 
 if __name__ == "__main__":
-    os.system("py.test -vv -x tests/")
+    os.system("py.test -vv -x ../tests/")
     raw_input("Press Enter to close.")
