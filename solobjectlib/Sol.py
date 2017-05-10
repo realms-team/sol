@@ -97,16 +97,18 @@ class Sol(object):
 
             # get sol_type and sol_value
             try:
-                (sol_type, sol_value) = self._dust_notif_to_sol_json(d_n)
+                (sol_type, sol_ts, sol_value) = self._dust_notif_to_sol_json(d_n)
             except SolDuplicateOapNotificationException:
                 continue
             
             # get sol_ts
-            if timestamp is None:
+            if   sol_ts:
+                pass # _dust_notif_to_sol_json() returned the ts (sol object with EPOCH ts)
+            elif timestamp is None:
                 sol_ts = int(time.time())  # timestamp in seconds
             else:
                 sol_ts = timestamp
-
+            
             # create JSON Object
             sol_json = {
                 "mac":          sol_mac,
@@ -547,7 +549,73 @@ class Sol(object):
         """
         notif_list = []
         
-        if dust_notif['name'] == 'hr':
+        if (dust_notif['name'] == 'notifData') and (dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT):
+            # OAP: split if multi-MTTLV structure
+            
+            # parse header
+            sol_header  = dust_notif['fields']['data'][0]
+            header_V    = sol_header >> SolDefines.SOL_HDR_V_OFFSET & 0x03
+            header_T    = sol_header >> SolDefines.SOL_HDR_T_OFFSET & 0x01
+            header_S    = sol_header >> SolDefines.SOL_HDR_S_OFFSET & 0x01
+            header_Y    = sol_header >> SolDefines.SOL_HDR_Y_OFFSET & 0x01
+            header_L    = sol_header >> SolDefines.SOL_HDR_L_OFFSET & 0x03
+
+            if header_T == 0:
+                # single SOL object
+                
+                notif_list = [dust_notif]
+            else:
+                # multiple SOL objects
+                
+                # reset header Type bit
+                sol_header = dust_notif['fields']['data'][0] & 0xdf
+
+                # get structure size
+                solheader_size  = SolDefines.SOL_HEADER_SIZE
+                ts_size         = SolDefines.SOL_TIMESTAMP_SIZE
+                objnum_size     = SolDefines.SOL_OBJNUMBER_SIZE
+
+                # get time
+                ts_sec  = 0
+                ts_usec = 0
+                ts_offset = 0
+                if header_S == 0: # timestamp from smip header
+                    ts_sec  = dust_notif['fields']['data'][0:ts_size]
+                    ts_usec = 0
+                    ts_offset = ts_size
+                else: # timestamp from dust notif
+                    ts_sec  = dust_notif['fields']['utcSecs']
+                    ts_user = dust_notif['fields']['utcUsecs']
+
+                # get number of objects
+                obj_number  = dust_notif['fields']['data'][ts_offset+objnum_size]
+
+                curr_ptr    = solheader_size + ts_offset + objnum_size
+                for i in range(0,obj_number):
+                    obj_type    = dust_notif['fields']['data'][curr_ptr]
+                    sol_item    = SolDefines.solStructure(obj_type)
+                    obj_size    = struct.calcsize(sol_item['structure'])
+                    notif_list += [
+                        {
+                            'manager': dust_notif['manager'],
+                            'name':    dust_notif['name'],
+                            'fields': {
+                                'macAddress': dust_notif['fields']['macAddress'],
+                                'utcSecs': dust_notif['fields']['utcSecs'],
+                                'utcUsecs': dust_notif['fields']['utcUsecs'],
+                                'srcPort': dust_notif['fields']['srcPort'],
+                                'dstPort': dust_notif['fields']['dstPort'],
+                                # data = solheader + timestamp + object
+                                'data': [sol_header]+
+                                    dust_notif['fields']['data'][solheader_size:solheader_size+ts_offset] +
+                                    dust_notif['fields']['data'][curr_ptr:curr_ptr+obj_size+1]
+                            },
+                        },
+                    ]
+                    curr_ptr   += obj_size+1
+        
+        elif dust_notif['name'] == 'hr':
+            
             for hrName in dust_notif['hr'].keys():
                 assert hrName in ['Device','Discovered','Neighbors']
             if 'Device' in dust_notif['hr']:
@@ -579,9 +647,11 @@ class Sol(object):
     #===== dust notif to sol json
 
     def _dust_notif_to_sol_json(self, dust_notif):
-
+        
+        sol_ts = None
+        
         if   dust_notif['name'] == 'notifData':
-            (sol_type, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
+            (sol_type, sol_ts, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'hr':
             (sol_type, sol_value) = self._dust_hr_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'oap':
@@ -589,13 +659,14 @@ class Sol(object):
         else:
             (sol_type, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
 
-        return (sol_type, sol_value)
+        return (sol_type, sol_ts, sol_value)
     
     # notifData
     
     def _dust_notifData_to_sol_json(self, dust_notif):
 
         sol_type   = None
+        sol_ts     = None
         sol_value  = None
 
         if   dust_notif['fields']['dstPort'] == OAPMessage.OAP_PORT:
@@ -606,7 +677,7 @@ class Sol(object):
         elif dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT:
             # notifData contains SOL message
             
-            (sol_type, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
+            (sol_type, sol_ts, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
         else:
             # notifData contains does NOT contain neither OAP nor SOL
             
@@ -616,7 +687,7 @@ class Sol(object):
             del(sol_value['utcSecs'])
             del(sol_value['utcUsecs'])
 
-        return (sol_type, sol_value)
+        return (sol_type, sol_ts, sol_value)
     
     def _dust_notifData_with_sol_to_sol_json(self, dust_notif):
         """
@@ -636,7 +707,7 @@ class Sol(object):
         if header_S == SolDefines.SOL_HDR_S_EPOCH:
             ts = list(dust_notif['fields']['data'][ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE])
             ts.reverse()
-            sol_ts      = Sol._list_to_num(ts)
+            #sol_ts      = Sol._list_to_num(ts)
             type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
         else:
             type_index  = SolDefines.SOL_HEADER_SIZE
@@ -940,5 +1011,5 @@ class Sol(object):
 #============================ main ============================================
 
 if __name__ == "__main__":
-    os.system("py.test -vv -x ../tests/")
+    os.system("py.test -vv -x tests/")
     raw_input("Press Enter to close.")

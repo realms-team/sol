@@ -19,7 +19,7 @@ TAGS         = {
 
 #============================ fixtures ==============================
 
-[
+SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_DATA_NOT_OAP
     {
         "dust": {
@@ -979,436 +979,415 @@ TAGS         = {
             },
         ],
     },
-]
-SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_JUDD_T2D2R1N1,
     {
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x22,
-                        "value"      : {
-                            'temperature': 0x0a33,
-                            'depth': 0x0b44,
-                            'numReadings': 0x01,
-                            'retries': 0x04,
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x22,
+                    "value"      : {
+                        'temperature': 0x0a33,
+                        'depth':       0x0b44,
+                        'numReadings': 0x01,
+                        'retries':     0x04,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
-                        0x12,0x13,0x14,0x15,                        # timestamp
-                        0x22,                                       # type
-                        0x0a,0x33,                                  # value_temperature
-                        0x0b,0x44,                                  # value_depth
-                        0x01,                                       # value_numReadings
-                        0x04,                                       # value_retries
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
+                    0x12,0x13,0x14,0x15,                        # timestamp
+                    0x22,                                       # type
+                    0x0a,0x33,                                  # value_temperature
+                    0x0b,0x44,                                  # value_depth
+                    0x01,                                       # value_numReadings
+                    0x04,                                       # value_retries
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFSIKMwtEAQQ=",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBSIKMwtEAQQ="         \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_JUDD_T2D2R1N1',
-                        "fields"     : {
-                            'temperature': 0x0a33,
-                            'depth': 0x0b44,
-                            'numReadings': 0x01,
-                            'retries': 0x04,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_JUDD_T2D2R1N1',
+                    "fields"     : {
+                        'temperature': 0x0a33,
+                        'depth': 0x0b44,
+                        'numReadings': 0x01,
+                        'retries': 0x04,
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_DUST_SNAPSHOT
     {
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : MACMANAGER,
-                        "type"       : 0x20,
-                        "value"      : [
-                            {   'macAddress':          [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
-                                'moteId':              0x090a,      # INT16U  H
-                                'isAP':                0x0b,        # BOOL    B
-                                'state':               0x0c,        # INT8U   B
-                                'isRouting':           0x0d,        # BOOL    B
-                                'numNbrs':             0x0e,        # INT8U   B
-                                'numGoodNbrs':         0x0f,        # INT8U   B
-                                'requestedBw':         0x10111213,  # INT32U  I
-                                'totalNeededBw':       0x14151617,  # INT32U  I
-                                'assignedBw':          0x18191a1b,  # INT32U  I
-                                'packetsReceived':     0x1c1d1e1f,  # INT32U  I
-                                'packetsLost':         0x20212223,  # INT32U  I
-                                'avgLatency':          0x24252627,  # INT32U  I
-                                'paths': [
-                                    {
-                                        'macAddress':   [0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18],
-                                        'direction':    0x2c,       # INT8U   B
-                                        'numLinks':     0x2d,       # INT8U   B
-                                        'quality':      0x2e,       # INT8U   B
-                                        'rssiSrcDest':  -1,         # INT8    b
-                                        'rssiDestSrc':  -2,         # INT8    b
-                                    },
-                                    {
-                                        'macAddress':   [0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28],
-                                        'direction':    0x2c,       # INT8U  B
-                                        'numLinks':     0x2d,       # INT8U  B
-                                        'quality':      0x2e,       # INT8U  B
-                                        'rssiSrcDest':  -1,         # INT8   b
-                                        'rssiDestSrc':  -2,         # INT8   b
-                                    },
-                                ],
-                            },
-                            {
-                                'macAddress':           [0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38],
-                                'moteId':               0x090a,     # INT16U
-                                'isAP':                 0x0b,       # BOOL
-                                'state':                0x0c,       # INT8U
-                                'isRouting':            0x0d,       # BOOL
-                                'numNbrs':              0x0e,       # INT8U
-                                'numGoodNbrs':          0x0f,       # INT8U
-                                'requestedBw':          0x10111213, # INT32U
-                                'totalNeededBw':        0x14151617, # INT32U
-                                'assignedBw':           0x18191a1b, # INT32U
-                                'packetsReceived':      0x1c1d1e1f, # INT32U
-                                'packetsLost':          0x20212223, # INT32U
-                                'avgLatency':           0x24252627, # INT32U
-                                'paths': [
-                                    {
-                                        'macAddress':   [0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48],
-                                        'direction':    0x2c,       # INT8U
-                                        'numLinks':     0x2d,       # INT8U
-                                        'quality':      0x2e,       # INT8U
-                                        'rssiSrcDest':  -1,         # INT8
-                                        'rssiDestSrc':  -2,         # INT8
-                                    },
-                                ],
-                            },
-                        ]
-                    },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,        # header
-                        0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,        # mac
-                        0x12,0x13,0x14,0x15,                            # timestamp
-                        0x20,                                           # type
-
-                        # value
-                        0x02,                                           # number of motes
-                        # -- first mote
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,        # value_macAddr
-                        0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
-                        0x10,0x11,0x12,0x13,                            # value_requestedBw
-                        0x14,0x15,0x16,0x17,                            # value_totalNeededBw
-                        0x18,0x19,0x1a,0x1b,                            # value_assignedBw
-                        0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
-                        0x20,0x21,0x22,0x23,                            # value_packetsLost
-                        0x24,0x25,0x26,0x27,                            # value_avgLatency
-                        0x02,                                           # number of paths
-                        0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,        # value_path_macAddr
-                        0x2c,0x2d,0x2e,0xff,0xfe,                       # --
-                        0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,        # value_path_macAddr
-                        0x2c,0x2d,0x2e,0xff,0xfe,                       # --
-                        # -- second mote
-                        0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,        # value_macAddr
-                        0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
-                        0x10,0x11,0x12,0x13,                            # value_requestedBw
-                        0x14,0x15,0x16,0x17,                            # value_totalNeededBw
-                        0x18,0x19,0x1a,0x1b,                            # value_assignedBw
-                        0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
-                        0x20,0x21,0x22,0x23,                            # value_packetsLost
-                        0x24,0x25,0x26,0x27,                            # value_avgLatency
-                        0x01,                                           # number of paths
-                        0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,        # value_paths_macAddr
-                        0x2c,0x2d,0x2e,0xff,0xfe,                       # --
-                    ],
-                "http":
-                    '{                                              \
-                        "v" : 0,                                    \
-                        "o" : [                                     \
-                        "EwMDAwMDAwMDBQUFBSACAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAhESExQVFhcYLC0u//4hIiMkJSYnKCwtLv/+MTIzNDU2NzgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAUFCQ0RFRkdILC0u//4="\
-                        ]                                           \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '03-03-03-03-03-03-03-03',
-                            },
-                        "measurement": 'SOL_TYPE_DUST_SNAPSHOT',
-                        "fields"     : {
-                            'mote:0:macAddress':            '01-02-03-04-05-06-07-08',
-                            'mote:0:moteId':                0x090a,      # INT16U  H
-                            'mote:0:isAP':                  0x0b,        # BOOL    B
-                            'mote:0:state':                 0x0c,        # INT8U   B
-                            'mote:0:isRouting':             0x0d,        # BOOL    B
-                            'mote:0:numNbrs':               0x0e,        # INT8U   B
-                            'mote:0:numGoodNbrs':           0x0f,        # INT8U   B
-                            'mote:0:requestedBw':           0x10111213,  # INT32U  I
-                            'mote:0:totalNeededBw':         0x14151617,  # INT32U  I
-                            'mote:0:assignedBw':            0x18191a1b,  # INT32U  I
-                            'mote:0:packetsReceived':       0x1c1d1e1f,  # INT32U  I
-                            'mote:0:packetsLost':           0x20212223,  # INT32U  I
-                            'mote:0:avgLatency':            0x24252627,  # INT32U  I
-                            'mote:0:paths:0:macAddress':    '11-12-13-14-15-16-17-18',
-                            'mote:0:paths:0:direction':     0x2c,       # INT8U   B
-                            'mote:0:paths:0:numLinks':      0x2d,       # INT8U   B
-                            'mote:0:paths:0:quality':       0x2e,       # INT8U   B
-                            'mote:0:paths:0:rssiSrcDest':   -1,         # INT8    b
-                            'mote:0:paths:0:rssiDestSrc':   -2,         # INT8    b
-                            'mote:0:paths:1:macAddress':    '21-22-23-24-25-26-27-28',
-                            'mote:0:paths:1:direction':     0x2c,       # INT8U  B
-                            'mote:0:paths:1:numLinks':      0x2d,       # INT8U  B
-                            'mote:0:paths:1:quality':       0x2e,       # INT8U  B
-                            'mote:0:paths:1:rssiSrcDest':   -1,         # INT8   b
-                            'mote:0:paths:1:rssiDestSrc':   -2,         # INT8   b
-
-                            'mote:1:macAddress':            '31-32-33-34-35-36-37-38',
-                            'mote:1:moteId':                0x090a,     # INT16U
-                            'mote:1:isAP':                  0x0b,       # BOOL
-                            'mote:1:state':                 0x0c,       # INT8U
-                            'mote:1:isRouting':             0x0d,       # BOOL
-                            'mote:1:numNbrs':               0x0e,       # INT8U
-                            'mote:1:numGoodNbrs':           0x0f,       # INT8U
-                            'mote:1:requestedBw':           0x10111213, # INT32U
-                            'mote:1:totalNeededBw':         0x14151617, # INT32U
-                            'mote:1:assignedBw':            0x18191a1b, # INT32U
-                            'mote:1:packetsReceived':       0x1c1d1e1f, # INT32U
-                            'mote:1:packetsLost':           0x20212223, # INT32U
-                            'mote:1:avgLatency':            0x24252627, # INT32U
-                            'mote:1:paths:0:macAddress':    '41-42-43-44-45-46-47-48',
-                            'mote:1:paths:0:direction':     0x2c,       # INT8U
-                            'mote:1:paths:0:numLinks':      0x2d,       # INT8U
-                            'mote:1:paths:0:quality':       0x2e,       # INT8U
-                            'mote:1:paths:0:rssiSrcDest':   -1,         # INT8
-                            'mote:1:paths:0:rssiDestSrc':   -2,         # INT8
-                    }
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x20,
+                    "value"      : [
+                        {   'macAddress':          [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                            'moteId':              0x090a,      # INT16U  H
+                            'isAP':                0x0b,        # BOOL    B
+                            'state':               0x0c,        # INT8U   B
+                            'isRouting':           0x0d,        # BOOL    B
+                            'numNbrs':             0x0e,        # INT8U   B
+                            'numGoodNbrs':         0x0f,        # INT8U   B
+                            'requestedBw':         0x10111213,  # INT32U  I
+                            'totalNeededBw':       0x14151617,  # INT32U  I
+                            'assignedBw':          0x18191a1b,  # INT32U  I
+                            'packetsReceived':     0x1c1d1e1f,  # INT32U  I
+                            'packetsLost':         0x20212223,  # INT32U  I
+                            'avgLatency':          0x24252627,  # INT32U  I
+                            'paths': [
+                                {
+                                    'macAddress':   [0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18],
+                                    'direction':    0x2c,       # INT8U   B
+                                    'numLinks':     0x2d,       # INT8U   B
+                                    'quality':      0x2e,       # INT8U   B
+                                    'rssiSrcDest':  -1,         # INT8    b
+                                    'rssiDestSrc':  -2,         # INT8    b
+                                },
+                                {
+                                    'macAddress':   [0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28],
+                                    'direction':    0x2c,       # INT8U  B
+                                    'numLinks':     0x2d,       # INT8U  B
+                                    'quality':      0x2e,       # INT8U  B
+                                    'rssiSrcDest':  -1,         # INT8   b
+                                    'rssiDestSrc':  -2,         # INT8   b
+                                },
+                            ],
+                        },
+                        {
+                            'macAddress':           [0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38],
+                            'moteId':               0x090a,     # INT16U
+                            'isAP':                 0x0b,       # BOOL
+                            'state':                0x0c,       # INT8U
+                            'isRouting':            0x0d,       # BOOL
+                            'numNbrs':              0x0e,       # INT8U
+                            'numGoodNbrs':          0x0f,       # INT8U
+                            'requestedBw':          0x10111213, # INT32U
+                            'totalNeededBw':        0x14151617, # INT32U
+                            'assignedBw':           0x18191a1b, # INT32U
+                            'packetsReceived':      0x1c1d1e1f, # INT32U
+                            'packetsLost':          0x20212223, # INT32U
+                            'avgLatency':           0x24252627, # INT32U
+                            'paths': [
+                                {
+                                    'macAddress':   [0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48],
+                                    'direction':    0x2c,       # INT8U
+                                    'numLinks':     0x2d,       # INT8U
+                                    'quality':      0x2e,       # INT8U
+                                    'rssiSrcDest':  -1,         # INT8
+                                    'rssiDestSrc':  -2,         # INT8
+                                },
+                            ],
+                        },
+                    ]
                 },
-            }
-        ]
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,        # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,        # mac
+                    0x12,0x13,0x14,0x15,                            # timestamp
+                    0x20,                                           # type
+
+                    # value
+                    0x02,                                           # number of motes
+                    # -- first mote
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,        # value_macAddr
+                    0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
+                    0x10,0x11,0x12,0x13,                            # value_requestedBw
+                    0x14,0x15,0x16,0x17,                            # value_totalNeededBw
+                    0x18,0x19,0x1a,0x1b,                            # value_assignedBw
+                    0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
+                    0x20,0x21,0x22,0x23,                            # value_packetsLost
+                    0x24,0x25,0x26,0x27,                            # value_avgLatency
+                    0x02,                                           # number of paths
+                    0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,        # value_path_macAddr
+                    0x2c,0x2d,0x2e,0xff,0xfe,                       # --
+                    0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,        # value_path_macAddr
+                    0x2c,0x2d,0x2e,0xff,0xfe,                       # --
+                    # -- second mote
+                    0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,        # value_macAddr
+                    0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,             # --
+                    0x10,0x11,0x12,0x13,                            # value_requestedBw
+                    0x14,0x15,0x16,0x17,                            # value_totalNeededBw
+                    0x18,0x19,0x1a,0x1b,                            # value_assignedBw
+                    0x1c,0x1d,0x1e,0x1f,                            # value_packetsReceived
+                    0x20,0x21,0x22,0x23,                            # value_packetsLost
+                    0x24,0x25,0x26,0x27,                            # value_avgLatency
+                    0x01,                                           # number of paths
+                    0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,        # value_paths_macAddr
+                    0x2c,0x2d,0x2e,0xff,0xfe,                       # --
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFSACAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAhESExQVFhcYLC0u//4hIiMkJSYnKCwtLv/+MTIzNDU2NzgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAUFCQ0RFRkdILC0u//4=",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '03-03-03-03-03-03-03-03',
+                    },
+                    "measurement": 'SOL_TYPE_DUST_SNAPSHOT',
+                    "fields"     : {
+                        'mote:0:macAddress':            '01-02-03-04-05-06-07-08',
+                        'mote:0:moteId':                0x090a,      # INT16U  H
+                        'mote:0:isAP':                  0x0b,        # BOOL    B
+                        'mote:0:state':                 0x0c,        # INT8U   B
+                        'mote:0:isRouting':             0x0d,        # BOOL    B
+                        'mote:0:numNbrs':               0x0e,        # INT8U   B
+                        'mote:0:numGoodNbrs':           0x0f,        # INT8U   B
+                        'mote:0:requestedBw':           0x10111213,  # INT32U  I
+                        'mote:0:totalNeededBw':         0x14151617,  # INT32U  I
+                        'mote:0:assignedBw':            0x18191a1b,  # INT32U  I
+                        'mote:0:packetsReceived':       0x1c1d1e1f,  # INT32U  I
+                        'mote:0:packetsLost':           0x20212223,  # INT32U  I
+                        'mote:0:avgLatency':            0x24252627,  # INT32U  I
+                        'mote:0:paths:0:macAddress':    '11-12-13-14-15-16-17-18',
+                        'mote:0:paths:0:direction':     0x2c,       # INT8U   B
+                        'mote:0:paths:0:numLinks':      0x2d,       # INT8U   B
+                        'mote:0:paths:0:quality':       0x2e,       # INT8U   B
+                        'mote:0:paths:0:rssiSrcDest':   -1,         # INT8    b
+                        'mote:0:paths:0:rssiDestSrc':   -2,         # INT8    b
+                        'mote:0:paths:1:macAddress':    '21-22-23-24-25-26-27-28',
+                        'mote:0:paths:1:direction':     0x2c,       # INT8U  B
+                        'mote:0:paths:1:numLinks':      0x2d,       # INT8U  B
+                        'mote:0:paths:1:quality':       0x2e,       # INT8U  B
+                        'mote:0:paths:1:rssiSrcDest':   -1,         # INT8   b
+                        'mote:0:paths:1:rssiDestSrc':   -2,         # INT8   b
+                        'mote:1:macAddress':            '31-32-33-34-35-36-37-38',
+                        'mote:1:moteId':                0x090a,     # INT16U
+                        'mote:1:isAP':                  0x0b,       # BOOL
+                        'mote:1:state':                 0x0c,       # INT8U
+                        'mote:1:isRouting':             0x0d,       # BOOL
+                        'mote:1:numNbrs':               0x0e,       # INT8U
+                        'mote:1:numGoodNbrs':           0x0f,       # INT8U
+                        'mote:1:requestedBw':           0x10111213, # INT32U
+                        'mote:1:totalNeededBw':         0x14151617, # INT32U
+                        'mote:1:assignedBw':            0x18191a1b, # INT32U
+                        'mote:1:packetsReceived':       0x1c1d1e1f, # INT32U
+                        'mote:1:packetsLost':           0x20212223, # INT32U
+                        'mote:1:avgLatency':            0x24252627, # INT32U
+                        'mote:1:paths:0:macAddress':    '41-42-43-44-45-46-47-48',
+                        'mote:1:paths:0:direction':     0x2c,       # INT8U
+                        'mote:1:paths:0:numLinks':      0x2d,       # INT8U
+                        'mote:1:paths:0:quality':       0x2e,       # INT8U
+                        'mote:1:paths:0:rssiSrcDest':   -1,         # INT8
+                        'mote:1:paths:0:rssiDestSrc':   -2,         # INT8
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_SOLMANAGER_STATS
     {
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x28,
-                        "value"      : {
-                            "sol_version"           : [1,2,3,4],
-                            "solmanager_version"    : [5,6,7,8],
-                            "sdk_version"           : [9,1,2,3],
-                        },
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x28,
+                    "value"      : {
+                        "sol_version"           : [1,2,3,4],
+                        "solmanager_version"    : [5,6,7,8],
+                        "sdk_version"           : [9,1,2,3],
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x28,                                      # type
-                        0x01,0x02,0x03,0x04,                       # value_solversion
-                        0x05,0x06,0x07,0x08,                       # value_solmanagerversion
-                        0x09,0x01,0x02,0x03,                       # value_sdkversion
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBSgBAgMEBQYHCAkBAgM=" \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement": 'SOL_TYPE_SOLMANAGER_STATS',
-                        "fields"     : {
-                            "sol_version"           : "1.2.3.4",
-                            "solmanager_version"    : "5.6.7.8",
-                            "sdk_version"           : "9.1.2.3",
-                        },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x28,                                      # type
+                    0x01,0x02,0x03,0x04,                       # value_solversion
+                    0x05,0x06,0x07,0x08,                       # value_solmanagerversion
+                    0x09,0x01,0x02,0x03,                       # value_sdkversion
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFSgBAgMEBQYHCAkBAgM="
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_SOLMANAGER_STATS',
+                    "fields"     : {
+                        "sol_version"           : "1.2.3.4",
+                        "solmanager_version"    : "5.6.7.8",
+                        "sdk_version"           : "9.1.2.3",
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_SENS_SHT25_T2N1H2N1 with apply field function
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(     \
-                    utcSecs      = 1111,                                        \
-                    utcUsecs     = 222,                                         \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
-                    srcPort      = 0xf0ba,                                      \
-                    dstPort      = 0xf0ba,                                      \
-                    data         = (0x00,"                                      + # HEADER
-                                    "0x00, 0x0e, 0x9a, 0x57,"                   + # TIMESTAMP
-                                    "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # SENS_SHT25_T2N1H2N1
-                                    "                                           \
-                                   ),                                           \
-                )",
-            "notif_name":IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name':     'notifData',
+            'manager':  'COM6',
+            'fields' : {
+                'utcSecs':    1111,
+                'utcUsecs':   222,
+                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'srcPort':    0xf0ba,
+                'dstPort':    0xf0ba,
+                'data':       [
+                    0x00,                                      # HEADER
+                    0x00, 0x0e, 0x9a, 0x57,                    # TIMESTAMP
+                    0x31, 0x3c, 0x65, 0x01, 0x99, 0x88, 0x01,  # SENS_SHT25_T2N1H2N1
+                ],
             },
+        },
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : 0x579a0e00,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x31,
-                        "value"      : {
-                            "temp_raw"      : 0x653c,
-                            "t_Nval"        : 0x01,
-                            "rh_raw"        : 0x67a2,
-                            "rh_Nval"       : 0x01,
-                        },
+                "json": {
+                    "timestamp"  : 0x12131415,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x31,
+                    "value"      : {
+                        "temp_raw"      : 0x653c,
+                        "t_Nval"        : 0x01,
+                        "rh_raw"        : 0x8899,
+                        "rh_Nval"       : 0x01,
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x57,0x9a,0x0e,0x00,                       # timestamp
-                        0x31,                                      # type
-                        0x3c,0x65,                                 # value--temp_raw
-                        0x01,                                      # value--t_Nval
-                        0xa2,0x67,                                 # value--rh_raw
-                        0x01,                                      # value--rh_Nval
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x31,                                      # type
+                    0x3c,0x65,                                 # value--temp_raw
+                    0x01,                                      # value--t_Nval
+                    0x99,0x88,                                 # value--rh_raw
+                    0x01,                                      # value--rh_Nval
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFTE8ZQGZiAE=",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIV5oOADE8ZQGiZwE="         \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : 0x579a0e00*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            't_Nval'    : 0x01,
-                            'rh_Nval'   : 0x01,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
-                        "fields"     : {
-                            "temp_raw"      : 0x653c,
-                            "t_Nval"        : 0x01,
-                            "rh_raw"        : 0x67a2,
-                            "rh_Nval"       : 0x01,
-                            "rh_phys"       : 44.601959228515625,
-                            "temp_phys"     : 22.63790771484374,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        't_Nval'    : 0x01,
+                        'rh_Nval'   : 0x01,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
+                    "fields"     : {
+                        "temp_raw"      : 0x653c,
+                        "t_Nval"        : 0x01,
+                        "rh_raw"        : 0x8899,
+                        "rh_Nval"       : 0x01,
+                        'rh_phys': 60.69807434082031,
+                        'temp_phys': 22.63790771484374,
+                    },
+                },
+            },
+        ],
     },
     # SOL_TYPE_SENS_MPS1 with apply tag function
     {
         "objects": [
             {
-                "json":
-                    {
-                        "timestamp"  : 0x579a0e00,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
-                        "type"       : 0x38,
-                        "value"      : {
-                            "die_raw"       : 10.100000381469727,   # 0x4121999a
-                            "depth"         : 15.300000190734863,   # 0x4174cccd
-                        },
+                "json": {
+                    "timestamp"  : 0x579a0e00,
+                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type"       : 0x38,
+                    "value"      : {
+                        "die_raw"       : 10.100000381469727,   # 0x4121999a
+                        "depth"         : 15.300000190734863,   # 0x4174cccd
                     },
-                "bin":
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x57,0x9a,0x0e,0x00,                       # timestamp
-                        0x38,                                      # type
-                        0x9a,0x99,0x21,0x41,                       # value--die_raw
-                        0xcd,0xcc,0x74,0x41,                       # value--depth
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x57,0x9a,0x0e,0x00,                       # timestamp
+                    0x38,                                      # type
+                    0x9a,0x99,0x21,0x41,                       # value--die_raw
+                    0xcd,0xcc,0x74,0x41,                       # value--depth
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIV5oOADiamSFBzcx0QQ==",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIV5oOADiamSFBzcx0QQ=="     \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : 0x579a0e00*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            'depth'     : 15.300000190734863,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_MPS1',
-                        "fields"     : {
-                            "die_raw"       : 10.100000381469727,
-                            "depth"         : 15.300000190734863,
-                        },
+                },
+                "influxdb": {
+                    "time"       : 0x579a0e00*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'depth'     : 15.300000190734863,
                     },
-            }
-        ]
+                    "measurement": 'SOL_TYPE_SENS_MPS1',
+                    "fields"     : {
+                        "die_raw"       : 10.100000381469727,
+                        "depth"         : 15.300000190734863,
+                    },
+                },
+            },
+        ],
     },
-    # MULTI-TTLV (VBAT_V2N1, SENS_SHT25_T2N1H2N1, SENS_GS3_I1D4T4E4N1, SENS_MB7363_D2S2N1L1G1)
+    # MULTI-TTLV
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(     \
-                    utcSecs      = 1111,                                        \
-                    utcUsecs     = 222,                                         \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
-                    srcPort      = 0xf0ba,                                      \
-                    dstPort      = 0xf0ba,                                      \
-                    data         = ( 0x20,"                                     + # multi TTLV 0010 0000
-                                    "0x05, 0x05, 0x05, 0x05,"                   + # epoch
-                                    "0x04,"                                     + # 5 objects
-                                    "0x32, 0x00, 0x00, 0x01,"                   + # 1. VBAT_V2N1
-                                    "0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01," + # 2. SENS_SHT25_T2N1H2N1
-                                    "0x30, 0x00, 0x0a, 0xd7, 0x23, 0x40, 0x66," + # 3. SENS_GS3_I1D4T4E4N1
-                                    "0x66, 0xb2, 0x41, 0x00, 0x00, 0x80, 0x3f," +
-                                    "0x01,"                                     +
-                                    "0x29, 0x1b, 0x02, 0x01, 0x00, 0x1b, 0x54," + # 4. SENS_MB7363_D2S2N1L1G1
-                                    "0x55                                       \
-                                   ),                                           \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name':     'notifData',
+            'manager':  'COM6',
+            'fields' : {
+                'utcSecs':    1111,
+                'utcUsecs':   222,
+                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'srcPort':    0xf0ba,
+                'dstPort':    0xf0ba,
+                'data':       (
+                    0x20,                                     # multi TTLV 0010 0000
+                    0x05, 0x05, 0x05, 0x05,                   # epoch
+                    0x04,                                     # 4 objects:
+                    0x32, 0x00, 0x00, 0x01,                   # - SOL_TYPE_SENS_NEOVBAT_V2N1
+                    0x31, 0x3c, 0x65, 0x01, 0xa2, 0x67, 0x01, # - SOL_TYPE_SENS_SHT25_T2N1H2N1
+                    0x30, 0x00, 0x0a, 0xd7, 0x23, 0x40, 0x66, # - SOL_TYPE_SENS_GS3_I1D4T4E4N1
+                    0x66, 0xb2, 0x41, 0x00, 0x00, 0x80, 0x3f,
+                    0x01,
+                    0x29, 0x1b, 0x02, 0x01, 0x00, 0x1b, 0x54, # - SOL_TYPE_SENS_MB7363_D2S2N1L1G1
+                    0x55,
+                ),
             },
+        },
         "objects": [
+            # SOL_TYPE_SENS_NEOVBAT_V2N1
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
@@ -1419,41 +1398,39 @@ SOL_CHAIN_EXAMPLE = [
                         "N"             : 1,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x32,                                      # type
-                        0x00,0x00,                                 # value--voltage
-                        0x01,                                      # value--numReadings
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBTIAAAE=" \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            "N"         : 1,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_NEOVBAT_V2N1',
-                        "fields"     : {
-                            "voltage"       : 0,
-                            "vol_phys"      : 0,
-                            "N"             : 1,
-                        },
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x32,                                      # type 0x32==SOL_TYPE_SENS_NEOVBAT_V2N1
+                    0x00,0x00,                                 # value--voltage
+                    0x01,                                      # value--numReadings
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFTIAAAE=",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        "N"         : 1,
                     },
+                    "measurement": 'SOL_TYPE_SENS_NEOVBAT_V2N1',
+                    "fields"     : {
+                        "voltage"       : 0,
+                        "vol_phys"      : 0,
+                        "N"             : 1,
+                    },
+                },
             },
+            # SOL_TYPE_SENS_SHT25_T2N1H2N1
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
@@ -1466,47 +1443,45 @@ SOL_CHAIN_EXAMPLE = [
                         "rh_Nval"       : 0x01,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x31,                                      # type
-                        0x3c,0x65,                                 # value--temp_raw
-                        0x01,                                      # value--t_Nval
-                        0xa2,0x67,                                 # value--rh_raw
-                        0x01,                                      # value--rh_Nval
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x31,                                      # type 0x31==SOL_TYPE_SENS_SHT25_T2N1H2N1
+                    0x3c,0x65,                                 # value--temp_raw
+                    0x01,                                      # value--t_Nval
+                    0xa2,0x67,                                 # value--rh_raw
+                    0x01,                                      # value--rh_Nval
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFTE8ZQGiZwE=",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBTE8ZQGiZwE=" \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            't_Nval'    : 0x01,
-                            'rh_Nval'   : 0x01,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
-                        "fields"     : {
-                            "temp_raw"      : 0x653c,
-                            "t_Nval"        : 0x01,
-                            "rh_raw"        : 0x67a2,
-                            "rh_Nval"       : 0x01,
-                            "rh_phys"       : 44.601959228515625,
-                            "temp_phys"     : 22.63790771484374,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        't_Nval'    : 0x01,
+                        'rh_Nval'   : 0x01,
                     },
+                    "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
+                    "fields"     : {
+                        "temp_raw"      : 0x653c,
+                        "t_Nval"        : 0x01,
+                        "rh_raw"        : 0x67a2,
+                        "rh_Nval"       : 0x01,
+                        "rh_phys"       : 44.601959228515625,
+                        "temp_phys"     : 22.63790771484374,
+                    },
+                },
             },
+            # SOL_TYPE_SENS_GS3_I1D4T4E4N1
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
@@ -1520,47 +1495,45 @@ SOL_CHAIN_EXAMPLE = [
                         "Nval"          : 0x01,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x30,                                      # type
-                        0x00,                                      # value--id
-                        0x0a,0xd7,0x23,0x40,                       # value--dielect
-                        0x66,0x66,0xb2,0x41,                       # value--temp
-                        0x00,0x00,0x80,0x3f,                       # value--eleCond
-                        0x01,                                      # value--Nval
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x30,                                      # type 0x30==SOL_TYPE_SENS_GS3_I1D4T4E4N1
+                    0x00,                                      # value--id
+                    0x0a,0xd7,0x23,0x40,                       # value--dielect
+                    0x66,0x66,0xb2,0x41,                       # value--temp
+                    0x00,0x00,0x80,0x3f,                       # value--eleCond
+                    0x01,                                      # value--Nval
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFTAACtcjQGZmskEAAIA/AQ==",
                     ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBTAACtcjQGZmskEAAIA/AQ==" \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            'sub_id'    : 0x00,
-                            'Nval'      : 0x01,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_GS3_I1D4T4E4N1',
-                        "fields"     : {
-                            "sub_id"        : 0x00,
-                            "dielect"       : 2.559999942779541,
-                            "temp"          : 22.299999237060547,
-                            "eleCond"       : 1.0,
-                            "Nval"          : 0x01,
-                        },
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'sub_id'    : 0x00,
+                        'Nval'      : 0x01,
                     },
+                    "measurement": 'SOL_TYPE_SENS_GS3_I1D4T4E4N1',
+                    "fields"     : {
+                        "sub_id"        : 0x00,
+                        "dielect"       : 2.559999942779541,
+                        "temp"          : 22.299999237060547,
+                        "eleCond"       : 1.0,
+                        "Nval"          : 0x01,
+                    },
+                },
             },
+            # SOL_TYPE_SENS_MB7363_D2S2N1L1G1
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
@@ -1574,74 +1547,72 @@ SOL_CHAIN_EXAMPLE = [
                         "NgtM"          : 0x55,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x29,                                      # type
-                        0x1b, 0x02,                                # value--mean_d2g
-                        0x01, 0x00,                                # value--stdDev
-                        0x1b,                                      # value--Nval
-                        0x54,                                      # value--Nltm
-                        0x55,                                      # value--NgtM
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBSkbAgEAG1RV" \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            'mean_d2g'  : 0x021b,
-                            'stdev'     : 0x0001,
-                            'Nval'      : 0x1b,
-                        },
-                        "measurement": 'SOL_TYPE_SENS_MB7363_D2S2N1L1G1',
-                        "fields"     : {
-                            "mean_d2g"      : 0x021b,
-                            "stdev"         : 0x0001,
-                            "Nval"          : 0x1b,
-                            "Nltm"          : 0x54,
-                            "NgtM"          : 0x55,
-                        },
-                    }
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x29,                                      # type 0x29==SOL_TYPE_SENS_MB7363_D2S2N1L1G1
+                    0x1b, 0x02,                                # value--mean_d2g
+                    0x01, 0x00,                                # value--stdDev
+                    0x1b,                                      # value--Nval
+                    0x54,                                      # value--Nltm
+                    0x55,                                      # value--NgtM
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFSkbAgEAG1RV",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'mean_d2g'  : 0x021b,
+                        'stdev'     : 0x0001,
+                        'Nval'      : 0x1b,
+                    },
+                    "measurement": 'SOL_TYPE_SENS_MB7363_D2S2N1L1G1',
+                    "fields"     : {
+                        "mean_d2g"      : 0x021b,
+                        "stdev"         : 0x0001,
+                        "Nval"          : 0x1b,
+                        "Nltm"          : 0x54,
+                        "NgtM"          : 0x55,
+                    },
+                },
             }
         ]
     },
     # get timestamp from Dust Message (with TEMPRH_SHT31)
     {
         "dust": {
-            "notif" :
-                "IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(     \
-                    utcSecs      = 1111,                                        \
-                    utcUsecs     = 222,                                         \
-                    macAddress   = [1, 2, 3, 4, 5, 6, 7, 8],                    \
-                    srcPort      = 0xf0ba,                                      \
-                    dstPort      = 0xf0ba,                                      \
-                    data         = ( 0x28,"                                     + # SOL Header 0010 1000
-                                    "0x02,"                                     + # object number
-                                    "0x40,"                                     + # 1. TEMPRH_SHT31
-                                    "0x63, 0x87, "                              + # value--temp_raw
-                                    "0x9d, 0x27, "                              + # value--rh_raw
-                                    "0x03, "                                    + # value--id
-                                    "0x40,"                                     + # 2. TEMPRH_SHT31
-                                    "0x63, 0x87, "                              + # value--temp_raw
-                                    "0x9d, 0x27, "                              + # value--rh_raw
-                                    "0x03, "                                    + # value--id
-                                   "),                                           \
-                )",
-            "notif_name": IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA,
+            'name':     'notifData',
+            'manager':  'COM6',
+            'fields' : {
+                'utcSecs':    1111,
+                'utcUsecs':   222,
+                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'srcPort':    0xf0ba,
+                'dstPort':    0xf0ba,
+                'data':       [
+                    0x28,              # SOL Header 0010 1000
+                    0x02,              # number of objects
+                    0x40,              # 1. TEMPRH_SHT31
+                    0x63, 0x87,        # value--temp_raw
+                    0x9d, 0x27,        # value--rh_raw
+                    0x03,              # value--id
+                    0x40,              # 2. TEMPRH_SHT31
+                    0x63, 0x87,        # value--temp_raw
+                    0x9d, 0x27,        # value--rh_raw
+                    0x03,              # value--id
+                ],
             },
+        },
         "objects": [
             {
                 "json" : {
@@ -1654,43 +1625,40 @@ SOL_CHAIN_EXAMPLE = [
                         "id"             : 3,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x40,                                      # type
-                        0x63,0x87,                                 # value--temp_raw
-                        0x9d,0x27,                                 # value--rh_raw
-                        0x03                                       # value--id
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUBjh50nAw=="         \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            'id'        : 3,
-                        },
-                        "measurement": 'SOL_TYPE_TEMPRH_SHT31',
-                        "fields"     : {
-                            "temp_raw"      : 0x6387,
-                            "rh_raw"        : 0x9d27,
-                            "temp_phys"     : 23,
-                            "rh_phys"       : 61,
-                            "id"            : 3,
-                        },
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x40,                                      # type
+                    0x63,0x87,                                 # value--temp_raw
+                    0x9d,0x27,                                 # value--rh_raw
+                    0x03                                       # value--id
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFUBjh50nAw==",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'id'        : 3,
                     },
+                    "measurement": 'SOL_TYPE_TEMPRH_SHT31',
+                    "fields"     : {
+                        "temp_raw"      : 0x6387,
+                        "rh_raw"        : 0x9d27,
+                        "temp_phys"     : 23,
+                        "rh_phys"       : 61,
+                        "id"            : 3,
+                    },
+                },
             },
             {
                 "json" : {
@@ -1703,46 +1671,43 @@ SOL_CHAIN_EXAMPLE = [
                         "id"             : 3,
                     },
                 },
-                "bin" :
-                    [
-                        #ver   type   MAC    ts    typelen length
-                        0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                        0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                        0x12,0x13,0x14,0x15,                       # timestamp
-                        0x40,                                      # type
-                        0x63,0x87,                                 # value--temp_raw
-                        0x9d,0x27,                                 # value--rh_raw
-                        0x03                                       # value--id
-                    ],
-                "http":
-                    '{                                             \
-                        "v" : 0,                                   \
-                        "o" : [                                    \
-                            "EwECAwQFBgcIBQUFBUBjh50nAw=="         \
-                        ]                                          \
-                    }',
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                            'id'        : 3,
-                        },
-                        "measurement": 'SOL_TYPE_TEMPRH_SHT31',
-                        "fields"     : {
-                            "temp_raw"      : 0x6387,
-                            "rh_raw"        : 0x9d27,
-                            "temp_phys"     : 23,
-                            "rh_phys"       : 61,
-                            "id"            : 3,
-                        },
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x40,                                      # type
+                    0x63,0x87,                                 # value--temp_raw
+                    0x9d,0x27,                                 # value--rh_raw
+                    0x03                                       # value--id
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFUBjh50nAw==",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'id'        : 3,
                     },
+                    "measurement": 'SOL_TYPE_TEMPRH_SHT31',
+                    "fields"     : {
+                        "temp_raw"      : 0x6387,
+                        "rh_raw"        : 0x9d27,
+                        "temp_phys"     : 23,
+                        "rh_phys"       : 61,
+                        "id"            : 3,
+                    },
+                },
             },
-        ]
-    }
+        ],
+    },
 ]
 
 @pytest.fixture(params=SOL_CHAIN_EXAMPLE)
@@ -1770,6 +1735,7 @@ def test_chain(sol_chain_example):
     else:
         sol_jsonl = [sol_chain_example["objects"][0]["json"]]
     
+    print sol_chain_example["objects"]
     print sol_jsonl
     
     # same number of objects? (for HR)
