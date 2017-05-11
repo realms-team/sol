@@ -80,7 +80,7 @@ class Sol(object):
 
         notif_list  = self._split_dust_notif(dust_notif)
         sol_jsonl   = []
-        
+
         for d_n in notif_list:
             # get sol_mac
             if d_n['name'] in [
@@ -100,7 +100,7 @@ class Sol(object):
                 (sol_type, sol_ts, sol_value) = self._dust_notif_to_sol_json(d_n)
             except SolDuplicateOapNotificationException:
                 continue
-            
+
             # get sol_ts
             if   sol_ts:
                 pass # _dust_notif_to_sol_json() returned the ts (sol object with EPOCH ts)
@@ -108,7 +108,7 @@ class Sol(object):
                 sol_ts = int(time.time())  # timestamp in seconds
             else:
                 sol_ts = timestamp
-            
+
             # create JSON Object
             sol_json = {
                 "mac":          sol_mac,
@@ -180,7 +180,7 @@ class Sol(object):
         :return: A JSON string to be sent to the server over HTTP.
         :rtype: string
         """
-        
+
         try:
             return_val = {
                 "v":    SolDefines.SOL_HDR_V,
@@ -548,10 +548,10 @@ class Sol(object):
         :rtype: list
         """
         notif_list = []
-        
+
         if (dust_notif['name'] == 'notifData') and (dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT):
             # OAP: split if multi-MTTLV structure
-            
+
             # parse header
             sol_header  = dust_notif['fields']['data'][0]
             header_V    = sol_header >> SolDefines.SOL_HDR_V_OFFSET & 0x03
@@ -562,11 +562,11 @@ class Sol(object):
 
             if header_T == 0:
                 # single SOL object
-                
+
                 notif_list = [dust_notif]
             else:
                 # multiple SOL objects
-                
+
                 # reset header Type bit
                 sol_header = dust_notif['fields']['data'][0] & 0xdf
 
@@ -613,9 +613,9 @@ class Sol(object):
                         },
                     ]
                     curr_ptr   += obj_size+1
-        
+
         elif dust_notif['name'] == 'hr':
-            
+
             for hrName in dust_notif['hr'].keys():
                 assert hrName in ['Device','Discovered','Neighbors']
             if 'Device' in dust_notif['hr']:
@@ -641,15 +641,15 @@ class Sol(object):
                 notif_list += [dust_notif_copy]
         else:
             notif_list += [dust_notif]
-        
+
         return notif_list
 
     #===== dust notif to sol json
 
     def _dust_notif_to_sol_json(self, dust_notif):
-        
+
         sol_ts = None
-        
+
         if   dust_notif['name'] == 'notifData':
             (sol_type, sol_ts, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'hr':
@@ -660,9 +660,9 @@ class Sol(object):
             (sol_type, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
 
         return (sol_type, sol_ts, sol_value)
-    
+
     # notifData
-    
+
     def _dust_notifData_to_sol_json(self, dust_notif):
 
         sol_type   = None
@@ -671,16 +671,16 @@ class Sol(object):
 
         if   dust_notif['fields']['dstPort'] == OAPMessage.OAP_PORT:
             # notifData contains OAP message
-            
+
             # this notification will already appear as an oap notification
             raise SolDuplicateOapNotificationException()
         elif dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT:
             # notifData contains SOL message
-            
+
             (sol_type, sol_ts, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
         else:
             # notifData contains does NOT contain neither OAP nor SOL
-            
+
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
             sol_value   = copy.deepcopy(dust_notif['fields'])
             del(sol_value['macAddress'])
@@ -688,7 +688,7 @@ class Sol(object):
             del(sol_value['utcUsecs'])
 
         return (sol_type, sol_ts, sol_value)
-    
+
     def _dust_notifData_with_sol_to_sol_json(self, dust_notif):
         """
         Turn a notifData dust notification which contains SOL objects
@@ -718,9 +718,9 @@ class Sol(object):
             dust_notif['fields']['data'][type_index+1:]
         )
         return (sol_type, sol_ts, sol_value)
-    
+
     # hr
-    
+
     def _dust_hr_to_sol_json(self, dust_notif):
         sol_type   = None
         sol_value  = None
@@ -740,9 +740,9 @@ class Sol(object):
             sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED
             sol_value   = dust_notif['hr']['Discovered']
         return (sol_type, sol_value)
-    
+
     # oap
-    
+
     def _dust_oap_to_sol_json(self, dust_notif):
         if dust_notif['fields']['channel_str'] == 'temperature':
             sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
@@ -764,9 +764,9 @@ class Sol(object):
         else:
             raise NotImplementedError()
         return (sol_type, sol_value)
-    
+
     # other
-    
+
     def _dust_other_notif_to_sol_json(self, dust_notif):
         sol_typeName    = self._dust_notifName_to_sol_typeName(dust_notif['name'])
         sol_type        = getattr(SolDefines, sol_typeName)
@@ -776,14 +776,14 @@ class Sol(object):
         )
 
         return sol_type, sol_value
-    
+
     def _dust_notifName_to_sol_typeName(self, notifName):
         return 'SOL_TYPE_DUST_{0}'.format(notifName.upper())
 
     def _fields_to_json_with_structure(self, sol_type, dust_notif):
 
         sol_struct          = SolDefines.solStructure(sol_type)
-        
+
         returnVal       = {}
         for name in sol_struct['fields']:
             returnVal[name] = dust_notif['fields'][name]
@@ -797,29 +797,33 @@ class Sol(object):
                 returnVal[k] = [b for b in v]
 
         return returnVal
-    
+
     #===== json_to_bin
-    
+
     def _fields_to_binary_with_structure(self, sol_type, fields):
 
         sol_struct      = SolDefines.solStructure(sol_type)
 
         pack_format     = sol_struct['structure']
-        pack_values     = [fields[name] for name in sol_struct['fields']]
+        pack_values     = [fields[name] for name in sol_struct['fields'] if name in fields]
 
         # convert [0x01,0x02,0x03] into 0x010203 to be packable
         for i in range(len(pack_values)):
             if type(pack_values[i]) == list:
                 pack_values[i] = self._list_to_num(pack_values[i])
 
-        returnVal       = [ord(b) for b in struct.pack(pack_format, *pack_values)]
+        # unpacking field by field
+        returnVal = []
+        for id, val in enumerate(pack_values):
+            returnVal += [ord(b) for b in struct.pack(pack_format[0] + pack_format[id+1], val)]
+        #returnVal       = [ord(b) for b in struct.pack(pack_format, *pack_values)]
         if 'extrafields' in sol_struct:
             returnVal  += fields[sol_struct['extrafields']]
 
         return returnVal
 
     #===== bin_to_json
-    
+
     def _binary_to_fields_with_structure(self, sol_type, binary):
 
         sol_struct      = SolDefines.solStructure(sol_type)
@@ -827,7 +831,15 @@ class Sol(object):
         pack_format     = sol_struct['structure']
         pack_length     = struct.calcsize(pack_format)
 
-        t = struct.unpack(pack_format, ''.join(chr(b) for b in binary[:pack_length]))
+        # unpacking field by field
+        t = []
+        ptr = 0
+        for frmt in pack_format[1:]:
+            size = struct.calcsize(frmt)
+            if len(binary[ptr:ptr+size]) > 0:
+                t.append(struct.unpack(pack_format[0] + frmt,
+                                       "".join(chr(b) for b in binary[ptr:ptr+size]))[0])
+            ptr += size
 
         returnVal = {}
         for (k, v) in zip(sol_struct['fields'], t):
