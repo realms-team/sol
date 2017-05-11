@@ -26,12 +26,8 @@ import flatdict
 
 # project-specific
 from SmartMeshSDK.utils                 import FormatUtils
-from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
-from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 from SmartMeshSDK.protocols.Hr          import HrParser
-from SmartMeshSDK.protocols.oap         import OAPDispatcher, \
-                                               OAPMessage,    \
-                                               OAPNotif
+from SmartMeshSDK.protocols.oap         import OAPMessage
 
 import SolDefines
 from SolVersion import VERSION
