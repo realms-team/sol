@@ -101,6 +101,192 @@ SOL_CHAIN_EXAMPLE = [
         },
         "objects": [],
     },
+    # SOL_TYPE_DUST_NOTIF_HRDEVICE (24 bytes, old version)
+    {
+        "dust": {
+            'hr': {
+                'Device': {
+                    'badLinkFrameId':  0,
+                    'badLinkOffset':   0,
+                    'badLinkSlot':     0,
+                    'batteryVoltage':  2949,
+                    'charge':          377,
+                    'numMacCrcErr':    1,
+                    'numMacDropped':   0,
+                    'numMacMicErr':    0,
+                    'numNetMicErr':    0,
+                    'numRxLost':       0,
+                    'numRxOk':         5,
+                    'numTxBad':        0,
+                    'numTxFail':       0,
+                    'numTxOk':         58,
+                    'queueOcc':        49,
+                    'temperature':     21,
+                },
+            },
+            'mac': u'01-02-03-04-05-06-07-08',
+            'name': u'hr',
+        },
+        "objects": [
+            {
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "type"       : 0x10,
+                    "value"      : {
+                        'badLinkFrameId':  0,
+                        'badLinkOffset':   0,
+                        'badLinkSlot':     0,
+                        'batteryVoltage':  2949,
+                        'charge':          377,
+                        'numMacDropped':   0,
+                        'numRxLost':       0,
+                        'numRxOk':         5,
+                        'numTxBad':        0,
+                        'numTxFail':       0,
+                        'numTxOk':         58,
+                        'queueOcc':        49,
+                        'temperature':     21,
+                    },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x10,                                      # type
+                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1  # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                    },
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
+                    "fields"     : {
+                        'badLinkFrameId':  0,
+                        'badLinkOffset':   0,
+                        'badLinkSlot':     0,
+                        'batteryVoltage':  2949,
+                        'charge':          377,
+                        'numMacDropped':   0,
+                        'numRxLost':       0,
+                        'numRxOk':         5,
+                        'numTxBad':        0,
+                        'numTxFail':       0,
+                        'numTxOk':         58,
+                        'queueOcc':        49,
+                        'temperature':     21,
+                    },
+                },
+            },
+        ],
+    },
+    # SOL_TYPE_DUST_NOTIF_HRDEVICE (27 bytes, new version)
+    {
+        "dust": {
+            'hr': {
+                'Device': {
+                    'badLinkFrameId': 0,
+                    'badLinkOffset': 0,
+                    'badLinkSlot': 0,
+                    'batteryVoltage': 2949,
+                    'charge': 377,
+                    'numMacCrcErr': 1,
+                    'numMacDropped': 0,
+                    'numMacMicErr': 0,
+                    'numNetMicErr': 0,
+                    'numRxLost': 0,
+                    'numRxOk': 5,
+                    'numTxBad': 0,
+                    'numTxFail': 0,
+                    'numTxOk': 58,
+                    'queueOcc': 49,
+                    'temperature': 21,
+                },
+            },
+            'mac': u'01-02-03-04-05-06-07-08',
+            'name': u'hr',
+        },
+        "objects": [
+            {
+                "json": {
+                    "timestamp": TIMESTAMP,
+                    "mac": [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08],
+                    "type": 0x10,
+                    "value": {
+                        'badLinkFrameId': 0,
+                        'badLinkOffset': 0,
+                        'badLinkSlot': 0,
+                        'batteryVoltage': 2949,
+                        'charge': 377,
+                        'numMacCrcErr': 1,
+                        'numMacDropped': 0,
+                        'numMacMicErr': 0,
+                        'numNetMicErr': 0,
+                        'numRxLost': 0,
+                        'numRxOk': 5,
+                        'numTxBad': 0,
+                        'numTxFail': 0,
+                        'numTxOk': 58,
+                        'queueOcc': 49,
+                        'temperature': 21,
+                    },
+                },
+                "bin": [
+                    # ver   type   MAC    ts    typelen length
+                    0 << 6 | 0 << 5 | 1 << 4 | 0 << 3 | 0 << 2 | 3 << 0,  # header
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,  # mac
+                    0x12, 0x13, 0x14, 0x15,  # timestamp
+                    0x10,  # type
+                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1  # value
+                ],
+                "http": {
+                    "v": 0,
+                    "o": [
+                        "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
+                    ]
+                },
+                "influxdb": {
+                    "time": TIMESTAMP * 1000000000,
+                    "tags": {
+                        'mac': '01-02-03-04-05-06-07-08',
+                        'site': 'super_site',
+                        'latitude': 55.5555,
+                        'longitude': -44.4444,
+                    },
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
+                    "fields": {
+                        'badLinkFrameId': 0,
+                        'badLinkOffset': 0,
+                        'badLinkSlot': 0,
+                        'batteryVoltage': 2949,
+                        'charge': 377,
+                        'numMacCrcErr': 1,
+                        'numMacDropped': 0,
+                        'numMacMicErr': 0,
+                        'numNetMicErr': 0,
+                        'numRxLost': 0,
+                        'numRxOk': 5,
+                        'numTxBad': 0,
+                        'numTxFail': 0,
+                        'numTxOk': 58,
+                        'queueOcc': 49,
+                        'temperature': 21,
+                    },
+                },
+            },
+        ],
+    },
     # SOL_TYPE_DUST_NOTIF_HRDEVICE+SOL_TYPE_DUST_NOTIF_HRDISCOVERED
     {
         "dust": {
@@ -1734,13 +1920,13 @@ def test_chain(sol_chain_example):
         )
     else:
         sol_jsonl = [sol_chain_example["objects"][0]["json"]]
-    
+
     print sol_chain_example["objects"]
     print sol_jsonl
-    
+
     # same number of objects? (for HR)
     assert len(sol_jsonl) == len(sol_chain_example["objects"])
-    
+
     for (sol_json, example) in zip(sol_jsonl,sol_chain_example["objects"]):
         # dust->json
         print '=====\ndust->json'
