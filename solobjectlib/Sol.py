@@ -20,6 +20,7 @@ import base64
 import threading
 import time
 import copy
+import logging
 
 # third-party packages
 import flatdict
@@ -33,7 +34,9 @@ import SolDefines
 from SolVersion import VERSION
 import OpenHdlc
 
-#============================ defines =========================================
+#============================ logging =========================================
+
+log = logging.getLogger('Sol')
 
 #============================ helpers =========================================
 
