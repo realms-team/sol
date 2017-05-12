@@ -111,10 +111,7 @@ SOL_CHAIN_EXAMPLE = [
                     'badLinkSlot':     0,
                     'batteryVoltage':  2949,
                     'charge':          377,
-                    'numMacCrcErr':    1,
                     'numMacDropped':   0,
-                    'numMacMicErr':    0,
-                    'numNetMicErr':    0,
                     'numRxLost':       0,
                     'numRxOk':         5,
                     'numTxBad':        0,
@@ -151,16 +148,17 @@ SOL_CHAIN_EXAMPLE = [
                 },
                 "bin": [
                     #ver   type   MAC    ts    typelen length
-                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
-                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
-                    0x12,0x13,0x14,0x15,                       # timestamp
-                    0x10,                                      # type
-                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1  # value
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,    # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,    # mac
+                    0x12,0x13,0x14,0x15,                        # timestamp
+                    0x10,                                       # type
+                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, # value
+                    0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0          # value
                 ],
                 "http": {
                     "v" : 0,
                     "o" : [
-                        "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
+                        "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAA="
                     ]
                 },
                 "influxdb": {
@@ -243,12 +241,13 @@ SOL_CHAIN_EXAMPLE = [
                     },
                 },
                 "bin": [
-                    # ver   type   MAC    ts    typelen length
-                    0 << 6 | 0 << 5 | 1 << 4 | 0 << 3 | 0 << 2 | 3 << 0,  # header
-                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,  # mac
-                    0x12, 0x13, 0x14, 0x15,  # timestamp
-                    0x10,  # type
-                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1  # value
+                    # ver    type     MAC      ts      typelen   length
+                    0 << 6 | 0 << 5 | 1 << 4 | 0 << 3 | 0 << 2 | 3 << 0,# header
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,     # mac
+                    0x12, 0x13, 0x14, 0x15,                             # timestamp
+                    0x10,                                               # type
+                    0, 0, 1, 121, 49, 21, 11, 133, 0, 58, 0, 0, 0, 5,   # value
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1               # value
                 ],
                 "http": {
                     "v": 0,
