@@ -955,6 +955,8 @@ class Sol(object):
 
         # converting json to bytes
         for mote in snapshot:
+            if isinstance(mote['macAddress'], (str, unicode)):
+                mote['macAddress'] = [int(c, 16) for c in mote['macAddress'].split("-")]
             m = struct.pack(
                 '>QHBBBBBIIIIII',
                 self._list_to_num(mote['macAddress']),      # INT64U  Q
@@ -978,6 +980,8 @@ class Sol(object):
 
             p = ""
             for path in mote['paths']:
+                if isinstance(path['macAddress'], (str, unicode)):
+                    path['macAddress'] = [int(c, 16) for c in path['macAddress'].split("-")]
                 p += struct.pack(
                     '>QBBBbb',
                     self._list_to_num(path['macAddress']),  # INT64U  Q
