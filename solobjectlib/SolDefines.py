@@ -526,14 +526,9 @@ sol_types = [
     {
         'type':         SOL_TYPE_TEMPRH_SHT3X,
         'description':  'temperature and humidity sensor',
-        'structure':    '>HHB',
-        'fields':       ['temp_raw', 'rh_raw', 'id'],
+        'structure':    '<HBHB',
+        'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
         'apply':        [
-                {
-                    'tag':     "id",
-                    'function': lambda x: x,
-                    'args':     ['id'],
-                },
                 {
                     'field':     "temp_phys",
                     'function': lambda x:  (x*175.0/0xffff)-45,
