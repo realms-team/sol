@@ -698,6 +698,114 @@ SOL_CHAIN_EXAMPLE = [
             }
         ]
     },
+    # SOL_TYPE_DUST_NOTIF_HREXTENDED (RSSI)
+    {
+        "dust": {
+            'hr': {
+                "Extended": {
+                    'RSSI': [{'txUnicastAttempts': 12, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 13, 'idleRssi': -93, 'txUnicastFailures': 1},
+                             {'txUnicastAttempts': 8, 'idleRssi': -89, 'txUnicastFailures': 1},
+                             {'txUnicastAttempts': 11, 'idleRssi': -92, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 9, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 13, 'idleRssi': -90, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 10, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 15, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 11, 'idleRssi': -93, 'txUnicastFailures': 1},
+                             {'txUnicastAttempts': 14, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 12, 'idleRssi': -90, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 15, 'idleRssi': -92, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 14, 'idleRssi': -84, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 13, 'idleRssi': -93, 'txUnicastFailures': 0},
+                             {'txUnicastAttempts': 15, 'idleRssi': -93, 'txUnicastFailures': 0}],
+                },
+            },
+            u'mac': u'01-02-03-04-05-06-07-08',
+            u'name': u'hr',
+        },
+        "objects": [
+            {
+                "json": {
+                    "timestamp": TIMESTAMP,
+                    "mac": [1, 2, 3, 4, 5, 6, 7, 8],
+                    "type": 0x43,
+                    "value": {
+                        'RSSI': [{'txUnicastAttempts': 12, 'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 13, 'idleRssi': -93, 'txUnicastFailures': 1},
+                                 {'txUnicastAttempts': 8,  'idleRssi': -89, 'txUnicastFailures': 1},
+                                 {'txUnicastAttempts': 11, 'idleRssi': -92, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 9,  'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 13, 'idleRssi': -90, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 10, 'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 15, 'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 11, 'idleRssi': -93, 'txUnicastFailures': 1},
+                                 {'txUnicastAttempts': 14, 'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 12, 'idleRssi': -90, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 15, 'idleRssi': -92, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 14, 'idleRssi': -84, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 13, 'idleRssi': -93, 'txUnicastFailures': 0},
+                                 {'txUnicastAttempts': 15, 'idleRssi': -93, 'txUnicastFailures': 0}],
+                    },
+                },
+                "bin": [
+                    # ver   type   MAC    ts    typelen length
+                    0 << 6 | 0 << 5 | 1 << 4 | 0 << 3 | 0 << 2 | 3 << 0,  # header
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,  # mac
+                    0x12, 0x13, 0x14, 0x15,  # timestamp
+                    0x43,  # type
+                    1, 75, # extType, extLength
+                    163, 0, 12, 0, 0, # channel 0
+                    163, 0, 13, 0, 1, # channel 1
+                    167, 0, 8, 0, 1,  # channel 2
+                    164, 0, 11, 0, 0, # channel 3
+                    163, 0, 9, 0, 0,  # channel 4
+                    166, 0, 13, 0, 0, # channel 5
+                    163, 0, 10, 0, 0, # channel 6
+                    163, 0, 15, 0, 0, # channel 7
+                    163, 0, 11, 0, 1, # channel 8
+                    163, 0, 14, 0, 0, # channel 9
+                    166, 0, 12, 0, 0, # channel 10
+                    164, 0, 15, 0, 0, # channel 11
+                    172, 0, 14, 0, 0, # channel 12
+                    163, 0, 13, 0, 0, # channel 13
+                    163, 0, 15, 0, 0  # channel 14
+                ],
+                "http": {
+                    "v": 0,
+                    "o": [
+                        "EwECAwQFBgcIEhMUFUMBS6MADAAAowANAAGnAAgAAaQACwAAowAJAACmAA0AAKMACgAAowAPAACjAAsAAaMADgAApgAMAACkAA8AAKwADgAAowANAACjAA8AAA==",
+                    ]
+                },
+                "influxdb": {
+                    "time": TIMESTAMP * 1000000000,
+                    "tags": {
+                        'mac': '01-02-03-04-05-06-07-08',
+                        'site': 'super_site',
+                        'latitude': 55.5555,
+                        'longitude': -44.4444,
+                    },
+                    "measurement": 'SOL_TYPE_DUST_NOTIF_HREXTENDED',
+                    "fields": {
+                        '1:txUnicastAttempts': 12, '1:idleRssi': -93, '1:txUnicastFailures': 0,
+                        '2:txUnicastAttempts': 13, '2:idleRssi': -93, '2:txUnicastFailures': 1,
+                        '3:txUnicastAttempts': 8,  '3:idleRssi': -89, '3:txUnicastFailures': 1,
+                        '4:txUnicastAttempts': 11, '4:idleRssi': -92, '4:txUnicastFailures': 0,
+                        '5:txUnicastAttempts': 9,  '5:idleRssi': -93, '5:txUnicastFailures': 0,
+                        '6:txUnicastAttempts': 13, '6:idleRssi': -90, '6:txUnicastFailures': 0,
+                        '7:txUnicastAttempts': 10, '7:idleRssi': -93, '7:txUnicastFailures': 0,
+                        '8:txUnicastAttempts': 15, '8:idleRssi': -93, '8:txUnicastFailures': 0,
+                        '9:txUnicastAttempts': 11, '9:idleRssi': -93, '9:txUnicastFailures': 1,
+                        '10:txUnicastAttempts': 14, '10:idleRssi': -93, '10:txUnicastFailures': 0,
+                        '11:txUnicastAttempts': 12, '11:idleRssi': -90, '11:txUnicastFailures': 0,
+                        '12:txUnicastAttempts': 15, '12:idleRssi': -92, '12:txUnicastFailures': 0,
+                        '13:txUnicastAttempts': 14, '13:idleRssi': -84, '13:txUnicastFailures': 0,
+                        '14:txUnicastAttempts': 13, '14:idleRssi': -93, '14:txUnicastFailures': 0,
+                        '15:txUnicastAttempts': 15, '15:idleRssi': -93, '15:txUnicastFailures': 0
+                    },
+                },
+            }
+        ]
+    },
     # SOL_TYPE_DUST_EVENTPATHCREATE
     {
         "dust": {
