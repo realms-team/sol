@@ -68,7 +68,7 @@ class Sol(object):
     def dust_to_json(self, dust_notif, mac_manager=None, timestamp=None):
         """
         Convert a single Dust serial API notification into a list of JSON SOL Object.
-        
+
         :param dict dust_notif: The Dust serial API notification as
             a json object created by the JsonServer application
         :param list mac_manager: A list of byte containing the MAC address of the manager
@@ -156,6 +156,10 @@ class Sol(object):
             )
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             sol_bin    += self._get_sol_binary_value_dust_hr_discovered(
+                sol_json['value']
+            )
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
+            sol_bin    += self._get_sol_binary_value_dust_hr_extended(
                 sol_json['value']
             )
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
@@ -285,6 +289,10 @@ class Sol(object):
             sol_json['value'] = self.hrParser.parseHr(
                 [self.hrParser.HR_ID_DISCOVERED, len(sol_bin)]+sol_bin,
             )['Discovered']
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
+            sol_json['value'] = self.hrParser.parseHr(
+                [self.hrParser.HR_ID_EXTENDED, len(sol_bin)]+sol_bin,
+            )['Extended']
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             sol_json['value'] = self._binary_to_fields_snapshot(sol_bin)
         else:
@@ -315,6 +323,10 @@ class Sol(object):
             fields['numItems'] = sol_json["value"]['numItems']
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
+            fields = {}
+            for item, value in enumerate(sol_json["value"]['RSSI']):
+                fields[str(item + 1)] = value
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             fields = {"mote": []}
             for mote in sol_json["value"]:
@@ -614,29 +626,14 @@ class Sol(object):
                     curr_ptr   += obj_size+1
 
         elif dust_notif['name'] == 'hr':
-
-            for hrName in dust_notif['hr'].keys():
-                assert hrName in ['Device','Discovered','Neighbors']
-            if 'Device' in dust_notif['hr']:
+            hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
+            notif_keys =  dust_notif['hr'].keys()
+            for hrName in notif_keys:
+                assert hrName in hr_type_list
+            for hrName in notif_keys:
                 dust_notif_copy = copy.deepcopy(dust_notif)
-                if 'Discovered' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Discovered']
-                if 'Neighbors' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Neighbors']
-                notif_list += [dust_notif_copy]
-            if 'Discovered' in dust_notif['hr']:
-                dust_notif_copy = copy.deepcopy(dust_notif)
-                if 'Device' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Device']
-                if 'Neighbors' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Neighbors']
-                notif_list += [dust_notif_copy]
-            if 'Neighbors' in dust_notif['hr']:
-                dust_notif_copy = copy.deepcopy(dust_notif)
-                if 'Device' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Device']
-                if 'Discovered' in dust_notif_copy['hr']:
-                    del dust_notif_copy['hr']['Discovered']
+                for hr_type in [t for t in notif_keys if t != hrName]:
+                    del dust_notif_copy['hr'][hr_type]
                 notif_list += [dust_notif_copy]
         else:
             notif_list += [dust_notif]
@@ -693,7 +690,7 @@ class Sol(object):
         Turn a notifData dust notification which contains SOL objects
            (SOL_header + timestamp + SOL_object)
         into a dictionnary
-        
+
         :return: (sol_type, sol_ts, sol_value)
         :rtype: tuple(int, int, int)
         """
@@ -723,21 +720,12 @@ class Sol(object):
     def _dust_hr_to_sol_json(self, dust_notif):
         sol_type   = None
         sol_value  = None
-        if 'Device' in dust_notif['hr']:
-            assert 'Neighbors' not in dust_notif['hr']
-            assert 'Discovered' not in dust_notif['hr']
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
-            sol_value   = dust_notif['hr']['Device']
-        if 'Neighbors' in dust_notif['hr']:
-            assert 'Device' not in dust_notif['hr']
-            assert 'Discovered' not in dust_notif['hr']
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
-            sol_value   = dust_notif['hr']['Neighbors']
-        if 'Discovered' in dust_notif['hr']:
-            assert 'Device' not in dust_notif['hr']
-            assert 'Neighbors' not in dust_notif['hr']
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED
-            sol_value   = dust_notif['hr']['Discovered']
+        hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
+        for hr_type in hr_type_list:
+            if hr_type in dust_notif['hr']:
+                assert dust_notif['hr'].keys() == [hr_type]
+                sol_type = getattr(SolDefines, "SOL_TYPE_DUST_NOTIF_HR{0}".format(hr_type.upper()))
+                sol_value = dust_notif['hr'][hr_type]
         return (sol_type, sol_value)
 
     # oap
@@ -944,6 +932,28 @@ class Sol(object):
             )]
         return_val  = ''.join(return_val)
         return_val  = [ord(c) for c in return_val]
+
+        return return_val
+
+    def _get_sol_binary_value_dust_hr_extended(self, hr):
+        HR_ID_EXTENDED_RSSI_STRUCT = ">" + "".join([i[1] for i in self.hrParser.HR_DESC_EXTENDED_RSSI_DATA])
+        HR_ID_EXTENDED_RSSI_SIZE = struct.calcsize(HR_ID_EXTENDED_RSSI_STRUCT) * 15 # 15 channels
+        return_val = []
+        if "RSSI" in hr.keys():
+            return_val += [struct.pack("<BB",
+                                       self.hrParser.HR_ID_EXTENDED_RSSI, # extType
+                                       HR_ID_EXTENDED_RSSI_SIZE)] # extLength
+            for n in hr['RSSI']:
+                return_val += [struct.pack(
+                    HR_ID_EXTENDED_RSSI_STRUCT,
+                    n['idleRssi'],          # INT8    b
+                    n['txUnicastAttempts'], # INT16U  H
+                    n['txUnicastFailures'], # INT16U  H
+                )]
+            return_val  = ''.join(return_val)
+            return_val  = [ord(c) for c in return_val]
+        else:
+            raise NotImplementedError
 
         return return_val
 
