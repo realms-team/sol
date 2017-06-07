@@ -52,6 +52,7 @@ SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
+SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x43
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
@@ -345,7 +346,7 @@ sol_types = [
                     'tag':     "mean_d2g",
                     'function': lambda x: x,
                     'args':     ['mean_d2g'],
-                },            
+                },
                 {
                     'tag':     "Nval",
                     'function': lambda x: x,
@@ -356,8 +357,8 @@ sol_types = [
                     'function': lambda x: x,
                     'args':     ['stdev'],
                 }
-            ],             
-    },  
+            ],
+    },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
         'description':  'soil moisture. sub_id indicates depth',
@@ -374,7 +375,7 @@ sol_types = [
                     'function': lambda x: x,
                     'args':     ['Nval'],
                 }
-            ],        
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
@@ -433,7 +434,7 @@ sol_types = [
                     'function': lambda x: x,
                     'args':     ['Nval'],
                 }
-            ],    
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_1,
@@ -446,7 +447,7 @@ sol_types = [
                     'function': lambda x: x,
                     'args':     ['Nval'],
                 }
-            ],        
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_2,
@@ -459,7 +460,7 @@ sol_types = [
                     'function': lambda x: x,
                     'args':     ['Nval'],
                 }
-            ],        
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_LP02_R4N1,
