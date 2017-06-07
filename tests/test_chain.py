@@ -728,7 +728,7 @@ SOL_CHAIN_EXAMPLE = [
                 "json": {
                     "timestamp": TIMESTAMP,
                     "mac": [1, 2, 3, 4, 5, 6, 7, 8],
-                    "type": 0x43,
+                    "type": 0x44,
                     "value": {
                         'RSSI': [{'txUnicastAttempts': 12, 'idleRssi': -93, 'txUnicastFailures': 0},
                                  {'txUnicastAttempts': 13, 'idleRssi': -93, 'txUnicastFailures': 1},
@@ -752,7 +752,7 @@ SOL_CHAIN_EXAMPLE = [
                     0 << 6 | 0 << 5 | 1 << 4 | 0 << 3 | 0 << 2 | 3 << 0,  # header
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,  # mac
                     0x12, 0x13, 0x14, 0x15,  # timestamp
-                    0x43,  # type
+                    0x44,  # type
                     1, 75, # extType, extLength
                     163, 0, 12, 0, 0, # channel 0
                     163, 0, 13, 0, 1, # channel 1
@@ -773,7 +773,7 @@ SOL_CHAIN_EXAMPLE = [
                 "http": {
                     "v": 0,
                     "o": [
-                        "EwECAwQFBgcIEhMUFUMBS6MADAAAowANAAGnAAgAAaQACwAAowAJAACmAA0AAKMACgAAowAPAACjAAsAAaMADgAApgAMAACkAA8AAKwADgAAowANAACjAA8AAA==",
+                        "EwECAwQFBgcIEhMUFUQBS6MADAAAowANAAGnAAgAAaQACwAAowAJAACmAA0AAKMACgAAowAPAACjAAsAAaMADgAApgAMAACkAA8AAKwADgAAowANAACjAA8AAA==",
                     ]
                 },
                 "influxdb": {

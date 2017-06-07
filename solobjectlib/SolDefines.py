@@ -52,7 +52,8 @@ SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
-SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x43
+SOL_TYPE_TEMPRH_SHT3X                       = 0x43
+SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
@@ -519,6 +520,24 @@ sol_types = [
                 {
                     'field':     "rh_phys",
                     'function': lambda x:  x*100/0xffff,
+                    'args':     ['rh_raw'],
+                },
+            ],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SHT3X,
+        'description':  'temperature and humidity sensor',
+        'structure':    '<HBHB',
+        'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
+        'apply':        [
+                {
+                    'field':     "temp_phys",
+                    'function': lambda x:  (x*175.0/0xffff)-45,
+                    'args':     ['temp_raw'],
+                },
+                {
+                    'field':     "rh_phys",
+                    'function': lambda x:  x*100.0/0xffff,
                     'args':     ['rh_raw'],
                 },
             ],
