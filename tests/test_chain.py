@@ -754,21 +754,21 @@ SOL_CHAIN_EXAMPLE = [
                     0x12, 0x13, 0x14, 0x15,  # timestamp
                     0x44,  # type
                     1, 75, # extType, extLength
-                    163, 0, 12, 0, 0, # channel 0
-                    163, 0, 13, 0, 1, # channel 1
-                    167, 0, 8, 0, 1,  # channel 2
-                    164, 0, 11, 0, 0, # channel 3
-                    163, 0, 9, 0, 0,  # channel 4
-                    166, 0, 13, 0, 0, # channel 5
-                    163, 0, 10, 0, 0, # channel 6
-                    163, 0, 15, 0, 0, # channel 7
-                    163, 0, 11, 0, 1, # channel 8
-                    163, 0, 14, 0, 0, # channel 9
-                    166, 0, 12, 0, 0, # channel 10
-                    164, 0, 15, 0, 0, # channel 11
-                    172, 0, 14, 0, 0, # channel 12
-                    163, 0, 13, 0, 0, # channel 13
-                    163, 0, 15, 0, 0  # channel 14
+                    163, 0, 12, 0, 0, # channel 11
+                    163, 0, 13, 0, 1, # channel 12
+                    167, 0, 8, 0, 1,  # channel 13
+                    164, 0, 11, 0, 0, # channel 14
+                    163, 0, 9, 0, 0,  # channel 15
+                    166, 0, 13, 0, 0, # channel 16
+                    163, 0, 10, 0, 0, # channel 17
+                    163, 0, 15, 0, 0, # channel 18
+                    163, 0, 11, 0, 1, # channel 19
+                    163, 0, 14, 0, 0, # channel 20
+                    166, 0, 12, 0, 0, # channel 21
+                    164, 0, 15, 0, 0, # channel 22
+                    172, 0, 14, 0, 0, # channel 23
+                    163, 0, 13, 0, 0, # channel 24
+                    163, 0, 15, 0, 0  # channel 25
                 ],
                 "http": {
                     "v": 0,
@@ -786,21 +786,21 @@ SOL_CHAIN_EXAMPLE = [
                     },
                     "measurement": 'SOL_TYPE_DUST_NOTIF_HREXTENDED',
                     "fields": {
-                        '1:txUnicastAttempts': 12, '1:idleRssi': -93, '1:txUnicastFailures': 0,
-                        '2:txUnicastAttempts': 13, '2:idleRssi': -93, '2:txUnicastFailures': 1,
-                        '3:txUnicastAttempts': 8,  '3:idleRssi': -89, '3:txUnicastFailures': 1,
-                        '4:txUnicastAttempts': 11, '4:idleRssi': -92, '4:txUnicastFailures': 0,
-                        '5:txUnicastAttempts': 9,  '5:idleRssi': -93, '5:txUnicastFailures': 0,
-                        '6:txUnicastAttempts': 13, '6:idleRssi': -90, '6:txUnicastFailures': 0,
-                        '7:txUnicastAttempts': 10, '7:idleRssi': -93, '7:txUnicastFailures': 0,
-                        '8:txUnicastAttempts': 15, '8:idleRssi': -93, '8:txUnicastFailures': 0,
-                        '9:txUnicastAttempts': 11, '9:idleRssi': -93, '9:txUnicastFailures': 1,
-                        '10:txUnicastAttempts': 14, '10:idleRssi': -93, '10:txUnicastFailures': 0,
-                        '11:txUnicastAttempts': 12, '11:idleRssi': -90, '11:txUnicastFailures': 0,
-                        '12:txUnicastAttempts': 15, '12:idleRssi': -92, '12:txUnicastFailures': 0,
-                        '13:txUnicastAttempts': 14, '13:idleRssi': -84, '13:txUnicastFailures': 0,
-                        '14:txUnicastAttempts': 13, '14:idleRssi': -93, '14:txUnicastFailures': 0,
-                        '15:txUnicastAttempts': 15, '15:idleRssi': -93, '15:txUnicastFailures': 0
+                        '11:txUnicastAttempts': 12, '11:idleRssi': -93, '11:txUnicastFailures': 0,
+                        '12:txUnicastAttempts': 13, '12:idleRssi': -93, '12:txUnicastFailures': 1,
+                        '13:txUnicastAttempts': 8,  '13:idleRssi': -89, '13:txUnicastFailures': 1,
+                        '14:txUnicastAttempts': 11, '14:idleRssi': -92, '14:txUnicastFailures': 0,
+                        '15:txUnicastAttempts': 9,  '15:idleRssi': -93, '15:txUnicastFailures': 0,
+                        '16:txUnicastAttempts': 13, '16:idleRssi': -90, '16:txUnicastFailures': 0,
+                        '17:txUnicastAttempts': 10, '17:idleRssi': -93, '17:txUnicastFailures': 0,
+                        '18:txUnicastAttempts': 15, '18:idleRssi': -93, '18:txUnicastFailures': 0,
+                        '19:txUnicastAttempts': 11, '19:idleRssi': -93, '19:txUnicastFailures': 1,
+                        '20:txUnicastAttempts': 14, '20:idleRssi': -93, '20:txUnicastFailures': 0,
+                        '21:txUnicastAttempts': 12, '21:idleRssi': -90, '21:txUnicastFailures': 0,
+                        '22:txUnicastAttempts': 15, '22:idleRssi': -92, '22:txUnicastFailures': 0,
+                        '23:txUnicastAttempts': 14, '23:idleRssi': -84, '23:txUnicastFailures': 0,
+                        '24:txUnicastAttempts': 13, '24:idleRssi': -93, '24:txUnicastFailures': 0,
+                        '25:txUnicastAttempts': 15, '25:idleRssi': -93, '25:txUnicastFailures': 0
                     },
                 },
             }

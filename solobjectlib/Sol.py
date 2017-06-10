@@ -326,7 +326,7 @@ class Sol(object):
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
             fields = {}
             for item, value in enumerate(sol_json["value"]['RSSI']):
-                fields[str(item + 15)] = value # 15 is the first channel number
+                fields[str(item + 11)] = value # 11 is the first channel number
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             fields = {"mote": []}
             for mote in sol_json["value"]:
