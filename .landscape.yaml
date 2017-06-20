@@ -1,1 +1,6 @@
 max-line-length: 79
+python-targets:
+    - 2
+autodetect: true
+ignore-paths:
+    - smartmeshsdk

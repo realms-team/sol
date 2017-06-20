@@ -2,10 +2,11 @@ language: python
 python:
   - "2.7"
 
- # install dependencies
-install:
-  - pip install -r requirements.txt --use-mirrors
+before_install:
 
-# command to run tests
+install:
+  - git clone --branch=master https://github.com/twatteyne/smartmeshsdk.git /home/travis/build/realms-team/smartmeshsdk
+  - pip install -r requirements.txt
+
 script:
   - python -m pytest tests/

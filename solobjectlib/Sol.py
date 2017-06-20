@@ -6,8 +6,10 @@ import sys
 import os
 
 here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
-sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'external_libs'))
+if __name__ == "__main__":
+    sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
+else:
+    sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
 
 # =========================== imports =========================================
 
@@ -17,46 +19,41 @@ import struct
 import base64
 import threading
 import time
-import array
-import datetime
 import copy
+import logging
 
 # third-party packages
 import flatdict
 
 # project-specific
 from SmartMeshSDK.utils                 import FormatUtils
-from SmartMeshSDK.ApiDefinition         import IpMgrDefinition
-from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 from SmartMeshSDK.protocols.Hr          import HrParser
-from SmartMeshSDK.protocols.oap         import OAPDispatcher, \
-                                               OAPMessage,    \
-                                               OAPNotif
+from SmartMeshSDK.protocols.oap         import OAPMessage
 
 import SolDefines
-import SolVersion as ver
+from SolVersion import VERSION
 import OpenHdlc
 
-#============================ defines =========================================
+#============================ logging =========================================
+
+log = logging.getLogger(__name__)
 
 #============================ helpers =========================================
 
 #============================ classes =========================================
 
+class SolDuplicateOapNotificationException(Exception):
+    pass
+
 class Sol(object):
-    '''
+    """
     Sensor Object Library
-    '''
+    """
 
     def __init__(self):
         self.fileLock   = threading.RLock()
         self.hdlc       = OpenHdlc.OpenHdlc()
         self.hrParser   = HrParser.HrParser()
-        self.api        = IpMgrDefinition.IpMgrDefinition()
-        self.connSerial = IpMgrConnectorSerial.IpMgrConnectorSerial()
-        self.oapLock    = threading.RLock()
-        self.oap        = OAPDispatcher.OAPDispatcher()
-        self.oap.register_notif_handler(self._handle_oap_notif)
 
     #======================== public ==========================================
 
@@ -64,44 +61,52 @@ class Sol(object):
 
     @property
     def version(self):
-        return ver.VERSION
+        return VERSION
 
     #===== "chain" of communication from the Dust manager to the server
 
-    def dust_to_json(self, notif_name, dust_notif, macManager=None, timestamp=None):
+    def dust_to_json(self, dust_notif, mac_manager=None, timestamp=None):
         """
         Convert a single Dust serial API notification into a list of JSON SOL Object.
 
         :param dict dust_notif: The Dust serial API notification as
-            created by the SmartMesh SDK
+            a json object created by the JsonServer application
+        :param list mac_manager: A list of byte containing the MAC address of the manager
+        :param int timestamp: the Unix epoch of the message creation in seconds (UTC)
         :return: A list of SOL Object in JSON format
         :rtype: list
         """
 
-        notif_list  = self._split_dust_notif(notif_name, dust_notif)
+        notif_list  = self._split_dust_notif(dust_notif)
         sol_jsonl   = []
 
         for d_n in notif_list:
             # get sol_mac
-            if type(d_n) in [
-                    self.connSerial.Tuple_notifData,
-                    self.connSerial.Tuple_notifIpData,
-                    self.connSerial.Tuple_notifHealthReport,
+            if d_n['name'] in [
+                    'notifData',
+                    'notifIpData',
                 ]:
-                sol_mac = getattr(d_n,'macAddress')
+                sol_mac = d_n['fields']['macAddress']
+            elif d_n['name'] in [
+                    'hr', 'oap',
+                ]:
+                sol_mac = FormatUtils.format_mac_string_to_bytes(d_n['mac'])
             else:
-                sol_mac = macManager
-
+                sol_mac = mac_manager
 
             # get sol_type and sol_value
-            (sol_type,sol_ts,sol_value) = self._get_sol_json_fields(d_n)
+            try:
+                (sol_type, sol_ts, sol_value) = self._dust_notif_to_sol_json(d_n)
+            except SolDuplicateOapNotificationException:
+                continue
 
             # get sol_ts
-            if sol_ts is None:
-                if timestamp is None:
-                    sol_ts = int(time.time()) # timestamp in seconds
-                else:
-                    sol_ts = timestamp
+            if   sol_ts:
+                pass # _dust_notif_to_sol_json() returned the ts (sol object with EPOCH ts)
+            elif timestamp is None:
+                sol_ts = int(time.time())  # timestamp in seconds
+            else:
+                sol_ts = timestamp
 
             # create JSON Object
             sol_json = {
@@ -139,21 +144,25 @@ class Sol(object):
         sol_bin        += sol_json['mac']
 
         # timestamp
-        sol_bin        += self._num_to_list(sol_json['timestamp'],4)
+        sol_bin        += self._num_to_list(sol_json['timestamp'], 4)
 
         # type
-        sol_bin        += self._num_to_list(sol_json['type'],1)
+        sol_bin        += self._num_to_list(sol_json['type'], 1)
 
         # value
-        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        if   sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_bin    += self._get_sol_binary_value_dust_hr_neighbors(
                 sol_json['value']
             )
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             sol_bin    += self._get_sol_binary_value_dust_hr_discovered(
                 sol_json['value']
             )
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
+            sol_bin    += self._get_sol_binary_value_dust_hr_extended(
+                sol_json['value']
+            )
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             sol_bin    += self._get_sol_binary_value_snapshot(
                 sol_json['value']
             )
@@ -162,8 +171,6 @@ class Sol(object):
                 sol_json['type'],
                 sol_json['value']
             )
-
-        sol_json['value']
 
         return sol_bin
 
@@ -177,14 +184,18 @@ class Sol(object):
         :rtype: string
         """
 
-        returnVal = {
-            "v":    SolDefines.SOL_HDR_V,
-            "o":    [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
-        }
+        try:
+            return_val = {
+                "v":    SolDefines.SOL_HDR_V,
+                "o":    [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
+            }
+        except:
+            print sol_binl
+            raise
 
-        returnVal = json.dumps(returnVal)
+        return_val = json.dumps(return_val)
 
-        return returnVal
+        return return_val
 
     def http_to_bin(self, sol_http):
         """
@@ -198,7 +209,7 @@ class Sol(object):
 
         sol_http = json.loads(sol_http)
 
-        assert sol_http['v']==SolDefines.SOL_HDR_V
+        assert sol_http['v'] == SolDefines.SOL_HDR_V
         sol_binl = [[ord(b) for b in base64.b64decode(o)] for o in sol_http['o']]
 
         return sol_binl
@@ -208,6 +219,7 @@ class Sol(object):
         Convert a binary SOL object into a JSON SOL Object.
 
         :param list sol_bin: binary SOL object
+        :param list mac: A list of byte containing the MAC address of the that created the object
         :return: JSON SOL Objects
         :rtpe: list
         """
@@ -217,67 +229,71 @@ class Sol(object):
         # header
 
         h     = sol_bin[0]
-        h_V   = (h>>SolDefines.SOL_HDR_V_OFFSET)&0x03
-        assert h_V==SolDefines.SOL_HDR_V
-        h_H   = (h>>SolDefines.SOL_HDR_T_OFFSET)&0x01
-        assert h_H==SolDefines.SOL_HDR_T_SINGLE
-        h_M   = (h>>SolDefines.SOL_HDR_M_OFFSET)&0x01
-        h_S   = (h>>SolDefines.SOL_HDR_S_OFFSET)&0x01
-        h_Y   = (h>>SolDefines.SOL_HDR_Y_OFFSET)&0x01
-        h_L   = (h>>SolDefines.SOL_HDR_L_OFFSET)&0x03
+        h_V   = (h >> SolDefines.SOL_HDR_V_OFFSET) & 0x03
+        assert h_V == SolDefines.SOL_HDR_V
+        h_H   = (h >> SolDefines.SOL_HDR_T_OFFSET) & 0x01
+        assert h_H == SolDefines.SOL_HDR_T_SINGLE
+        h_M   = (h >> SolDefines.SOL_HDR_M_OFFSET) & 0x01
+        h_S   = (h >> SolDefines.SOL_HDR_S_OFFSET) & 0x01
+        h_Y   = (h >> SolDefines.SOL_HDR_Y_OFFSET) & 0x01
+        h_L   = (h >> SolDefines.SOL_HDR_L_OFFSET) & 0x03
 
         sol_bin = sol_bin[1:]
 
         # mac
 
-        if h_M==SolDefines.SOL_HDR_M_NOMAC:
+        if h_M == SolDefines.SOL_HDR_M_NOMAC:
             assert mac is not None
             sol_json['mac']  = mac
         else:
-            assert len(sol_bin)>=8
+            assert len(sol_bin) >= 8
             sol_json['mac']  = sol_bin[:8]
             sol_bin          = sol_bin[8:]
 
         # timestamp
 
-        assert h_S==SolDefines.SOL_HDR_S_EPOCH
-        assert len(sol_bin)>=4
+        assert h_S == SolDefines.SOL_HDR_S_EPOCH
+        assert len(sol_bin) >= 4
         sol_json['timestamp'] = self._list_to_num(sol_bin[:4])
         sol_bin = sol_bin[4:]
 
         # type
 
-        assert h_Y==SolDefines.SOL_HDR_Y_1B
+        assert h_Y == SolDefines.SOL_HDR_Y_1B
         sol_json['type'] = sol_bin[0]
         sol_bin = sol_bin[1:]
 
         # length
 
-        if h_L==SolDefines.SOL_HDR_L_WK:
+        if h_L == SolDefines.SOL_HDR_L_WK:
             sol_item              = SolDefines.solStructure(sol_json['type'])
             obj_size              = struct.calcsize(sol_item['structure'])
-        elif h_L==SolDefines.SOL_HDR_L_1B:
+        elif h_L == SolDefines.SOL_HDR_L_1B:
             sol_json['length']    = sol_bin[0]
             obj_size              = sol_bin[0]
             sol_bin               = sol_bin[1:]
-        elif h_L==SolDefines.SOL_HDR_L_2B:
+        elif h_L == SolDefines.SOL_HDR_L_2B:
             sol_json['length']    = sol_bin[:2]
             obj_size              = sol_bin[:2]
             sol_bin               = sol_bin[2:]
-        elif h_L==SolDefines.SOL_HDR_L_ELIDED:
+        elif h_L == SolDefines.SOL_HDR_L_ELIDED:
             obj_size              = len(sol_bin)
 
         # value
-        assert len(sol_bin)==obj_size
-        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        assert len(sol_bin) == obj_size
+        if   sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             sol_json['value'] = self.hrParser.parseHr(
-                [self.hrParser.HR_ID_NEIGHBORS,len(sol_bin)]+sol_bin,
+                [self.hrParser.HR_ID_NEIGHBORS, len(sol_bin)]+sol_bin,
             )['Neighbors']
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             sol_json['value'] = self.hrParser.parseHr(
-                [self.hrParser.HR_ID_DISCOVERED,len(sol_bin)]+sol_bin,
+                [self.hrParser.HR_ID_DISCOVERED, len(sol_bin)]+sol_bin,
             )['Discovered']
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
+            sol_json['value'] = self.hrParser.parseHr(
+                [self.hrParser.HR_ID_EXTENDED, len(sol_bin)]+sol_bin,
+            )['Extended']
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             sol_json['value'] = self._binary_to_fields_snapshot(sol_bin)
         else:
             sol_json['value'] = self._binary_to_fields_with_structure(
@@ -287,11 +303,12 @@ class Sol(object):
 
         return sol_json
 
-    def json_to_influxdb(self,sol_json,tags):
+    def json_to_influxdb(self, sol_json, tags):
         """
         Convert a JSON SOL object into a InfluxDB point
 
         :param list sol_json: JSON SOL object
+        :param dict tags: A dictionary of tags
         :return: InfluxDB point
         :rtpe: list
         """
@@ -299,35 +316,38 @@ class Sol(object):
         obj_tags = copy.deepcopy(tags)
 
         # fields
-        if   sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
+        if   sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
             fields = {}
             for n in sol_json["value"]['neighbors']:
                 fields["neighbors:" + str(n['neighborId'])] = n
             fields['numItems'] = sol_json["value"]['numItems']
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED:
             fields = sol_json["value"]
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HREXTENDED:
             fields = {}
-            fields["mote"] = []
+            for item, value in enumerate(sol_json["value"]['RSSI']):
+                fields[str(item + 11)] = value # 11 is the first channel number
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
+            fields = {"mote": []}
             for mote in sol_json["value"]:
                 mote["macAddress"] = FormatUtils.formatBuffer(mote["macAddress"])
                 for path in mote["paths"]:
                     path["macAddress"] = FormatUtils.formatBuffer(path["macAddress"])
                 fields["mote"].append(mote)
-        elif sol_json['type']==SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
-            fields = {'value':'dummy'}
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
+            fields = {'value': 'dummy'}
         else:
             fields = sol_json["value"]
-            for (k,v) in fields.items():
-                if type(v)==list: # mac
-                    if k in ['macAddress','source','dest']:
+            for (k, v) in fields.items():
+                if type(v) == list:  # mac
+                    if k in ['macAddress', 'source', 'dest']:
                         fields[k] = FormatUtils.formatBuffer(v)
-                    elif k in ['sol_version','sdk_version','solmanager_version']:
+                    elif k in ['sol_version', 'sdk_version', 'solmanager_version']:
                         fields[k] = ".".join(str(i) for i in v)
 
         f = flatdict.FlatDict(fields)
         fields = {}
-        for (k,v) in f.items():
+        for (k, v) in f.items():
             fields[k] = v
 
         # add additionnal field or tag if apply_function exists
@@ -344,7 +364,7 @@ class Sol(object):
             pass
 
         # get SOL type
-        measurement = SolDefines.solTypeToTypeName(SolDefines,sol_json['type'])
+        measurement = SolDefines.solTypeToTypeName(SolDefines, sol_json['type'])
 
         # convert SOL timestamp to UTC
         utc_time = sol_json["timestamp"]*1000000000
@@ -362,7 +382,7 @@ class Sol(object):
         """
         Converts an Influxdb query reply into a list of dicts.
 
-        :param sol_influxdb dict: the result of a database query (sush as SELECT * FROM)
+        :param dict sol_influxdb: the result of a database query (sush as SELECT * FROM)
         :return: a list of JSON SOL objects
         :rtype: list
 
@@ -389,7 +409,7 @@ class Sol(object):
                                     SolDefines,
                                     SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
                 if serie['name'] == hr_nghb_name:
-                    for i in range(0,len(obj_value["neighbors"])+1):
+                    for i in range(0, len(obj_value["neighbors"])+1):
                         ngbr_id = str(i)
 
                         # new HR_NGBR parsing
@@ -421,23 +441,23 @@ class Sol(object):
     def dumpToFile(self, sol_jsonl, file_name):
 
         with self.fileLock:
-            with open(file_name,'ab') as f:
+            with open(file_name, 'ab') as f:
                 for sol_json in sol_jsonl:
                     sol_bin = self.json_to_bin(sol_json)
                     sol_bin = self.hdlc.hdlcify(sol_bin)
                     sol_bin = ''.join([chr(b) for b in sol_bin])
                     f.write(sol_bin)
 
-    def loadFromFile(self,file_name,startTimestamp=None,endTimestamp=None):
+    def loadFromFile(self, file_name, start_timestamp=None, end_timestamp=None):
 
-        if startTimestamp is not None or endTimestamp is not None:
-            assert startTimestamp is not None and endTimestamp is not None
+        if start_timestamp is not None or end_timestamp is not None:
+            assert start_timestamp is not None and end_timestamp is not None
 
-        if startTimestamp is None:
+        if start_timestamp is None:
             # retrieve all data
 
             with self.fileLock:
-                (bins,_) = self.hdlc.dehdlcify(file_name)
+                (bins, _) = self.hdlc.dehdlcify(file_name)
 
             sol_jsonl = []
             for b in bins:
@@ -447,70 +467,67 @@ class Sol(object):
 
             with self.fileLock:
 
-                #=== find startOffset
+                #=== find start_offset
 
                 while True:
 
-                    startOffset = None
+                    start_offset = None
 
-                    def oneObject(offset):
-                        (sol,offs) = self.hdlc.dehdlcify(file_name,fileOffset=offset,maxNum=1)
+                    def one_object(offset):
+                        (sol, offs) = self.hdlc.dehdlcify(file_name, fileOffset=offset, maxNum=1)
                         sol = sol[0]
                         sol = self.bin_to_json(sol)
-                        return (sol, offs)
+                        return sol, offs
 
                     def oneTimestamp(offset):
-                        (osol,offs) = oneObject(offset)
-                        return (osol['timestamp'], offs)
+                        (osol, offs) = one_object(offset)
+                        return osol['timestamp'], offs
 
                     #=== get boundaries
 
                     left_offset_start = 0
                     try:
-                        (left_timestamp,left_offset_stop) = oneTimestamp(left_offset_start)
+                        (left_timestamp, left_offset_stop) = oneTimestamp(left_offset_start)
                     except IndexError:
                         # complete file is corrupted
                         return []
-                    with open(file_name,'rb') as f:
-                        f.seek(0,os.SEEK_END)
+                    with open(file_name, 'rb') as f:
+                        f.seek(0, os.SEEK_END)
                         right_offset_start = f.tell()
                     while True:
-                        right_offset_start = self._fileBackUpUntilStartFrame(file_name,right_offset_start)
+                        right_offset_start = self._fileBackUpUntilStartFrame(file_name, right_offset_start)
                         try:
-                           (right_timestamp,right_offset_stop) = oneTimestamp(right_offset_start)
+                            (right_timestamp, right_offset_stop) = oneTimestamp(right_offset_start)
                         except IndexError:
                             right_offset_start -= 1
                         else:
                             break
 
-                    if left_timestamp>startTimestamp:
-                        startOffset = left_timestamp
+                    if left_timestamp > start_timestamp:
+                        start_offset = left_timestamp
                         break
-                    if right_timestamp<startTimestamp:
-                        startOffset = right_timestamp
+                    if right_timestamp < start_timestamp:
+                        start_offset = right_timestamp
                         break
 
                     #=== binary search
 
-                    while left_offset_stop<right_offset_start-1:
+                    while left_offset_stop < right_offset_start-1:
 
                         cur_offset_start = int((right_offset_start-left_offset_start)/2+left_offset_start)
-                        (cur_timestamp,cur_offset_stop) = oneTimestamp(cur_offset_start)
+                        (cur_timestamp, cur_offset_stop) = oneTimestamp(cur_offset_start)
 
-                        if cur_timestamp==startTimestamp:
-                            startOffset = cur_offset_start
+                        if cur_timestamp == start_timestamp:
+                            start_offset = cur_offset_start
                             break
-                        elif cur_timestamp>startTimestamp:
+                        elif cur_timestamp > start_timestamp:
                             right_offset_start = cur_offset_start
-                            right_offset_stop  = cur_offset_stop
-                            right_timestamp    = cur_timestamp
-                        elif cur_timestamp<startTimestamp:
+                        elif cur_timestamp < start_timestamp:
                             left_offset_start  = cur_offset_start
                             left_offset_stop   = cur_offset_stop
-                            left_timestamp     = cur_timestamp
 
-                    if startOffset is None:
-                        startOffset = left_offset_start
+                    if start_offset is None:
+                        start_offset = left_offset_start
 
                     break
 
@@ -518,14 +535,14 @@ class Sol(object):
 
                 sol_jsonl = []
 
-                curOffset = startOffset
+                curOffset = start_offset
                 while True:
                     try:
-                        (o,curOffset) = oneObject(curOffset)
+                        (o, curOffset) = one_object(curOffset)
                     except IndexError:
                         # we have passed the end of the file
                         break
-                    if o['timestamp']>endTimestamp:
+                    if o['timestamp'] > end_timestamp:
                         break
                     sol_jsonl += [o]
 
@@ -533,7 +550,7 @@ class Sol(object):
 
     #======================== private =========================================
 
-    def _split_dust_notif(self, notif_name, dust_notif):
+    def _split_dust_notif(self, dust_notif):
         """
         Split a single Dust serial API notification into a list of Dust notifications
         :param dict dust_notif: The Dust serial API notification as
@@ -543,42 +560,26 @@ class Sol(object):
         """
         notif_list = []
 
-        if notif_name==IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFHEALTHREPORT:
-            hr_exists       = True
-            dust_notifs     = []
-            hr_currptr      = 0
-            hr_nextptr      = dust_notif.payload[1]+2
-            while hr_exists:
-                # add HR notification to list
-                notif_list.append(
-                    IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifHealthReport(
-                        macAddress = dust_notif.macAddress,
-                        payload    = dust_notif.payload[hr_currptr:hr_nextptr],
-                    )
-                )
-                # check if other notifs are present
-                hr_currptr = hr_nextptr
-                if len(dust_notif.payload) > (hr_currptr+2):
-                    hr_nextptr = hr_currptr + dust_notif.payload[hr_currptr+1] + 2
-                    if hr_nextptr < len(dust_notif.payload):
-                        hr_exists = False
-                else:
-                    hr_exists = False
-        elif notif_name==IpMgrConnectorSerial.IpMgrConnectorSerial.NOTIFDATA:
+        if (dust_notif['name'] == 'notifData') and (dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT):
+            # OAP: split if multi-MTTLV structure
 
             # parse header
-            sol_header  = dust_notif.data[0]
+            sol_header  = dust_notif['fields']['data'][0]
             header_V    = sol_header >> SolDefines.SOL_HDR_V_OFFSET & 0x03
             header_T    = sol_header >> SolDefines.SOL_HDR_T_OFFSET & 0x01
             header_S    = sol_header >> SolDefines.SOL_HDR_S_OFFSET & 0x01
             header_Y    = sol_header >> SolDefines.SOL_HDR_Y_OFFSET & 0x01
             header_L    = sol_header >> SolDefines.SOL_HDR_L_OFFSET & 0x03
 
-            if header_T == 0: # single object
+            if header_T == 0:
+                # single SOL object
+
                 notif_list = [dust_notif]
-            else: # multiple objects
+            else:
+                # multiple SOL objects
+
                 # reset header Type bit
-                sol_header = dust_notif.data[0] & 0xdf
+                sol_header = dust_notif['fields']['data'][0] & 0xdf
 
                 # get structure size
                 solheader_size  = SolDefines.SOL_HEADER_SIZE
@@ -590,292 +591,317 @@ class Sol(object):
                 ts_usec = 0
                 ts_offset = 0
                 if header_S == 0: # timestamp from smip header
-                    ts_sec  = dust_notif.data[0:ts_size]
+                    ts_sec  = dust_notif['fields']['data'][0:ts_size]
                     ts_usec = 0
                     ts_offset = ts_size
                 else: # timestamp from dust notif
-                    ts_sec  = dust_notif.utcSecs
-                    ts_user = dust_notif.utcUsecs
+                    ts_sec  = dust_notif['fields']['utcSecs']
+                    ts_user = dust_notif['fields']['utcUsecs']
 
                 # get number of objects
-                obj_number  = dust_notif.data[ts_offset+objnum_size]
+                obj_number  = dust_notif['fields']['data'][ts_offset+objnum_size]
 
                 curr_ptr    = solheader_size + ts_offset + objnum_size
                 for i in range(0,obj_number):
-                    obj_type    = dust_notif.data[curr_ptr]
+                    obj_type    = dust_notif['fields']['data'][curr_ptr]
                     sol_item    = SolDefines.solStructure(obj_type)
                     obj_size    = struct.calcsize(sol_item['structure'])
-                    notif_list.append(
-                            IpMgrConnectorSerial.IpMgrConnectorSerial.Tuple_notifData(
-                                utcSecs     = ts_sec,
-                                utcUsecs    = ts_usec,
-                                macAddress  = dust_notif.macAddress,
-                                srcPort     = dust_notif.srcPort,
-                                dstPort     = dust_notif.dstPort,
+                    notif_list += [
+                        {
+                            'manager': dust_notif['manager'],
+                            'name':    dust_notif['name'],
+                            'fields': {
+                                'macAddress': dust_notif['fields']['macAddress'],
+                                'utcSecs': dust_notif['fields']['utcSecs'],
+                                'utcUsecs': dust_notif['fields']['utcUsecs'],
+                                'srcPort': dust_notif['fields']['srcPort'],
+                                'dstPort': dust_notif['fields']['dstPort'],
                                 # data = solheader + timestamp + object
-                                data        = tuple([sol_header])+
-                                              tuple(dust_notif.data[solheader_size:solheader_size+ts_offset])+
-                                              tuple(dust_notif.data[curr_ptr:curr_ptr+obj_size+1])
-                        )
-                    )
+                                'data': [sol_header]+
+                                    dust_notif['fields']['data'][solheader_size:solheader_size+ts_offset] +
+                                    dust_notif['fields']['data'][curr_ptr:curr_ptr+obj_size+1]
+                            },
+                        },
+                    ]
                     curr_ptr   += obj_size+1
+
+        elif dust_notif['name'] == 'hr':
+            hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
+            notif_keys =  dust_notif['hr'].keys()
+            for hrName in notif_keys:
+                assert hrName in hr_type_list
+            for hrName in notif_keys:
+                dust_notif_copy = copy.deepcopy(dust_notif)
+                for hr_type in [t for t in notif_keys if t != hrName]:
+                    del dust_notif_copy['hr'][hr_type]
+                notif_list += [dust_notif_copy]
         else:
-            notif_list = [dust_notif]
+            notif_list += [dust_notif]
 
         return notif_list
 
-    #===== create value (generic code)
+    #===== dust notif to sol json
 
-    def _get_sol_json_fields(self,dust_notif):
+    def _dust_notif_to_sol_json(self, dust_notif):
 
-        sol_type    = None
-        sol_ts      = None
-        sol_value   = None
+        sol_ts = None
 
-        if   type(dust_notif)==self.connSerial.Tuple_notifData:
-            (sol_type,sol_ts,sol_value) = self._get_sol_json_value_dust_notifData(dust_notif)
-        elif type(dust_notif)==self.connSerial.Tuple_notifHealthReport:
-            (sol_type,sol_value) = self._get_sol_json_value_dust_hr(dust_notif)
+        if   dust_notif['name'] == 'notifData':
+            (sol_type, sol_ts, sol_value) = self._dust_notifData_to_sol_json(dust_notif)
+        elif dust_notif['name'] == 'hr':
+            (sol_type, sol_value) = self._dust_hr_to_sol_json(dust_notif)
+        elif dust_notif['name'] == 'oap':
+            (sol_type, sol_value) = self._dust_oap_to_sol_json(dust_notif)
         else:
-            (sol_type,sol_value) = self._get_sol_json_value_generic(dust_notif)
+            (sol_type, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
 
-        if (sol_type==None or sol_value==None):
+        return (sol_type, sol_ts, sol_value)
+
+    # notifData
+
+    def _dust_notifData_to_sol_json(self, dust_notif):
+
+        sol_type   = None
+        sol_ts     = None
+        sol_value  = None
+
+        if   dust_notif['fields']['dstPort'] == OAPMessage.OAP_PORT:
+            # notifData contains OAP message
+
+            # this notification will already appear as an oap notification
+            raise SolDuplicateOapNotificationException()
+        elif dust_notif['fields']['dstPort'] == SolDefines.SOL_PORT:
+            # notifData contains SOL message
+
+            (sol_type, sol_ts, sol_value) = self._dust_notifData_with_sol_to_sol_json(dust_notif)
+        else:
+            # notifData contains does NOT contain neither OAP nor SOL
+
+            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
+            sol_value   = copy.deepcopy(dust_notif['fields'])
+            del(sol_value['macAddress'])
+            del(sol_value['utcSecs'])
+            del(sol_value['utcUsecs'])
+
+        return (sol_type, sol_ts, sol_value)
+
+    def _dust_notifData_with_sol_to_sol_json(self, dust_notif):
+        """
+        Turn a notifData dust notification which contains SOL objects
+           (SOL_header + timestamp + SOL_object)
+        into a dictionnary
+
+        :return: (sol_type, sol_ts, sol_value)
+        :rtype: tuple(int, int, int)
+        """
+        sol_ts          = None
+
+        # check for timestamp flag in SOL_HEADER
+        header_offset   = SolDefines.SOL_HEADER_OFFSET
+        ts_offset       = SolDefines.SOL_TIMESTAMP_OFFSET
+        header_S        = dust_notif['fields']['data'][0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
+        if header_S == SolDefines.SOL_HDR_S_EPOCH:
+            ts = list(dust_notif['fields']['data'][ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE])
+            ts.reverse()
+            #sol_ts      = Sol._list_to_num(ts)
+            type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
+        else:
+            type_index  = SolDefines.SOL_HEADER_SIZE
+
+        sol_type    = dust_notif['fields']['data'][type_index]
+        sol_value   = self._binary_to_fields_with_structure(
+            dust_notif['fields']['data'][type_index],
+            dust_notif['fields']['data'][type_index+1:]
+        )
+        return (sol_type, sol_ts, sol_value)
+
+    # hr
+
+    def _dust_hr_to_sol_json(self, dust_notif):
+        sol_type   = None
+        sol_value  = None
+        hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
+        for hr_type in hr_type_list:
+            if hr_type in dust_notif['hr']:
+                assert dust_notif['hr'].keys() == [hr_type]
+                sol_type = getattr(SolDefines, "SOL_TYPE_DUST_NOTIF_HR{0}".format(hr_type.upper()))
+                sol_value = dust_notif['hr'][hr_type]
+        return (sol_type, sol_value)
+
+    # oap
+
+    def _dust_oap_to_sol_json(self, dust_notif):
+        if dust_notif['fields']['channel_str'] == 'temperature':
+            sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
+            sol_value = {
+                'temperature': dust_notif['fields']['samples'][0],
+            }
+        elif dust_notif['fields']['channel_str'].startswith('analog'):
+            sol_type  = SolDefines.SOL_TYPE_DUST_OAP_ANALOG
+            sol_value = {
+                'input':   dust_notif['fields']['input'],
+                'voltage': dust_notif['fields']['samples'][0],
+            }
+        elif dust_notif['fields']['channel_str'].startswith('digital_in'):
+            sol_type  = SolDefines.SOL_TYPE_DUST_OAP_DIGITAL_IN
+            sol_value = {
+                'input':   dust_notif['fields']['input'],
+                'state':   dust_notif['fields']['samples'][0],
+            }
+        else:
             raise NotImplementedError()
+        return (sol_type, sol_value)
 
-        return (sol_type,sol_ts,sol_value)
+    # other
 
-    def _get_sol_json_value_generic(self,dust_notif):
-        sol_typeName    = self._dust_notifName_to_sol_typeName(str(type(dust_notif)))
-        sol_type        = getattr(SolDefines,sol_typeName)
+    def _dust_other_notif_to_sol_json(self, dust_notif):
+        sol_typeName    = self._dust_notifName_to_sol_typeName(dust_notif['name'])
+        sol_type        = getattr(SolDefines, sol_typeName)
         sol_value       = self._fields_to_json_with_structure(
             sol_type,
-            dust_notif._asdict(),
+            dust_notif,
         )
 
-        return (sol_type,sol_value)
+        return sol_type, sol_value
 
-    def _dust_notifName_to_sol_typeName(self,notifName):
-        n = notifName.split('.')[-1][:-2]
-        assert n.startswith('Tuple_')
-        n = n[len('Tuple_'):]
-        n = n.upper()
-        n = 'SOL_TYPE_DUST_{0}'.format(n)
-        return n
+    def _dust_notifName_to_sol_typeName(self, notifName):
+        return 'SOL_TYPE_DUST_{0}'.format(notifName.upper())
 
-    def _fields_to_json_with_structure(self,sol_type,fields):
+    def _fields_to_json_with_structure(self, sol_type, dust_notif):
 
         sol_struct          = SolDefines.solStructure(sol_type)
 
         returnVal       = {}
         for name in sol_struct['fields']:
-            returnVal[name] = fields[name]
+            returnVal[name] = dust_notif['fields'][name]
+            if name in ['source','dest','macAddress']:
+                returnVal[name] = FormatUtils.format_mac_string_to_bytes(returnVal[name])
         if 'extrafields' in sol_struct:
-            returnVal[sol_struct['extrafields']] = fields[sol_struct['extrafields']]
+            returnVal[sol_struct['extrafields']] = dust_notif['fields'][sol_struct['extrafields']]
 
-        for (k,v) in returnVal.items():
-            if type(v)==tuple:
+        for (k, v) in returnVal.items():
+            if type(v) == tuple:
                 returnVal[k] = [b for b in v]
 
         return returnVal
 
-    def _fields_to_binary_with_structure(self,sol_type,fields):
+    #===== json_to_bin
+
+    def _fields_to_binary_with_structure(self, sol_type, fields):
 
         sol_struct      = SolDefines.solStructure(sol_type)
 
-
         pack_format     = sol_struct['structure']
-        pack_values     = [fields[name] for name in sol_struct['fields']]
+        pack_values     = [fields[name] for name in sol_struct['fields'] if name in fields]
 
         # convert [0x01,0x02,0x03] into 0x010203 to be packable
         for i in range(len(pack_values)):
-            if type(pack_values[i])==list:
+            if type(pack_values[i]) == list:
                 pack_values[i] = self._list_to_num(pack_values[i])
 
-        returnVal       = [ord(b) for b in struct.pack(pack_format,*pack_values)]
+        # unpacking field by field
+        returnVal = []
+        for id, val in enumerate(pack_values):
+            returnVal += [ord(b) for b in struct.pack(pack_format[0] + pack_format[id+1], val)]
+        #returnVal       = [ord(b) for b in struct.pack(pack_format, *pack_values)]
         if 'extrafields' in sol_struct:
             returnVal  += fields[sol_struct['extrafields']]
 
         return returnVal
 
-    def _binary_to_fields_with_structure(self,sol_type,binary):
+    #===== bin_to_json
+
+    def _binary_to_fields_with_structure(self, sol_type, binary):
 
         sol_struct      = SolDefines.solStructure(sol_type)
 
         pack_format     = sol_struct['structure']
         pack_length     = struct.calcsize(pack_format)
 
-        t = struct.unpack(pack_format,''.join(chr(b) for b in binary[:pack_length]))
+        # unpacking field by field
+        t = []
+        ptr = 0
+        for frmt in pack_format[1:]:
+            size = struct.calcsize(frmt)
+            if len(binary[ptr:ptr+size]) > 0:
+                t.append(struct.unpack(pack_format[0] + frmt,
+                                       "".join(chr(b) for b in binary[ptr:ptr+size]))[0])
+            ptr += size
 
         returnVal = {}
-        for (k,v) in zip(sol_struct['fields'],t):
-            returnVal[k]= v
+        for (k, v) in zip(sol_struct['fields'], t):
+            returnVal[k] = v
 
         if 'extrafields' in sol_struct:
             returnVal[sol_struct['extrafields']] = binary[pack_length:]
 
-        for (k,v) in returnVal.items():
-            if k in ['macAddress','source','dest']:
-                returnVal[k] = self._num_to_list(v,8)
-            elif k in ['sol_version','sdk_version','solmanager_version']:
-                returnVal[k] = self._num_to_list(v,4)
+        for (k, v) in returnVal.items():
+            if k in ['macAddress', 'source', 'dest']:
+                returnVal[k] = self._num_to_list(v, 8)
+            elif k in ['sol_version', 'sdk_version', 'solmanager_version']:
+                returnVal[k] = self._num_to_list(v, 4)
 
         return returnVal
 
-    def _binary_to_fields_snapshot(self,binary):
+    def _binary_to_fields_snapshot(self, binary):
         return_val      = []
 
         # set SNAPSHOT structure
         mote_structure  = ">QHBBBBBIIIIII"
         mote_fields     = [
-                    'macAddress','moteId','isAP','state','isRouting','numNbrs',
-                    'numGoodNbrs','requestedBw','totalNeededBw','assignedBw',
-                    'packetsReceived','packetsLost','avgLatency'
+                    'macAddress', 'moteId', 'isAP', 'state', 'isRouting', 'numNbrs',
+                    'numGoodNbrs', 'requestedBw', 'totalNeededBw', 'assignedBw',
+                    'packetsReceived', 'packetsLost', 'avgLatency'
                 ]
         mote_size       = struct.calcsize(mote_structure)
         path_structure  = ">QBBBbb"
         path_fields     = [
-                    'macAddress','direction','numLinks','quality',
-                    'rssiSrcDest','rssiDestSrc'
+                    'macAddress', 'direction', 'numLinks', 'quality',
+                    'rssiSrcDest', 'rssiDestSrc'
                 ]
         path_size       = struct.calcsize(path_structure)
 
         # get number of motes in snapshot
-        num_motes       = struct.unpack('>B',chr(binary[0]))[0]
+        num_motes       = struct.unpack('>B', chr(binary[0]))[0]
         binary          = binary[1:]
 
         # parse SNAPSHOT
-        for i in range(0,num_motes):
+        for i in range(0, num_motes):
             # create mote dict
             mote = {}
             m = struct.unpack(mote_structure, ''.join(chr(b) for b in binary[:mote_size]))
             binary          = binary[mote_size:]
-            for (k,v) in zip(mote_fields,m):
-                mote[k]= v
+            for (k, v) in zip(mote_fields, m):
+                mote[k] = v
 
             # format mac address
-            mote["macAddress"] = self._num_to_list(mote["macAddress"],8)
+            mote["macAddress"] = self._num_to_list(mote["macAddress"], 8)
 
             # get number of paths in mote
-            num_paths       = struct.unpack('>B',chr(binary[0]))[0]
+            num_paths       = struct.unpack('>B', chr(binary[0]))[0]
             binary          = binary[1:]
 
             # create path dict
             path_list       = []
-            for j in range(0,num_paths):
+            for j in range(0, num_paths):
                 path = {}
-                p = struct.unpack('>QBBBbb',''.join(chr(b) for b in binary[:path_size]))
+                p = struct.unpack('>QBBBbb', ''.join(chr(b) for b in binary[:path_size]))
                 binary = binary[path_size:]
-                for (k,v) in zip(path_fields,p):
+                for (k, v) in zip(path_fields, p):
                     path[k] = v
 
                 # format mac address
-                path["macAddress"] = self._num_to_list(path["macAddress"],8)
+                path["macAddress"] = self._num_to_list(path["macAddress"], 8)
 
                 path_list.append(path)
 
-            mote["paths"]   = path_list
+            mote["paths"] = path_list
 
             return_val.append(mote)
 
         return return_val
 
-    #===== create value (specific)
-
-    def _get_sol_json_value_dust_notifData(self,dust_notif):
-
-        sol_type    = None
-        sol_ts      = None
-        sol_value   = None
-
-        if getattr(dust_notif,'dstPort')==OAPMessage.OAP_PORT:
-            (sol_type,sol_value) = self._get_sol_json_value_OAP(dust_notif)
-        elif getattr(dust_notif,'dstPort')==SolDefines.SOL_PORT:
-            (sol_type,sol_ts,sol_value) = self._get_sol_json_value_SOL(dust_notif)
-
-        if sol_type==None and sol_value==None:
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIFDATA
-            sol_value   = self._fields_to_json_with_structure(
-                SolDefines.SOL_TYPE_DUST_NOTIFDATA,
-                dust_notif._asdict(),
-            )
-
-        return (sol_type,sol_ts,sol_value)
-
-    def _get_sol_json_value_SOL(self, dust_notif):
-        """
-        Turn a SOL dust notif: SOL_header + timestamp + SOL_object into a dictionnary
-        :return: (sol_type, sol_ts, sol_value)
-        :rtype: tuple(int, int, int)
-        """
-        sol_ts      = None
-
-        # check for timestamp flag in SOL_HEADER
-        header_offset   = SolDefines.SOL_HEADER_OFFSET
-        ts_offset       = SolDefines.SOL_TIMESTAMP_OFFSET
-        header_S        = dust_notif.data[0] >> SolDefines.SOL_HDR_S_OFFSET & SolDefines.SOL_HDR_S_SIZE
-        if header_S == SolDefines.SOL_HDR_S_EPOCH:
-            ts = list(dust_notif.data[ts_offset:ts_offset+SolDefines.SOL_TIMESTAMP_SIZE])
-            ts.reverse()
-            sol_ts      = Sol._list_to_num(ts)
-            type_index  = SolDefines.SOL_HEADER_SIZE + SolDefines.SOL_TIMESTAMP_SIZE
-        else:
-            type_index  = SolDefines.SOL_HEADER_SIZE
-
-        sol_type    = dust_notif.data[type_index]
-        sol_value   = self._binary_to_fields_with_structure(
-                dust_notif.data[type_index],
-                dust_notif.data[type_index+1:]
-                )
-        return sol_type, sol_ts, sol_value
-
-    def _get_sol_json_value_OAP(self,dust_notif):
-        sol_type   = None
-        sol_value  = None
-        with self.oapLock:
-            self.oap_mac   = None
-            self.oap_notif = None
-            self.oap.dispatch_pkt(
-                self.connSerial.NOTIFDATA,
-                dust_notif
-            )
-            if self.oap_mac!=None and self.oap_notif!=None:
-                if type(self.oap_notif)==OAPNotif.OAPTempSample:
-                    sol_type  = SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE
-                    sol_value = self._fields_to_json_with_structure(
-                        SolDefines.SOL_TYPE_DUST_OAP_TEMPSAMPLE,
-                        {
-                            'temperature': self.oap_notif.samples[0],
-                        },
-                    )
-
-        return (sol_type,sol_value)
-
-    def _handle_oap_notif(self,mac,notif):
-        self.oap_mac    = mac
-        self.oap_notif  = notif
-
-    def _get_sol_json_value_dust_hr(self,dust_notif):
-        hr = self.hrParser.parseHr(dust_notif.payload)
-        sol_type   = None
-        sol_value  = None
-        if 'Device' in hr:
-            assert 'Neighbors'  not in hr
-            assert 'Discovered' not in hr
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDEVICE
-            sol_value   = hr['Device']
-        if 'Neighbors' in hr:
-            assert 'Device'  not in hr
-            assert 'Discovered' not in hr
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS
-            sol_value   = hr['Neighbors']
-        if 'Discovered' in hr:
-            assert 'Device'  not in hr
-            assert 'Neighbors' not in hr
-            sol_type    = SolDefines.SOL_TYPE_DUST_NOTIF_HRDISCOVERED
-            sol_value   = hr['Discovered']
-        return (sol_type,sol_value)
-
-    def _get_sol_binary_value_dust_hr_neighbors(self,hr):
+    def _get_sol_binary_value_dust_hr_neighbors(self, hr):
         return_val  = []
         return_val += [chr(hr['numItems'])]
         for n in hr['neighbors']:
@@ -888,12 +914,12 @@ class Sol(object):
                 n['numTxFailures'],    # INT16U  H
                 n['numRxPackets'],     # INT16U  H
             )]
-        return_val  = ''.join(return_val)
-        return_val  = [ord(c) for c in return_val]
+        return_val = ''.join(return_val)
+        return_val = [ord(c) for c in return_val]
 
         return return_val
 
-    def _get_sol_binary_value_dust_hr_discovered(self,hr):
+    def _get_sol_binary_value_dust_hr_discovered(self, hr):
         return_val  = []
         return_val += [chr(hr['numJoinParents'])]
         return_val += [chr(hr['numItems'])]
@@ -909,7 +935,29 @@ class Sol(object):
 
         return return_val
 
-    def _get_sol_binary_value_snapshot(self,snapshot):
+    def _get_sol_binary_value_dust_hr_extended(self, hr):
+        HR_ID_EXTENDED_RSSI_STRUCT = ">" + "".join([i[1] for i in self.hrParser.HR_DESC_EXTENDED_RSSI_DATA])
+        HR_ID_EXTENDED_RSSI_SIZE = struct.calcsize(HR_ID_EXTENDED_RSSI_STRUCT) * 15 # 15 channels
+        return_val = []
+        if "RSSI" in hr.keys():
+            return_val += [struct.pack("<BB",
+                                       self.hrParser.HR_ID_EXTENDED_RSSI, # extType
+                                       HR_ID_EXTENDED_RSSI_SIZE)] # extLength
+            for n in hr['RSSI']:
+                return_val += [struct.pack(
+                    HR_ID_EXTENDED_RSSI_STRUCT,
+                    n['idleRssi'],          # INT8    b
+                    n['txUnicastAttempts'], # INT16U  H
+                    n['txUnicastFailures'], # INT16U  H
+                )]
+            return_val  = ''.join(return_val)
+            return_val  = [ord(c) for c in return_val]
+        else:
+            raise NotImplementedError
+
+        return return_val
+
+    def _get_sol_binary_value_snapshot(self, snapshot):
         return_val  = ""
 
         # adding number of items
@@ -917,8 +965,10 @@ class Sol(object):
 
         # converting json to bytes
         for mote in snapshot:
+            if isinstance(mote['macAddress'], (str, unicode)):
+                mote['macAddress'] = [int(c, 16) for c in mote['macAddress'].split("-")]
             m = struct.pack(
-                    '>QHBBBBBIIIIII',
+                '>QHBBBBBIIIIII',
                 self._list_to_num(mote['macAddress']),      # INT64U  Q
                 mote['moteId'],                             # INT16U  H
                 mote['isAP'],                               # BOOL    B
@@ -940,6 +990,8 @@ class Sol(object):
 
             p = ""
             for path in mote['paths']:
+                if isinstance(path['macAddress'], (str, unicode)):
+                    path['macAddress'] = [int(c, 16) for c in path['macAddress'].split("-")]
                 p += struct.pack(
                     '>QBBBbb',
                     self._list_to_num(path['macAddress']),  # INT64U  Q
@@ -956,14 +1008,14 @@ class Sol(object):
 
     #===== file manipulation
 
-    def _fileBackUpUntilStartFrame(self,file_name,curOffset):
-        with open(file_name,'rb') as f:
-            f.seek(curOffset,os.SEEK_SET)
+    def _fileBackUpUntilStartFrame(self, file_name, curOffset):
+        with open(file_name, 'rb') as f:
+            f.seek(curOffset, os.SEEK_SET)
             while True:
                 byte = f.read(1)
-                if byte==self.hdlc.HDLC_FLAG:
+                if byte == self.hdlc.HDLC_FLAG:
                     return f.tell()-1
-                f.seek(-2,os.SEEK_CUR)
+                f.seek(-2, os.SEEK_CUR)
 
     #===== miscellaneous
 
@@ -971,18 +1023,18 @@ class Sol(object):
     def _num_to_list(num, length):
         output = []
         for l in range(length):
-            output = [int((num>>8*l)&0xff)]+output
+            output = [int((num >> 8*l) & 0xff)]+output
         return output
 
     @staticmethod
     def _list_to_num(l):
         output = 0
         for i in range(len(l)):
-            output += l[i]<<(8*(len(l)-i-1))
+            output += l[i] << (8*(len(l)-i-1))
         return output
 
 #============================ main ============================================
 
-if __name__=="__main__":
+if __name__ == "__main__":
     os.system("py.test -vv -x tests/")
     raw_input("Press Enter to close.")

@@ -1,2 +1,2 @@
-pyserial
-flatdict
+pyserial>=3.3
+flatdict>=1.2.0

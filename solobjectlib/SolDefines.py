@@ -1,4 +1,4 @@
-SOL_PORT                = 0xf0ba
+SOL_PORT                                    = 0xf0ba
 
 # type names
 
@@ -50,22 +50,26 @@ SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
+SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
+SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
+SOL_TYPE_TEMPRH_SHT3X                       = 0x43
+SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 
-
-def solTypeToTypeName(solDefinesClass,type_id):
+def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
-        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass,n)==type_id:
+        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
             return n
     raise ValueError("SOL type %s does not exist" % type_id)
 
+
 def solStructure(type_id):
-    '''
+    """
     Return the SOL structure according to the given type id
     If the element is not found, it raises a ValueError.
 
     :return: a dictionary that contains the following keys:
         type, description, structure, fields
-    '''
+    """
     sol_item = {}
     for item in sol_types:
         if item['type'] == type_id:
@@ -211,8 +215,25 @@ sol_types = [
     {
         'type':         SOL_TYPE_DUST_NOTIF_HRDEVICE,
         'description':  '',
-        'structure':    '>IBbHHHHHBBBIB',
-        'fields':       ['charge','queueOcc','temperature','batteryVoltage','numTxOk','numTxFail','numRxOk','numRxLost','numMacDropped','numTxBad','badLinkFrameId','badLinkSlot','badLinkOffset'],
+        'structure':    '>IBbHHHHHBBBIBBBB',
+        'fields':       [
+            'charge',
+            'queueOcc',
+            'temperature',
+            'batteryVoltage',
+            'numTxOk',
+            'numTxFail',
+            'numRxOk',
+            'numRxLost',
+            'numMacDropped',
+            'numTxBad',
+            'badLinkFrameId',
+            'badLinkSlot',
+            'badLinkOffset',
+            'numNetMicErr',
+            'numMacMicErr',
+            'numMacCrcErr',
+        ],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTCOMMANDFINISHED,
@@ -236,13 +257,13 @@ sol_types = [
         'type':         SOL_TYPE_DUST_EVENTPING,
         'description':  '',
         'structure':    '>IQIHB',
-        'fields':       ['callbackId','macAddress', 'delay', 'voltage', 'temperature'],
+        'fields':       ['callbackId', 'macAddress', 'delay', 'voltage', 'temperature'],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTNETWORKTIME,
         'description':  '',
         'structure':    '>IQ5pH',
-        'fields':       ['uptime','utcTime', 'asn', 'asnOffset'],
+        'fields':       ['uptime', 'utcTime', 'asn', 'asnOffset'],
     },
     {
         'type':         SOL_TYPE_DUST_EVENTNETWORKRESET,
@@ -321,12 +342,41 @@ sol_types = [
         'description':  'mean & stddev of Nval d2g readings',
         'structure':    '<HHBBB',
         'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+        'apply':        [
+                {
+                    'tag':     "mean_d2g",
+                    'function': lambda x: x,
+                    'args':     ['mean_d2g'],
+                },
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                },
+                {
+                    'tag':     "stdev",
+                    'function': lambda x: x,
+                    'args':     ['stdev'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1,
         'description':  'soil moisture. sub_id indicates depth',
         'structure':    '<BfffB',
         'fields':       ['sub_id', 'dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "sub_id",
+                    'function': lambda x: x,
+                    'args':     ['sub_id'],
+                },
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_SHT25_T2N1H2N1,
@@ -344,6 +394,16 @@ sol_types = [
                     'function': lambda x:  -6 + 125*(float(x)/65536),
                     'args':     ['rh_raw'],
                 },
+                {
+                    'tag':     "t_Nval",
+                    'function': lambda x: x,
+                    'args':     ['t_Nval'],
+                },
+                {
+                    'tag':     "rh_Nval",
+                    'function': lambda x: x,
+                    'args':     ['rh_Nval'],
+                }
             ]
     },
     {
@@ -356,6 +416,11 @@ sol_types = [
                     'field':     "vol_phys",
                     'function': lambda x: float(x)*0.11,
                     'args':     ['voltage'],
+                },
+                {
+                    'tag':     "N",
+                    'function': lambda x: x,
+                    'args':     ['N'],
                 }
             ]
     },
@@ -364,18 +429,39 @@ sol_types = [
         'description':  'soil moisture at depth 0',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_1,
         'description':  'soil moisture at depth 1',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_GS3_I1D4T4E4N1_2,
         'description':  'soil moisture at depth 2',
         'structure':    '<fffB',
         'fields':       ['dielect', 'temp', 'eleCond', 'Nval'],
+        'apply':        [
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_LP02_R4N1,
@@ -387,7 +473,7 @@ sol_types = [
         'type':         SOL_TYPE_SENS_ECTM,
         'description':  'Decagon ECTM soil moisture and temp',
         'structure':    '<iiif',
-        'fields':       ['die_raw','EC_raw','temp_raw','depth'],
+        'fields':       ['die_raw', 'EC_raw', 'temp_raw', 'depth'],
         'apply':        [
                 {
                     'tag':     "depth",
@@ -400,7 +486,7 @@ sol_types = [
         'type':         SOL_TYPE_SENS_MPS1,
         'description':  'Decagon MPS1 soil matric potential',
         'structure':    '<ff',
-        'fields':       ['die_raw','depth'],
+        'fields':       ['die_raw', 'depth'],
         'apply':        [
                 {
                     'tag':     "depth",
@@ -437,5 +523,35 @@ sol_types = [
                     'args':     ['rh_raw'],
                 },
             ],
+    },
+    {
+        'type':         SOL_TYPE_TEMPRH_SHT3X,
+        'description':  'temperature and humidity sensor',
+        'structure':    '<HBHB',
+        'fields':       ['temp_raw', 't_Nval', 'rh_raw', 'rh_Nval'],
+        'apply':        [
+                {
+                    'field':     "temp_phys",
+                    'function': lambda x:  (x*175.0/0xffff)-45,
+                    'args':     ['temp_raw'],
+                },
+                {
+                    'field':     "rh_phys",
+                    'function': lambda x:  x*100.0/0xffff,
+                    'args':     ['rh_raw'],
+                },
+            ],
+    },
+    {
+        'type':         SOL_TYPE_DUST_OAP_ANALOG,
+        'description':  'OAP analog sample',
+        'structure':    '>Bh',
+        'fields':       ['input','voltage'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_OAP_DIGITAL_IN,
+        'description':  'OAP digital_in sample',
+        'structure':    '>BB',
+        'fields':       ['input','state'],
     },
 ]
