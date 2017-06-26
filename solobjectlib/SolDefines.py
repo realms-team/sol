@@ -49,11 +49,13 @@ SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
-SOL_TYPE_TEMPRH_SHT31                       = 0x40
+SOL_TYPE_TEMPRH_SHT31                       = 0x40  #you can continue 0x3a, 0x3b ...
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
 SOL_TYPE_TEMPRH_SHT3X                       = 0x43
 SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
+SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
+SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
