@@ -141,7 +141,10 @@ class Sol(object):
         sol_bin        += [h]
 
         # mac
-        sol_bin        += sol_json['mac']
+        if isinstance(sol_json['mac'], basestring):
+            sol_bin += FormatUtils.format_mac_string_to_bytes(sol_json['mac'])
+        else:
+            sol_bin += sol_json['mac']
 
         # timestamp
         sol_bin        += self._num_to_list(sol_json['timestamp'], 4)
