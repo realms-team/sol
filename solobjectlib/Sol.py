@@ -123,7 +123,7 @@ class Sol(object):
         """
         Convert a JSON SOL Object into a single binary SOL Object.
 
-        :param list sol_json: a JSON SOL Object
+        :param dict sol_json: a JSON SOL Object
         :return: A single binary SOL Object
         :rtype: list
         """
