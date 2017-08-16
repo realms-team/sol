@@ -4,6 +4,8 @@ import random
 
 import pytest
 
+from   SmartMeshSDK.utils    import FormatUtils
+
 # ============================ defines ===============================
 
 FILENAME = 'temp_test_file.sol'
@@ -76,7 +78,7 @@ def expectedRange(request):
 def random_sol_json(timestamp=0):
     returnVal = {
         "timestamp": timestamp,
-        "mac": [random.randint(0x00, 0xff)] * 8,
+        "mac": FormatUtils.formatBuffer([random.randint(0x00, 0xff)] * 8),
         "type": 0x0e,
         "value": {
             'srcPort': random.randint(0x0000, 0xffff),
