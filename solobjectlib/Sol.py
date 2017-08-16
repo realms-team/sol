@@ -90,7 +90,7 @@ class Sol(object):
             elif d_n['name'] in [
                     'hr', 'oap',
                 ]:
-                sol_mac = FormatUtils.format_mac_string_to_bytes(d_n['mac'])
+                sol_mac = d_n['mac']
             else:
                 sol_mac = mac_manager
 
