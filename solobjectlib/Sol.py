@@ -247,10 +247,10 @@ class Sol(object):
 
         if h_M == SolDefines.SOL_HDR_M_NOMAC:
             assert mac is not None
-            sol_json['mac']  = mac
+            sol_json['mac']  = FormatUtils.formatBuffer(mac)
         else:
             assert len(sol_bin) >= 8
-            sol_json['mac']  = sol_bin[:8]
+            sol_json['mac']  = FormatUtils.formatBuffer(sol_bin[:8])
             sol_bin          = sol_bin[8:]
 
         # timestamp

@@ -7,7 +7,7 @@ from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
 #============================ defines ===============================
 
-MACMANAGER   = [3,3,3,3,3,3,3,3]
+MACMANAGER   = "03-03-03-03-03-03-03-03"
 TIMESTAMP    = 0x12131415
 TAGS_DEFAULT = { "mac" : "03-03-03-03-03-03-03-03"}
 TAGS         = {
@@ -28,7 +28,7 @@ SOL_CHAIN_EXAMPLE = [
             'fields' : {
                 'utcSecs':    0x11111111,
                 'utcUsecs':   0x22222222,
-                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'macAddress': '01-02-03-04-05-06-07-08',
                 'srcPort':    0x0102,
                 'dstPort':    0x0304,
                 'data':       [0x05,0x06,0x07,0x08],
@@ -39,7 +39,7 @@ SOL_CHAIN_EXAMPLE = [
                 "json":
                     {
                         "timestamp"  : TIMESTAMP,
-                        "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                        "mac"        : '01-02-03-04-05-06-07-08',
                         "type"       : 0x0e,
                         "value"      : {
                             'srcPort': 0x0102,
@@ -93,7 +93,7 @@ SOL_CHAIN_EXAMPLE = [
             'fields' : {
                 'utcSecs':    0x11111111,
                 'utcUsecs':   0x22222222,
-                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'macAddress': '01-02-03-04-05-06-07-08',
                 'srcPort':    0xf0b9,
                 'dstPort':    0xf0b9,
                 'data':       [0x05,0x06,0x07,0x08],
@@ -128,7 +128,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x10,
                     "value"      : {
                         'badLinkFrameId':  0,
@@ -219,7 +219,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp": TIMESTAMP,
-                    "mac": [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08],
+                    "mac": '01-02-03-04-05-06-07-08',
                     "type": 0x10,
                     "value": {
                         'badLinkFrameId': 0,
@@ -362,7 +362,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x10,
                     "value"      : {
                         'badLinkFrameId':  0,
@@ -429,7 +429,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x12,
                     "value"      : {
                         'discoveredNeighbors': [
@@ -590,7 +590,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x11,
                     "value"      : {
                         'neighbors': [
@@ -727,7 +727,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp": TIMESTAMP,
-                    "mac": [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac": '01-02-03-04-05-06-07-08',
                     "type": 0x44,
                     "value": {
                         'RSSI': [{'txUnicastAttempts': 12, 'idleRssi': -93, 'txUnicastFailures': 0},
@@ -1180,7 +1180,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x27,
                     "value"      : {
                         'temperature': 0x0a33,
@@ -1236,7 +1236,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x27,
                     "value"      : {
                         'temperature': -123,
@@ -1278,7 +1278,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x22,
                     "value"      : {
                         'temperature': 0x0a33,
@@ -1495,7 +1495,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x28,
                     "value"      : {
                         "sol_version"           : [1,2,3,4],
@@ -1545,7 +1545,7 @@ SOL_CHAIN_EXAMPLE = [
             'fields' : {
                 'utcSecs':    1111,
                 'utcUsecs':   222,
-                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'macAddress': '01-02-03-04-05-06-07-08',
                 'srcPort':    0xf0ba,
                 'dstPort':    0xf0ba,
                 'data':       [
@@ -1559,7 +1559,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : 0x12131415,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x31,
                     "value"      : {
                         "temp_raw"      : 0x653c,
@@ -1614,7 +1614,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json": {
                     "timestamp"  : 0x579a0e00,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x38,
                     "value"      : {
                         "die_raw"       : 10.100000381469727,   # 0x4121999a
@@ -1662,7 +1662,7 @@ SOL_CHAIN_EXAMPLE = [
             'fields' : {
                 'utcSecs':    1111,
                 'utcUsecs':   222,
-                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'macAddress': '01-02-03-04-05-06-07-08',
                 'srcPort':    0xf0ba,
                 'dstPort':    0xf0ba,
                 'data':       (
@@ -1684,7 +1684,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x32,
                     "value"      : {
                         "voltage"       : 0,
@@ -1727,7 +1727,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x31,
                     "value"      : {
                         "temp_raw"      : 0x653c,
@@ -1778,7 +1778,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x30,
                     "value"      : {
                         "sub_id"        : 0x00,
@@ -1830,7 +1830,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x29,
                     "value"      : {
                         "mean_d2g"      : 0x021b,
@@ -1889,7 +1889,7 @@ SOL_CHAIN_EXAMPLE = [
             'fields' : {
                 'utcSecs':    1111,
                 'utcUsecs':   222,
-                'macAddress': [1, 2, 3, 4, 5, 6, 7, 8],
+                'macAddress': '01-02-03-04-05-06-07-08',
                 'srcPort':    0xf0ba,
                 'dstPort':    0xf0ba,
                 'data':       [
@@ -1910,7 +1910,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x40,
                     "value"      : {
                         "temp_raw"       : 0x6387,
@@ -1956,7 +1956,7 @@ SOL_CHAIN_EXAMPLE = [
             {
                 "json" : {
                     "timestamp"  : TIMESTAMP,
-                    "mac"        : [1, 2, 3, 4, 5, 6, 7, 8],
+                    "mac"        : '01-02-03-04-05-06-07-08',
                     "type"       : 0x40,
                     "value"      : {
                         "temp_raw"       : 0x6387,
