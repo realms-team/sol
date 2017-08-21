@@ -545,6 +545,25 @@ sol_types = [
             ],
     },
     {
+        'type':         SOL_TYPE_SENS_MPS6_ID1P4T4N1,
+        'description':  'soil temp and matric potential',
+        'structure':    '<BffB',
+        'fields':       ['id', 'pot', 'temp', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS1_I1MV2,
+        'description':  'analog soil moisture',
+        'structure':    '<BH',
+        'fields':       ['id', 'NmVolts'],
+        'apply':        [
+                {
+                    'field':     "soil_moist",
+                    'function': lambda x:  (0.000494 * x -  0.554),
+                    'args':     ['NmVolts'],
+                },
+            ],
+    },
+    {
         'type':         SOL_TYPE_DUST_OAP_ANALOG,
         'description':  'OAP analog sample',
         'structure':    '>Bh',
