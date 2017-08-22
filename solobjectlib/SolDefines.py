@@ -35,6 +35,7 @@ SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_JUDD_T2D2R1N1                      = 0x22
+SOL_MB7554_DTYPE_D2SD2N1NL1NG1              = 0x24
 SOL_TYPE_SHT15_T4RH4N1                      = 0x25
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
@@ -338,6 +339,29 @@ sol_types = [
         'description':  '',
         'structure':    '>III',
         'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
+    },
+    {
+        'type':         SOL_MB7554_DTYPE_D2SD2N1NL1NG1,
+        'description':  'mean & stddev of Nval d2g readings',
+        'structure':    '<HHBBB',
+        'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+        'apply':        [
+                {
+                    'tag':     "mean_d2g",
+                    'function': lambda x: x,
+                    'args':     ['mean_d2g'],
+                },
+                {
+                    'tag':     "Nval",
+                    'function': lambda x: x,
+                    'args':     ['Nval'],
+                },
+                {
+                    'tag':     "stdev",
+                    'function': lambda x: x,
+                    'args':     ['stdev'],
+                }
+            ],
     },
     {
         'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
