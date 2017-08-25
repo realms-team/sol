@@ -35,7 +35,7 @@ SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_JUDD_T2D2R1N1                      = 0x22
-SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1              = 0x24
+SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1         = 0x24
 SOL_TYPE_SHT15_T4RH4N1                      = 0x25
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
@@ -580,6 +580,11 @@ sol_types = [
         'structure':    '<BH',
         'fields':       ['id', 'NmVolts'],
         'apply':        [
+                {
+                    'tag':     "id",
+                    'function': lambda x: x,
+                    'args':     ['id'],
+                },            
                 {
                     'field':     "soil_moist",
                     'function': lambda x:  (0.000494 * x -  0.554),
