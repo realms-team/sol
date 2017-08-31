@@ -323,6 +323,29 @@ sol_types = [
         'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
     },
     {
+        'type': SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1,
+        'description': 'mean & stddev of Nval d2g readings',
+        'structure': '<HHBBB',
+        'fields': ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+        'apply': [
+            {
+                'tag': "mean_d2g",
+                'function': lambda x: x,
+                'args': ['mean_d2g'],
+            },
+            {
+                'tag': "Nval",
+                'function': lambda x: x,
+                'args': ['Nval'],
+            },
+            {
+                'tag': "stdev",
+                'function': lambda x: x,
+                'args': ['stdev'],
+            }
+        ],
+    },
+    {
         'type':         SOL_TYPE_SHT15_T4RH4N1,
         'description':  'temperature and relative humidity sensor',
         'structure':    '<ffB',
@@ -339,29 +362,6 @@ sol_types = [
         'description':  '',
         'structure':    '>III',
         'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
-    },
-    {
-        'type':         SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1,
-        'description':  'mean & stddev of Nval d2g readings',
-        'structure':    '<HHBBB',
-        'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
-        'apply':        [
-                {
-                    'tag':     "mean_d2g",
-                    'function': lambda x: x,
-                    'args':     ['mean_d2g'],
-                },
-                {
-                    'tag':     "Nval",
-                    'function': lambda x: x,
-                    'args':     ['Nval'],
-                },
-                {
-                    'tag':     "stdev",
-                    'function': lambda x: x,
-                    'args':     ['stdev'],
-                }
-            ],
     },
     {
         'type':         SOL_TYPE_SENS_MB7363_D2S2N1L1G1,
