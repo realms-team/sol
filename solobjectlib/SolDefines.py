@@ -35,6 +35,7 @@ SOL_TYPE_DUST_EVENTMOTERESET                = 0x1e
 SOL_TYPE_DUST_EVENTPACKETSENT               = 0x1f
 SOL_TYPE_DUST_SNAPSHOT                      = 0x20
 SOL_TYPE_JUDD_T2D2R1N1                      = 0x22
+SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1         = 0x24
 SOL_TYPE_SHT15_T4RH4N1                      = 0x25
 SOL_TYPE_DUST_OAP_TEMPSAMPLE                = 0x27
 SOL_TYPE_SOLMANAGER_STATS                   = 0x28
@@ -49,11 +50,13 @@ SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
-SOL_TYPE_TEMPRH_SHT31                       = 0x40
+SOL_TYPE_TEMPRH_SHT31                       = 0x40  #you can continue 0x3a, 0x3b ...
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
 SOL_TYPE_TEMPRH_SHT3X                       = 0x43
 SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
+SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
+SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
@@ -320,6 +323,29 @@ sol_types = [
         'fields':       ['temperature', 'depth', 'numReadings', 'retries'],
     },
     {
+        'type': SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1,
+        'description': 'mean & stddev of Nval d2g readings',
+        'structure': '<HHBBB',
+        'fields': ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
+        'apply': [
+            {
+                'tag': "mean_d2g",
+                'function': lambda x: x,
+                'args': ['mean_d2g'],
+            },
+            {
+                'tag': "Nval",
+                'function': lambda x: x,
+                'args': ['Nval'],
+            },
+            {
+                'tag': "stdev",
+                'function': lambda x: x,
+                'args': ['stdev'],
+            }
+        ],
+    },
+    {
         'type':         SOL_TYPE_SHT15_T4RH4N1,
         'description':  'temperature and relative humidity sensor',
         'structure':    '<ffB',
@@ -539,6 +565,30 @@ sol_types = [
                     'field':     "rh_phys",
                     'function': lambda x:  x*100.0/0xffff,
                     'args':     ['rh_raw'],
+                },
+            ],
+    },
+    {
+        'type':         SOL_TYPE_SENS_MPS6_ID1P4T4N1,
+        'description':  'soil temp and matric potential',
+        'structure':    '<BffB',
+        'fields':       ['id', 'pot', 'temp', 'Nval'],
+    },
+    {
+        'type':         SOL_TYPE_SENS_GS1_I1MV2,
+        'description':  'analog soil moisture',
+        'structure':    '<BH',
+        'fields':       ['id', 'NmVolts'],
+        'apply':        [
+                {
+                    'tag':     "id",
+                    'function': lambda x: x,
+                    'args':     ['id'],
+                },
+                {
+                    'field':     "soil_moist",
+                    'function': lambda x:  (0.000494 * x -  0.554),
+                    'args':     ['NmVolts'],
                 },
             ],
     },

@@ -90,7 +90,7 @@ class Sol(object):
             elif d_n['name'] in [
                     'hr', 'oap',
                 ]:
-                sol_mac = FormatUtils.format_mac_string_to_bytes(d_n['mac'])
+                sol_mac = d_n['mac']
             else:
                 sol_mac = mac_manager
 
@@ -123,7 +123,7 @@ class Sol(object):
         """
         Convert a JSON SOL Object into a single binary SOL Object.
 
-        :param list sol_json: a JSON SOL Object
+        :param dict sol_json: a JSON SOL Object
         :return: A single binary SOL Object
         :rtype: list
         """
@@ -141,7 +141,10 @@ class Sol(object):
         sol_bin        += [h]
 
         # mac
-        sol_bin        += sol_json['mac']
+        if isinstance(sol_json['mac'], basestring):
+            sol_bin += FormatUtils.format_mac_string_to_bytes(sol_json['mac'])
+        else:
+            sol_bin += sol_json['mac']
 
         # timestamp
         sol_bin        += self._num_to_list(sol_json['timestamp'], 4)
@@ -244,10 +247,10 @@ class Sol(object):
 
         if h_M == SolDefines.SOL_HDR_M_NOMAC:
             assert mac is not None
-            sol_json['mac']  = mac
+            sol_json['mac']  = FormatUtils.formatBuffer(mac)
         else:
             assert len(sol_bin) >= 8
-            sol_json['mac']  = sol_bin[:8]
+            sol_json['mac']  = FormatUtils.formatBuffer(sol_bin[:8])
             sol_bin          = sol_bin[8:]
 
         # timestamp
