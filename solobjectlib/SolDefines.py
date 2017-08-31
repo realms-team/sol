@@ -341,7 +341,7 @@ sol_types = [
         'fields':       ['sol_version', 'solmanager_version', 'sdk_version'],
     },
     {
-        'type':         SOL_MB7554_DTYPE_D2SD2N1NL1NG1,
+        'type':         SOL_TYPE_MB7554_DTYPE_D2SD2N1NL1NG1,
         'description':  'mean & stddev of Nval d2g readings',
         'structure':    '<HHBBB',
         'fields':       ['mean_d2g', 'stdev', 'Nval', 'Nltm', 'NgtM'],
@@ -584,7 +584,7 @@ sol_types = [
                     'tag':     "id",
                     'function': lambda x: x,
                     'args':     ['id'],
-                },            
+                },
                 {
                     'field':     "soil_moist",
                     'function': lambda x:  (0.000494 * x -  0.554),
