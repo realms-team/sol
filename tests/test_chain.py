@@ -1272,6 +1272,56 @@ SOL_CHAIN_EXAMPLE = [
             },
         ],
     },
+    # SOL_TYPE_DUST_EVENTJOINFAILED
+    {
+        "dust": {
+            'name': u'eventJoinFailed',
+            'manager': u'COM6',
+            'fields': {
+                'macAddress':   '01-01-01-01-01-01-01-01',
+                'reason':       1
+            },
+        },
+        "objects":[
+            {
+                "json": {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : MACMANAGER,
+                    "type"       : 0x3a,
+                    "value"      : {
+                        'macAddress'    : [1, 1, 1, 1, 1, 1, 1, 1],
+                        'reason'        : 1
+                    },
+                },
+                "bin": [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x03,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    0x3a,                                      # type
+                    0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,   # value
+                    0x01,
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwMDAwMDAwMDEhMUFToBAQEBAQEBAQE="
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '03-03-03-03-03-03-03-03',
+                    },
+                    "measurement": 'SOL_TYPE_DUST_EVENTJOINFAILED',
+                    "fields"     : {
+                        'macAddress'    : '01-01-01-01-01-01-01-01',
+                        'reason'        : 1
+                    },
+                },
+            }
+        ]
+    },
     # SOL_TYPE_JUDD_T2D2R1N1,
     {
         "objects": [
