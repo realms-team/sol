@@ -50,13 +50,15 @@ SOL_TYPE_SENS_LP02_R4N1                     = 0x36
 SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
-SOL_TYPE_TEMPRH_SHT31                       = 0x40  #you can continue 0x3a, 0x3b ...
+SOL_TYPE_DUST_EVENTJOINFAILED               = 0x3a
+SOL_TYPE_TEMPRH_SHT31                       = 0x40
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
 SOL_TYPE_TEMPRH_SHT3X                       = 0x43
 SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
 SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
+
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
@@ -526,6 +528,12 @@ sol_types = [
         'description':  'highest 5 frequency bins and magnitudes',
         'structure':    '<BBHHHHHHHHHH',
         'fields':       ['conf1', 'conf2', 'f0', 'f1', 'f2', 'f3', 'f4', 'm0', 'm1', 'm2', 'm3', 'm4'],
+    },
+    {
+        'type':         SOL_TYPE_DUST_EVENTJOINFAILED,
+        'description':  'generated when a mote sends a join request to the manager but the request can not be validated',
+        'structure':    '>QB',
+        'fields':       ['macAddress', 'reason'],
     },
     {
         'type':         SOL_TYPE_TEMPRH_SHT31,
