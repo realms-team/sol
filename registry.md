@@ -37,6 +37,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x1f` | [`DUST_EVENTPACKETSENT`](#dust_eventpacketsent)                             |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
 |   `0x22` | [`JUDD_T2D2R1N1`](#judd_t2d2r1n1)                                           |
+|   `0x24` | [`MB7554_DTYPE_D2SD2N1NL1NG1`](#mb7554_dtype_d2sd2n1nl1ng1)                 |
 |   `0x25` | [`SHT15_T4RH4N1`](#sht15_t4rh4n1)                                           |
 |   `0x27` | [`DUST_OAP_TEMPSAMPLE`](#dust_oap_tempsample)                               |
 |   `0x28` | [`SOLMANAGER_STATS`](#solmanager_stats)                                     |
@@ -51,7 +52,14 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x37` | [`SENS_ECTM`](#sens_ectm)                                                   |
 |   `0x38` | [`SENS_MPS1`](#sens_mps1)                                                   |
 |   `0x39` | [`ADXL362_FFT_Z`](#adxl362_fft_z)                                           |
+|   `0x3a` | [`DUST_EVENTJOINFAILED`](#dust_eventjoinfailed)                             |
 |   `0x40` | [`TEMPRH_SHT31`](#temprh_sht31)                                             |
+|   `0x41` | [`DUST_OAP_ANALOG`](#dust_oap_analog)                                       |
+|   `0x42` | [`DUST_OAP_DIGITAL_IN`](#dust_oap_digital_in)                               |
+|   `0x43` | [`TEMPRH_SHT3X`](#temprh_sht3x)                                             |
+|   `0x44` | [`DUST_NOTIF_HREXTENDED`](#dust_notif_hrextended)                           |
+|   `0x45` | [`SENS_MPS6_ID1P4T4N1`](#sens_mps6_id1p4t4n1)                               |
+|   `0x46` | [`SENS_GS1_I1MV2`](#sens_gs1_i1mv2)                                         |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -135,9 +143,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### DUST_NOTIF_HRDEVICE
 
-| charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset |
-|--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|
-| INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |
+| charge | queueOcc | temperature | batteryVoltage | numTxOk | numTxFail | numRxOk | numRxLost | numMacDropped | numTxBad | badLinkFrameId | badLinkSlot | badLinkOffset | numNetMicErr | numMacMicErr | numMacCrcErr |
+|--------|----------|-------------|----------------|---------|-----------|---------|-----------|---------------|----------|----------------|-------------|---------------|--------------|--------------|--------------|
+| INT32U |    INT8U |        INT8 |         INT16U |  INT16U |    INT16U |  INT16U |    INT16U |         INT8U |    INT8U |          INT8U |      INT32U |         INT8U |        INT8U |        INT8U |        INT8U |
 
 #### DUST_EVENTCOMMANDFINISHED
 
@@ -223,6 +231,12 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |-------------|--------|-------------|---------|
 |       INT16 | INT16U |       INT8U |   INT8U |
 
+#### MB7554_DTYPE_D2SD2N1NL1NG1
+
+| mean_d2g |  stdev |  Nval |  Nltm |  NgtM |
+|----------|--------|-------|-------|-------|
+|   INT16U | INT16U | INT8U | INT8U | INT8U |
+
 #### SHT15_T4RH4N1
 
 | temperature |    rH | numReadings |
@@ -307,8 +321,44 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |-------|-------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | INT8U | INT8U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U | INT16U |
 
+#### DUST_EVENTJOINFAILED
+
+| macAddress | reason |
+|------------|--------|
+|     INT64U |  INT8U |
+
 #### TEMPRH_SHT31
 
-| temp_raw | rh_raw | height |
-|----------|--------|--------|
-|   INT32U | INT32U | INT16U |
+| temp_raw | rh_raw |    id |
+|----------|--------|-------|
+|   INT16U | INT16U | INT8U |
+
+#### TEMPRH_SHT3X
+
+| temp_raw | t_Nval | rh_raw | rh_Nval |
+|----------|--------|--------|---------|
+|   INT16U |  INT8U | INT16U |   INT8U |
+
+#### SENS_MPS6_ID1P4T4N1
+
+|    id |   pot |  temp |  Nval |
+|-------|-------|-------|-------|
+| INT8U | INT32 | INT32 | INT8U |
+
+#### SENS_GS1_I1MV2
+
+|    id | NmVolts |
+|-------|---------|
+| INT8U |  INT16U |
+
+#### DUST_OAP_ANALOG
+
+| input | voltage |
+|-------|---------|
+| INT8U |   INT16 |
+
+#### DUST_OAP_DIGITAL_IN
+
+| input | state |
+|-------|-------|
+| INT8U | INT8U |
