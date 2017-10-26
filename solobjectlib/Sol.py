@@ -9,7 +9,7 @@ here = os.path.dirname(__file__)
 if __name__ == "__main__":
     sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
 else:
-    sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
+    sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
 
 # =========================== imports =========================================
 
