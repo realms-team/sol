@@ -58,7 +58,8 @@ SOL_TYPE_TEMPRH_SHT3X                       = 0x43
 SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
 SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
-
+SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
+SOL_TYPE_SENS_INDUCTION_CURRENT             = 0x48
 
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
@@ -611,5 +612,17 @@ sol_types = [
         'description':  'OAP digital_in sample',
         'structure':    '>BB',
         'fields':       ['input','state'],
+    },
+    {
+        'type': SOL_TYPE_SENS_MICROWAVE_MOTION,
+        'description': 'digital_in sample',
+        'structure': '>HH',
+        'fields': ['edge count', 'sensor id'],
+    },
+    {
+        'type': SOL_TYPE_SENS_INDUCTION_CURRENT,
+        'description': 'digital_in sample',
+        'structure': '>HH',
+        'fields': ['tick count', 'sensor id'],
     },
 ]
