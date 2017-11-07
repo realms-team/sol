@@ -30,7 +30,7 @@ Refer to the other object if you are not sure.
 
 Refere to the python structure to know which field to set: https://docs.python.org/2/library/struct.html
 
-5. Add the object structure at the bottom of the README.md file.
+5. Run the the ``registry_gen.py`` script. That will update the ``registry.md`` file.
 
 6. Commit your changes starting with the issue number.
    Commit message example: "``#49 adding YOUR_OBJECT_NAME structure``".
