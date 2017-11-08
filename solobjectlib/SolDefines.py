@@ -615,14 +615,14 @@ sol_types = [
     },
     {
         'type': SOL_TYPE_SENS_MICROWAVE_MOTION,
-        'description': 'digital_in sample',
-        'structure': '>HH',
+        'description': 'microwave motion sensor with digital output',
+        'structure': '>HB',
         'fields': ['edge count', 'sensor id'],
     },
     {
         'type': SOL_TYPE_SENS_INDUCTION_CURRENT,
-        'description': 'digital_in sample',
-        'structure': '>HH',
+        'description': 'clamp on current sensor with digital output',
+        'structure': '>HB',
         'fields': ['tick count', 'sensor id'],
     },
 ]
