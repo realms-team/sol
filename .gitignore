@@ -13,5 +13,4 @@ MANIFEST
 # certificates
 solmanager.cert
 solmanager.ppk
-# scripts
-\solobjectlib\sol.py
+
