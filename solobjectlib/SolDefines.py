@@ -1,3 +1,4 @@
+import math
 SOL_PORT                                    = 0xf0ba
 
 # type names
@@ -633,7 +634,7 @@ sol_types = [
         'apply': [
             {
                 'tag': "current_A",
-                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*100/1000,
+                'function': lambda x,y,z: math.sqrt(y/z-x*x/z/z)*0.001*100/1000,
                 'args': ['accu_sum', 'accu_sum_of_squares', 'sample count'],
             },
         ],
