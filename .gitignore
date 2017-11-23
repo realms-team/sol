@@ -9,3 +9,8 @@ temp_test_file.sol
 dist/
 build/
 MANIFEST
+
+# certificates
+solmanager.cert
+solmanager.ppk
+

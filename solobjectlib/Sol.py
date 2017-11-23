@@ -698,7 +698,6 @@ class Sol(object):
         :rtype: tuple(int, int, int)
         """
         sol_ts          = None
-
         # check for timestamp flag in SOL_HEADER
         header_offset   = SolDefines.SOL_HEADER_OFFSET
         ts_offset       = SolDefines.SOL_TIMESTAMP_OFFSET
@@ -714,7 +713,7 @@ class Sol(object):
         sol_type    = dust_notif['fields']['data'][type_index]
         sol_value   = self._binary_to_fields_with_structure(
             dust_notif['fields']['data'][type_index],
-            dust_notif['fields']['data'][type_index+1:]
+            dust_notif['fields']['data'][type_index+1:],
         )
         return (sol_type, sol_ts, sol_value)
 
