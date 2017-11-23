@@ -59,8 +59,8 @@ SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
 SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
 SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
-SOL_TYPE_SENS_INDUCTION_CURRENT             = 0x48
-
+SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE    = 0x48
+SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE    = 0x49
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
         if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
@@ -616,13 +616,26 @@ sol_types = [
     {
         'type': SOL_TYPE_SENS_MICROWAVE_MOTION,
         'description': 'microwave motion sensor with digital output',
-        'structure': '>HB',
+        'structure': '<HB',
         'fields': ['edge count', 'sensor id'],
     },
     {
-        'type': SOL_TYPE_SENS_INDUCTION_CURRENT,
+        'type': SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE,
         'description': 'clamp on current sensor with digital output',
-        'structure': '>HB',
+        'structure': '<HB',
         'fields': ['tick count', 'sensor id'],
+    },
+    {
+        'type': SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE,
+        'description': 'clamp on current sensor with analog output, raw counts are reported',
+        'structure': '<IIHB',
+        'fields': ['accu_sum','accu_sum_of_squares', 'sample count', 'sensor id'],
+        'apply': [
+            {
+                'tag': "current_A",
+                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*100/1000,
+                'args': ['accu_sum', 'accu_sum_of_squares', 'sample count'],
+            },
+        ],
     },
 ]
