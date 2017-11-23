@@ -630,12 +630,17 @@ sol_types = [
         'type': SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE,
         'description': 'clamp on current sensor with analog output, raw counts are reported',
         'structure': '<IIHB',
-        'fields': ['accu_sum','accu_sum_of_squares', 'sample count', 'sensor id'],
+        'fields': ['accu_sum','accu_sum_of_squares', 'sample_count', 'sensor_id'],
         'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            },
             {
                 'field': "current_A",
                 'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*100/1000,
-                'args': ['accu_sum', 'accu_sum_of_squares', 'sample count'],
+                'args': ['accu_sum', 'accu_sum_of_squares', 'sample_count'],
             },
         ],
     },
