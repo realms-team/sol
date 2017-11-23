@@ -1,3 +1,4 @@
+from math import sqrt as sqrt
 SOL_PORT                                    = 0xf0ba
 
 # type names
