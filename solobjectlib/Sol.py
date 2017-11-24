@@ -144,10 +144,10 @@ class Sol(object):
             sol_bin += sol_json['mac']
 
         # timestamp
-        sol_bin        += self._num_to_list(sol_json['timestamp'], 4)
+        sol_bin        += _num_to_list(sol_json['timestamp'], 4)
 
         # type
-        sol_bin        += self._num_to_list(sol_json['type'], 1)
+        sol_bin        += _num_to_list(sol_json['type'], 1)
 
         # value
         if   sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
@@ -254,7 +254,7 @@ class Sol(object):
 
         assert h_S == SolDefines.SOL_HDR_S_EPOCH
         assert len(sol_bin) >= 4
-        sol_json['timestamp'] = self._list_to_num(sol_bin[:4])
+        sol_json['timestamp'] = _list_to_num(sol_bin[:4])
         sol_bin = sol_bin[4:]
 
         # type
@@ -796,7 +796,7 @@ class Sol(object):
         # convert [0x01,0x02,0x03] into 0x010203 to be packable
         for i in range(len(pack_values)):
             if type(pack_values[i]) == list:
-                pack_values[i] = self._list_to_num(pack_values[i])
+                pack_values[i] = _list_to_num(pack_values[i])
 
         # unpacking field by field
         returnVal = []
@@ -836,9 +836,9 @@ class Sol(object):
 
         for (k, v) in returnVal.items():
             if k in ['macAddress', 'source', 'dest']:
-                returnVal[k] = self._num_to_list(v, 8)
+                returnVal[k] = _num_to_list(v, 8)
             elif k in ['sol_version', 'sdk_version', 'solmanager_version']:
-                returnVal[k] = self._num_to_list(v, 4)
+                returnVal[k] = _num_to_list(v, 4)
 
         return returnVal
 
@@ -874,7 +874,7 @@ class Sol(object):
                 mote[k] = v
 
             # format mac address
-            mote["macAddress"] = self._num_to_list(mote["macAddress"], 8)
+            mote["macAddress"] = _num_to_list(mote["macAddress"], 8)
 
             # get number of paths in mote
             num_paths       = struct.unpack('>B', chr(binary[0]))[0]
@@ -890,7 +890,7 @@ class Sol(object):
                     path[k] = v
 
                 # format mac address
-                path["macAddress"] = self._num_to_list(path["macAddress"], 8)
+                path["macAddress"] = _num_to_list(path["macAddress"], 8)
 
                 path_list.append(path)
 
@@ -968,7 +968,7 @@ class Sol(object):
                 mote['macAddress'] = [int(c, 16) for c in mote['macAddress'].split("-")]
             m = struct.pack(
                 '>QHBBBBBIIIIII',
-                self._list_to_num(mote['macAddress']),      # INT64U  Q
+                _list_to_num(mote['macAddress']),      # INT64U  Q
                 mote['moteId'],                             # INT16U  H
                 mote['isAP'],                               # BOOL    B
                 mote['state'],                              # INT8U   B
@@ -993,7 +993,7 @@ class Sol(object):
                     path['macAddress'] = [int(c, 16) for c in path['macAddress'].split("-")]
                 p += struct.pack(
                     '>QBBBbb',
-                    self._list_to_num(path['macAddress']),  # INT64U  Q
+                    _list_to_num(path['macAddress']),  # INT64U  Q
                     path['direction'],                      # INT8U   B
                     path['numLinks'],                       # INT8U   B
                     path['quality'],                        # INT8U   B
@@ -1016,21 +1016,19 @@ class Sol(object):
                     return f.tell()-1
                 f.seek(-2, os.SEEK_CUR)
 
-    # ==== miscellaneous
+# ==== miscellaneous helpers
 
-    @staticmethod
-    def _num_to_list(num, length):
-        output = []
-        for l in range(length):
-            output = [int((num >> 8*l) & 0xff)]+output
-        return output
+def _num_to_list(num, length):
+    output = []
+    for l in range(length):
+        output = [int((num >> 8*l) & 0xff)]+output
+    return output
 
-    @staticmethod
-    def _list_to_num(l):
-        output = 0
-        for i in range(len(l)):
-            output += l[i] << (8*(len(l)-i-1))
-        return output
+def _list_to_num(l):
+    output = 0
+    for i in range(len(l)):
+        output += l[i] << (8*(len(l)-i-1))
+    return output
 
 # =========================== main ============================================
 
