@@ -34,13 +34,13 @@ import SolDefines
 from SolVersion import VERSION
 import OpenHdlc
 
-#============================ logging =========================================
+# =========================== logging =========================================
 
 log = logging.getLogger(__name__)
 
-#============================ helpers =========================================
+# =========================== helpers =========================================
 
-#============================ classes =========================================
+# =========================== classes =========================================
 
 class SolDuplicateOapNotificationException(Exception):
     pass
@@ -55,15 +55,15 @@ class Sol(object):
         self.hdlc       = OpenHdlc.OpenHdlc()
         self.hrParser   = HrParser.HrParser()
 
-    #======================== public ==========================================
+    # ======================= public ==========================================
 
-    #===== admin
+    # ==== admin
 
     @property
     def version(self):
         return VERSION
 
-    #===== "chain" of communication from the Dust manager to the server
+    # ==== "chain" of communication from the Dust manager to the server
 
     def dust_to_json(self, dust_notif, mac_manager=None, timestamp=None):
         """
@@ -439,7 +439,7 @@ class Sol(object):
                 json_list.append(jdic)
         return json_list
 
-    #===== file manipulation
+    # ==== file manipulation
 
     def dumpToFile(self, sol_jsonl, file_name):
 
@@ -551,7 +551,7 @@ class Sol(object):
 
         return sol_jsonl
 
-    #======================== private =========================================
+    # ======================= private =========================================
 
     def _split_dust_notif(self, dust_notif):
         """
@@ -643,7 +643,7 @@ class Sol(object):
 
         return notif_list
 
-    #===== dust notif to sol json
+    # ==== dust notif to sol json
 
     def _dust_notif_to_sol_json(self, dust_notif):
 
@@ -787,7 +787,7 @@ class Sol(object):
 
         return returnVal
 
-    #===== json_to_bin
+    # ==== json_to_bin
 
     def _fields_to_binary_with_structure(self, sol_type, fields):
 
@@ -811,7 +811,7 @@ class Sol(object):
 
         return returnVal
 
-    #===== bin_to_json
+    # ==== bin_to_json
 
     def _binary_to_fields_with_structure(self, sol_type, binary):
 
@@ -1008,7 +1008,7 @@ class Sol(object):
         return_val  = [ord(c) for c in return_val]
         return return_val
 
-    #===== file manipulation
+    # ==== file manipulation
 
     def _fileBackUpUntilStartFrame(self, file_name, curOffset):
         with open(file_name, 'rb') as f:
@@ -1019,7 +1019,7 @@ class Sol(object):
                     return f.tell()-1
                 f.seek(-2, os.SEEK_CUR)
 
-    #===== miscellaneous
+    # ==== miscellaneous
 
     @staticmethod
     def _num_to_list(num, length):
@@ -1035,7 +1035,7 @@ class Sol(object):
             output += l[i] << (8*(len(l)-i-1))
         return output
 
-#============================ main ============================================
+# =========================== main ============================================
 
 if __name__ == "__main__":
     os.system("py.test -vv -x tests/")
