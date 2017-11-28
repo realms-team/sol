@@ -639,7 +639,7 @@ sol_types = [
             },
             {
                 'field': "current_A",
-                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.01*98.464318,
+                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*98.464318,
                 'args': ['accu_sum', 'accu_sum_of_squares', 'sample_count'],
             },
         ],
