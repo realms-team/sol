@@ -2051,6 +2051,54 @@ SOL_CHAIN_EXAMPLE = [
             },
         ],
     },
+
+    # SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE
+    # 140, 91, 0, 0, 220, 65, 33, 0, 252, 0, 1
+
+    {"objects": [
+            {
+                "json" : {
+                    "timestamp"  : TIMESTAMP,
+                    "mac"        : '01-02-03-04-05-06-07-08',
+                    "type"       : 73,
+                    "value"      : {'accu_sum_of_squares': 2179548,
+                                    'sensor_id': 4,
+                                    'accu_sum': 23436,
+                                    'sample_count': 252},
+                },
+                "bin" : [
+                    #ver   type   MAC    ts    typelen length
+                    0<<6 | 0<<5 | 1<<4 | 0<<3 | 0<<2 | 3<<0,   # header
+                    0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,   # mac
+                    0x12,0x13,0x14,0x15,                       # timestamp
+                    73,                                        # type
+                    140, 91, 0, 0, 220, 65, 33, 0, 252, 0, 4   # value
+                ],
+                "http": {
+                    "v" : 0,
+                    "o" : [
+                        "EwECAwQFBgcIEhMUFUmMWwAA3EEhAPwABA==",
+                    ]
+                },
+                "influxdb": {
+                    "time"       : TIMESTAMP*1000000000,
+                    "tags"       : {
+                        'mac'    : '01-02-03-04-05-06-07-08',
+                        'site'      : 'super_site',
+                        'latitude'  : 55.5555,
+                        'longitude' : -44.4444,
+                        'id'        : 4,
+                    },
+                    "measurement": 'SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE',
+                    "fields"     : {'accu_sum_of_squares': 2179548,
+                                    'sensor_id': 4,
+                                    'accu_sum': 23436,
+                                    'sample_count': 252,
+                                    'current_A': 0.0},
+                },
+            },
+        ],
+    },
 ]
 
 @pytest.fixture(params=SOL_CHAIN_EXAMPLE)
