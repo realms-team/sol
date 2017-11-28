@@ -377,9 +377,3 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 | tick count | sensor id |
 |------------|-----------|
 |     INT16U |     INT8U |
-
-#### SENS_INDUCTION_CURRENT_V_SOURCE
-
-| accu_sum | accu_sum_of_squares | sample count | sensor id |
-|----------|---------------------|--------------|-----------|
-|   INT32U |              INT32U |       INT16U |     INT8U |
