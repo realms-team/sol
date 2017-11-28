@@ -821,7 +821,7 @@ class Sol(object):
         t = []
         ptr = 0
         for frmt in pack_format[1:]:
-            size = struct.calcsize(frmt)
+            size = struct.calcsize(pack_format[0] + frmt)
             if len(binary[ptr:ptr+size]) > 0:
                 t.append(struct.unpack(pack_format[0] + frmt,
                                        "".join(chr(b) for b in binary[ptr:ptr+size]))[0])
