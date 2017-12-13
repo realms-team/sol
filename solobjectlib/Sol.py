@@ -750,7 +750,7 @@ class Sol(object):
                 }
             elif "channel_str" in dust_notif['fields'] and "new_val" in dust_notif['fields']:
                 sol_value = {
-                    'input' : dust_notif['fields']['channel_str'],
+                    'input' : dust_notif['fields']['channel'][1],
                     'state' : dust_notif['fields']['new_val'],
                 }
             else:
