@@ -618,13 +618,27 @@ sol_types = [
         'type': SOL_TYPE_SENS_MICROWAVE_MOTION,
         'description': 'microwave motion sensor with digital output',
         'structure': '<HB',
-        'fields': ['edge count', 'sensor id'],
+        'fields': ['edge_count', 'sensor_id'],
+        'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            }
+        ],
     },
     {
         'type': SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE,
         'description': 'clamp on current sensor with digital output',
         'structure': '<HB',
-        'fields': ['tick count', 'sensor id'],
+        'fields': ['tick_count', 'sensor_id'],
+        'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            }
+        ],
     },
     {
         'type': SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE,
@@ -639,7 +653,7 @@ sol_types = [
             },
             {
                 'field': "current_A",
-                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.01*98.464318,
+                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*98.464318,
                 'args': ['accu_sum', 'accu_sum_of_squares', 'sample_count'],
             },
         ],
