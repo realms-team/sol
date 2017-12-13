@@ -743,10 +743,18 @@ class Sol(object):
             }
         elif dust_notif['fields']['channel_str'].startswith('digital_in'):
             sol_type  = SolDefines.SOL_TYPE_DUST_OAP_DIGITAL_IN
-            sol_value = {
-                'input':   dust_notif['fields']['input'],
-                'state':   dust_notif['fields']['samples'][0],
-            }
+            if "input" in  dust_notif['fields'] and "samples" in dust_notif['fields']:
+                sol_value = {
+                    'input':   dust_notif['fields']['input'],
+                    'state':   dust_notif['fields']['samples'][0],
+                }
+            elif "channel_str" in dust_notif['fields'] and "new_val" in dust_notif['fields']:
+                sol_value = {
+                    'channel_str' : dust_notif['fields']['channel_str'],
+                    'new_val' : dust_notif['fields']['new_val'],
+                }
+            else:
+                log.debug("Unknow format for sol type {0}. dust_notif={1}".format(sol_type, dust_notif))
         else:
             raise NotImplementedError()
         return (sol_type, sol_value)
