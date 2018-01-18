@@ -6,10 +6,7 @@ import sys
 import os
 
 here = os.path.dirname(__file__)
-if __name__ == "__main__":
-    sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
-else:
-    sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
+sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
 
 # =========================== imports =========================================
 
@@ -34,13 +31,13 @@ import SolDefines
 from SolVersion import VERSION
 import OpenHdlc
 
-#============================ logging =========================================
+# =========================== logging =========================================
 
 log = logging.getLogger(__name__)
 
-#============================ helpers =========================================
+# =========================== helpers =========================================
 
-#============================ classes =========================================
+# =========================== classes =========================================
 
 class SolDuplicateOapNotificationException(Exception):
     pass
@@ -55,15 +52,15 @@ class Sol(object):
         self.hdlc       = OpenHdlc.OpenHdlc()
         self.hrParser   = HrParser.HrParser()
 
-    #======================== public ==========================================
+    # ======================= public ==========================================
 
-    #===== admin
+    # ==== admin
 
     @property
     def version(self):
         return VERSION
 
-    #===== "chain" of communication from the Dust manager to the server
+    # ==== "chain" of communication from the Dust manager to the server
 
     def dust_to_json(self, dust_notif, mac_manager=None, timestamp=None):
         """
@@ -147,10 +144,10 @@ class Sol(object):
             sol_bin += sol_json['mac']
 
         # timestamp
-        sol_bin        += self._num_to_list(sol_json['timestamp'], 4)
+        sol_bin        += _num_to_list(sol_json['timestamp'], 4)
 
         # type
-        sol_bin        += self._num_to_list(sol_json['type'], 1)
+        sol_bin        += _num_to_list(sol_json['type'], 1)
 
         # value
         if   sol_json['type'] == SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS:
@@ -257,7 +254,7 @@ class Sol(object):
 
         assert h_S == SolDefines.SOL_HDR_S_EPOCH
         assert len(sol_bin) >= 4
-        sol_json['timestamp'] = self._list_to_num(sol_bin[:4])
+        sol_json['timestamp'] = _list_to_num(sol_bin[:4])
         sol_bin = sol_bin[4:]
 
         # type
@@ -439,7 +436,7 @@ class Sol(object):
                 json_list.append(jdic)
         return json_list
 
-    #===== file manipulation
+    # ==== file manipulation
 
     def dumpToFile(self, sol_jsonl, file_name):
 
@@ -551,7 +548,7 @@ class Sol(object):
 
         return sol_jsonl
 
-    #======================== private =========================================
+    # ======================= private =========================================
 
     def _split_dust_notif(self, dust_notif):
         """
@@ -643,7 +640,7 @@ class Sol(object):
 
         return notif_list
 
-    #===== dust notif to sol json
+    # ==== dust notif to sol json
 
     def _dust_notif_to_sol_json(self, dust_notif):
 
@@ -698,7 +695,6 @@ class Sol(object):
         :rtype: tuple(int, int, int)
         """
         sol_ts          = None
-
         # check for timestamp flag in SOL_HEADER
         header_offset   = SolDefines.SOL_HEADER_OFFSET
         ts_offset       = SolDefines.SOL_TIMESTAMP_OFFSET
@@ -714,7 +710,7 @@ class Sol(object):
         sol_type    = dust_notif['fields']['data'][type_index]
         sol_value   = self._binary_to_fields_with_structure(
             dust_notif['fields']['data'][type_index],
-            dust_notif['fields']['data'][type_index+1:]
+            dust_notif['fields']['data'][type_index+1:],
         )
         return (sol_type, sol_ts, sol_value)
 
@@ -747,10 +743,18 @@ class Sol(object):
             }
         elif dust_notif['fields']['channel_str'].startswith('digital_in'):
             sol_type  = SolDefines.SOL_TYPE_DUST_OAP_DIGITAL_IN
-            sol_value = {
-                'input':   dust_notif['fields']['input'],
-                'state':   dust_notif['fields']['samples'][0],
-            }
+            if "input" in  dust_notif['fields'] and "samples" in dust_notif['fields']:
+                sol_value = {
+                    'input':   dust_notif['fields']['input'],
+                    'state':   dust_notif['fields']['samples'][0],
+                }
+            elif "channel_str" in dust_notif['fields'] and "new_val" in dust_notif['fields']:
+                sol_value = {
+                    'input' : dust_notif['fields']['channel'][1],
+                    'state' : dust_notif['fields']['new_val'],
+                }
+            else:
+                log.debug("Unknow format for sol type {0}. dust_notif={1}".format(sol_type, dust_notif))
         else:
             raise NotImplementedError()
         return (sol_type, sol_value)
@@ -788,7 +792,7 @@ class Sol(object):
 
         return returnVal
 
-    #===== json_to_bin
+    # ==== json_to_bin
 
     def _fields_to_binary_with_structure(self, sol_type, fields):
 
@@ -800,7 +804,7 @@ class Sol(object):
         # convert [0x01,0x02,0x03] into 0x010203 to be packable
         for i in range(len(pack_values)):
             if type(pack_values[i]) == list:
-                pack_values[i] = self._list_to_num(pack_values[i])
+                pack_values[i] = _list_to_num(pack_values[i])
 
         # unpacking field by field
         returnVal = []
@@ -812,7 +816,7 @@ class Sol(object):
 
         return returnVal
 
-    #===== bin_to_json
+    # ==== bin_to_json
 
     def _binary_to_fields_with_structure(self, sol_type, binary):
 
@@ -825,7 +829,7 @@ class Sol(object):
         t = []
         ptr = 0
         for frmt in pack_format[1:]:
-            size = struct.calcsize(frmt)
+            size = struct.calcsize(pack_format[0] + frmt)
             if len(binary[ptr:ptr+size]) > 0:
                 t.append(struct.unpack(pack_format[0] + frmt,
                                        "".join(chr(b) for b in binary[ptr:ptr+size]))[0])
@@ -840,9 +844,9 @@ class Sol(object):
 
         for (k, v) in returnVal.items():
             if k in ['macAddress', 'source', 'dest']:
-                returnVal[k] = self._num_to_list(v, 8)
+                returnVal[k] = _num_to_list(v, 8)
             elif k in ['sol_version', 'sdk_version', 'solmanager_version']:
-                returnVal[k] = self._num_to_list(v, 4)
+                returnVal[k] = _num_to_list(v, 4)
 
         return returnVal
 
@@ -878,7 +882,7 @@ class Sol(object):
                 mote[k] = v
 
             # format mac address
-            mote["macAddress"] = self._num_to_list(mote["macAddress"], 8)
+            mote["macAddress"] = _num_to_list(mote["macAddress"], 8)
 
             # get number of paths in mote
             num_paths       = struct.unpack('>B', chr(binary[0]))[0]
@@ -894,7 +898,7 @@ class Sol(object):
                     path[k] = v
 
                 # format mac address
-                path["macAddress"] = self._num_to_list(path["macAddress"], 8)
+                path["macAddress"] = _num_to_list(path["macAddress"], 8)
 
                 path_list.append(path)
 
@@ -972,7 +976,7 @@ class Sol(object):
                 mote['macAddress'] = [int(c, 16) for c in mote['macAddress'].split("-")]
             m = struct.pack(
                 '>QHBBBBBIIIIII',
-                self._list_to_num(mote['macAddress']),      # INT64U  Q
+                _list_to_num(mote['macAddress']),      # INT64U  Q
                 mote['moteId'],                             # INT16U  H
                 mote['isAP'],                               # BOOL    B
                 mote['state'],                              # INT8U   B
@@ -997,7 +1001,7 @@ class Sol(object):
                     path['macAddress'] = [int(c, 16) for c in path['macAddress'].split("-")]
                 p += struct.pack(
                     '>QBBBbb',
-                    self._list_to_num(path['macAddress']),  # INT64U  Q
+                    _list_to_num(path['macAddress']),  # INT64U  Q
                     path['direction'],                      # INT8U   B
                     path['numLinks'],                       # INT8U   B
                     path['quality'],                        # INT8U   B
@@ -1009,7 +1013,7 @@ class Sol(object):
         return_val  = [ord(c) for c in return_val]
         return return_val
 
-    #===== file manipulation
+    # ==== file manipulation
 
     def _fileBackUpUntilStartFrame(self, file_name, curOffset):
         with open(file_name, 'rb') as f:
@@ -1020,23 +1024,21 @@ class Sol(object):
                     return f.tell()-1
                 f.seek(-2, os.SEEK_CUR)
 
-    #===== miscellaneous
+# ==== miscellaneous helpers
 
-    @staticmethod
-    def _num_to_list(num, length):
-        output = []
-        for l in range(length):
-            output = [int((num >> 8*l) & 0xff)]+output
-        return output
+def _num_to_list(num, length):
+    output = []
+    for l in range(length):
+        output = [int((num >> 8*l) & 0xff)]+output
+    return output
 
-    @staticmethod
-    def _list_to_num(l):
-        output = 0
-        for i in range(len(l)):
-            output += l[i] << (8*(len(l)-i-1))
-        return output
+def _list_to_num(l):
+    output = 0
+    for i in range(len(l)):
+        output += l[i] << (8*(len(l)-i-1))
+    return output
 
-#============================ main ============================================
+# =========================== main ============================================
 
 if __name__ == "__main__":
     os.system("py.test -vv -x tests/")

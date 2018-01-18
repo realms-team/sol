@@ -60,6 +60,9 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x44` | [`DUST_NOTIF_HREXTENDED`](#dust_notif_hrextended)                           |
 |   `0x45` | [`SENS_MPS6_ID1P4T4N1`](#sens_mps6_id1p4t4n1)                               |
 |   `0x46` | [`SENS_GS1_I1MV2`](#sens_gs1_i1mv2)                                         |
+|   `0x47` | [`SENS_MICROWAVE_MOTION`](#sens_microwave_motion)                           |
+|   `0x48` | [`SENS_INDUCTION_CURRENT_C_SOURCE`](#sens_induction_current_c_source)       |
+|   `0x49` | [`SENS_INDUCTION_CURRENT_V_SOURCE`](#sens_induction_current_v_source)       |
 |   `0xff` | _reserved_                                                                  |
 | `0xffff` | _reserved_                                                                  |
 
@@ -362,3 +365,15 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 | input | state |
 |-------|-------|
 | INT8U | INT8U |
+
+#### SENS_MICROWAVE_MOTION
+
+| edge count | sensor id |
+|------------|-----------|
+|     INT16U |     INT8U |
+
+#### SENS_INDUCTION_CURRENT_C_SOURCE
+
+| tick count | sensor id |
+|------------|-----------|
+|     INT16U |     INT8U |

@@ -1,3 +1,4 @@
+from math import sqrt as sqrt
 SOL_PORT                                    = 0xf0ba
 
 # type names
@@ -58,8 +59,9 @@ SOL_TYPE_TEMPRH_SHT3X                       = 0x43
 SOL_TYPE_DUST_NOTIF_HREXTENDED              = 0x44
 SOL_TYPE_SENS_MPS6_ID1P4T4N1                = 0x45
 SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
-
-
+SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
+SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE    = 0x48
+SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE    = 0x49
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
         if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
@@ -611,5 +613,49 @@ sol_types = [
         'description':  'OAP digital_in sample',
         'structure':    '>BB',
         'fields':       ['input','state'],
+    },
+    {
+        'type': SOL_TYPE_SENS_MICROWAVE_MOTION,
+        'description': 'microwave motion sensor with digital output',
+        'structure': '<HB',
+        'fields': ['edge_count', 'sensor_id'],
+        'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            }
+        ],
+    },
+    {
+        'type': SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE,
+        'description': 'clamp on current sensor with digital output',
+        'structure': '<HB',
+        'fields': ['tick_count', 'sensor_id'],
+        'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            }
+        ],
+    },
+    {
+        'type': SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE,
+        'description': 'clamp on current sensor with analog output, raw counts are reported',
+        'structure': '<LLHB',
+        'fields': ['accu_sum','accu_sum_of_squares', 'sample_count', 'sensor_id'],
+        'apply': [
+            {
+                'tag': "id",
+                'function': lambda x: x,
+                'args': ['sensor_id'],
+            },
+            {
+                'field': "current_A",
+                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*98.464318,
+                'args': ['accu_sum', 'accu_sum_of_squares', 'sample_count'],
+            },
+        ],
     },
 ]
