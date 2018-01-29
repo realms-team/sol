@@ -168,7 +168,6 @@ class Sol(object):
                 sol_json['value']
             )
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT_2:
-            print sol_json
             sol_bin    += [ord(c) for c in str(sol_json['value'])]
         else:
             sol_bin    += self._fields_to_binary_with_structure(
