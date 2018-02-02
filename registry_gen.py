@@ -40,6 +40,8 @@ def pystruct_to_human(pystruct):
         "H": "INT16U",
         "i": "INT32",
         "I": "INT32U",
+        "l": "INT32",
+        "L": "INT32U",
         "q": "INT64",
         "Q": "INT64U",
         "f": "INT32",
@@ -55,8 +57,8 @@ def pystruct_to_human(pystruct):
                         struct_map[pystruct[i+1]]
                         ])
                     )
-            i=i+1
-        i=i+1
+            i+=1
+        i+=1
     return human_struct
 
 # =========================== output file generation ==========================
@@ -97,8 +99,10 @@ with open(REGISTRY_FILE, 'w') as reg_file:
 
         # prepare equally sized columns
 
-        for i in range(0,len(item["fields"])):
+        for i in range(0, len(item["fields"])):
             field   = item["fields"][i]
+            if len(item["structure"]) < 2:
+                continue
             struct  = pystruct_to_human(item["structure"][1:])[i]
             max_len = max(len(field), len(struct))
 

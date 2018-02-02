@@ -36,6 +36,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x1e` | [`DUST_EVENTMOTERESET`](#dust_eventmotereset)                               |
 |   `0x1f` | [`DUST_EVENTPACKETSENT`](#dust_eventpacketsent)                             |
 |   `0x20` | [`DUST_SNAPSHOT`](#dust_snapshot)                                           |
+|   `0x21` | [`DUST_SNAPSHOT_2`](#dust_snapshot_2)                                       |
 |   `0x22` | [`JUDD_T2D2R1N1`](#judd_t2d2r1n1)                                           |
 |   `0x24` | [`MB7554_DTYPE_D2SD2N1NL1NG1`](#mb7554_dtype_d2sd2n1nl1ng1)                 |
 |   `0x25` | [`SHT15_T4RH4N1`](#sht15_t4rh4n1)                                           |
@@ -368,12 +369,18 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 
 #### SENS_MICROWAVE_MOTION
 
-| edge count | sensor id |
+| edge_count | sensor_id |
 |------------|-----------|
 |     INT16U |     INT8U |
 
 #### SENS_INDUCTION_CURRENT_C_SOURCE
 
-| tick count | sensor id |
+| tick_count | sensor_id |
 |------------|-----------|
 |     INT16U |     INT8U |
+
+#### SENS_INDUCTION_CURRENT_V_SOURCE
+
+| accu_sum | accu_sum_of_squares | sample_count | sensor_id |
+|----------|---------------------|--------------|-----------|
+|   INT32U |              INT32U |       INT16U |     INT8U |
