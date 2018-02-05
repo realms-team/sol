@@ -3,7 +3,6 @@
 | [![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=master)](https://travis-ci.org/realms-team/sol)  | [![Build Status](https://travis-ci.org/realms-team/sol.svg?branch=develop)](https://travis-ci.org/realms-team/sol)  |
 | [![Code Health](https://landscape.io/github/realms-team/sol/master/landscape.svg?style=flat)](https://landscape.io/github/realms-team/sol/master)  | [![Code Health](https://landscape.io/github/realms-team/sol/develop/landscape.svg?style=flat)](https://landscape.io/github/realms-team/sol/develop)  |
 
-
 This repo contains a set of libraries to manipulate sensor Objects.
 
 An sensor Object contains the following _conceptual_ fields:
