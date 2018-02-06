@@ -18,6 +18,7 @@ import threading
 import time
 import copy
 import logging
+import ast
 
 # third-party packages
 import flatdict
@@ -166,6 +167,8 @@ class Sol(object):
             sol_bin    += self._get_sol_binary_value_snapshot(
                 sol_json['value']
             )
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT_2:
+            sol_bin    += [ord(c) for c in str(sol_json['value'])]
         else:
             sol_bin    += self._fields_to_binary_with_structure(
                 sol_json['type'],
@@ -295,6 +298,10 @@ class Sol(object):
             )['Extended']
         elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
             sol_json['value'] = self._binary_to_fields_snapshot(sol_bin)
+        elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT_2:
+            value_str = "".join([chr(b) for b in sol_bin])
+            value_eval = ast.literal_eval(value_str)
+            sol_json['value'] = json.loads(json.dumps(value_eval))
         else:
             sol_json['value'] = self._binary_to_fields_with_structure(
                 sol_json['type'],
@@ -652,6 +659,9 @@ class Sol(object):
             (sol_type, sol_value) = self._dust_hr_to_sol_json(dust_notif)
         elif dust_notif['name'] == 'oap':
             (sol_type, sol_value) = self._dust_oap_to_sol_json(dust_notif)
+        elif dust_notif['name'] == 'snapshot':
+            sol_type = SolDefines.SOL_TYPE_DUST_SNAPSHOT_2
+            sol_value = dust_notif
         else:
             (sol_type, sol_value) = self._dust_other_notif_to_sol_json(dust_notif)
 
