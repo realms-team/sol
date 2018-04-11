@@ -4,7 +4,6 @@ sol
 .. toctree::
    :maxdepth: 4
 
-   OpenHdlc
+   openhdlc
    Sol
    SolDefines
-   SolVersion

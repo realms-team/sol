@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath('..'))
 here = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(here, '..', 'smartmeshsdk', 'libs'))
 
-from solobjectlib import Sol
+from solobjectlib import Sol as sol
 
 # =========================== defines =========================================
 

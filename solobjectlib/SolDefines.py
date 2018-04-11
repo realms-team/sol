@@ -53,6 +53,7 @@ SOL_TYPE_SENS_ECTM                          = 0x37
 SOL_TYPE_SENS_MPS1                          = 0x38
 SOL_TYPE_ADXL362_FFT_Z                      = 0x39
 SOL_TYPE_DUST_EVENTJOINFAILED               = 0x3a
+SOL_TYPE_SOLMANAGER_STATS_2                 = 0x3b
 SOL_TYPE_TEMPRH_SHT31                       = 0x40
 SOL_TYPE_DUST_OAP_ANALOG                    = 0x41
 SOL_TYPE_DUST_OAP_DIGITAL_IN                = 0x42
@@ -63,6 +64,7 @@ SOL_TYPE_SENS_GS1_I1MV2                     = 0x46
 SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
 SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE    = 0x48
 SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE    = 0x49
+
 def solTypeToTypeName(solDefinesClass, type_id):
     for n in dir(solDefinesClass):
         if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
@@ -537,6 +539,13 @@ sol_types = [
         'description':  'generated when a mote sends a join request to the manager but the request can not be validated',
         'structure':    '>QB',
         'fields':       ['macAddress', 'reason'],
+    },
+    {
+        'type':         SOL_TYPE_SOLMANAGER_STATS_2,
+        'description':  '',
+        'structure':    '>IIIII',
+        'fields':       ['sol_version', 'solmanager_version', 'sdk_version',
+                         'ram_usage', 'disk_usage'],
     },
     {
         'type':         SOL_TYPE_TEMPRH_SHT31,

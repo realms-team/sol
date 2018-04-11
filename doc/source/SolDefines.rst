@@ -16,8 +16,9 @@ How to add an Object structure
 This will create a issue number like #49.
 
 2. Create a new branch with the name: ``develop_<your issue number>``
-  ex: `develop_49`
-  
+
+   ex: `develop_49`
+
 3. Add the object type in the list at the top of the SolDefines.py file.
 
 * Prepend the string "SOL_TYPE" to your object name.
@@ -34,7 +35,7 @@ Refere to the python structure to know which field to set: https://docs.python.o
 
 6. Commit your changes starting with the issue number.
    Commit message example: "``#49 adding YOUR_OBJECT_NAME structure``".
-   
+
 7. Push your changes to the repo: ``git push origin develop_49``
 
 8. Create a merge request on branch develop using GitHub UI.

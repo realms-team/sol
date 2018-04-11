@@ -1,9 +1,6 @@
-from .context import Sol
+from .context import sol
 import pytest
 import json
-import pprint
-
-from SmartMeshSDK.IpMgrConnectorSerial  import IpMgrConnectorSerial
 
 #============================ defines ===============================
 
@@ -229,8 +226,6 @@ def sol_influxjson_example(request):
 
 def test_influx_to_json(sol_influxjson_example):
     sol_influxjson_example = json.loads(sol_influxjson_example)
-
-    sol = Sol.Sol()
 
     # influxdb->json
     sol_json  = sol.influxdb_to_json(sol_influxjson_example["influxdb_dump"])
