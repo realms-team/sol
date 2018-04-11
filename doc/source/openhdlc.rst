@@ -1,7 +1,7 @@
-OpenHdlc module
+openhdlc module
 ===============
 
-.. automodule:: OpenHdlc
+.. automodule:: openhdlc
     :members:
     :undoc-members:
     :show-inheritance:

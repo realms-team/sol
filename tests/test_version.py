@@ -1,4 +1,4 @@
-from .context import Sol
+from .context import sol
 
 #============================ defines ===============================
 
@@ -9,7 +9,5 @@ from .context import Sol
 #============================ tests =================================
 
 def test_version():
-    sol = Sol.Sol()
-    
-    assert type(sol.version)==tuple
-    assert len(sol.version)==4
+    assert type(sol.version()) == tuple
+    assert len(sol.version()) == 4

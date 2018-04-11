@@ -1,4 +1,4 @@
-from .context import Sol
+from .context import sol
 
 #============================ defines ===============================
 

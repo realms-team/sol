@@ -14,3 +14,5 @@ MANIFEST
 solmanager.cert
 solmanager.ppk
 
+# pycharm
+.idea/

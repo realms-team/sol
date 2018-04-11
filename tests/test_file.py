@@ -1,4 +1,4 @@
-from .context import Sol
+from .context import sol
 import os
 import random
 
@@ -93,8 +93,6 @@ def random_sol_json(timestamp=0):
 # ============================ tests =================================
 
 def test_dump_load(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump = [random_sol_json() for _ in range(1000)]
 
@@ -111,8 +109,6 @@ def test_dump_load(removeFile):
 
 
 def test_dump_corrupt_load(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump1 = [random_sol_json() for _ in range(500)]
     sol_jsonl_toDump2 = [random_sol_json() for _ in range(500)]
@@ -139,8 +135,6 @@ def test_dump_corrupt_load(removeFile):
 
 
 def test_retrieve_range(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
 
@@ -159,8 +153,6 @@ def test_retrieve_range(removeFile):
 
 
 def test_retrieve_range_corrupt_beginning(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
 
@@ -181,8 +173,6 @@ def test_retrieve_range_corrupt_beginning(removeFile):
 
 
 def test_retrieve_range_corrupt_middle(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump1 = [random_sol_json(timestamp=ts) for ts in range(500)]
     sol_jsonl_toDump2 = [random_sol_json(timestamp=500 + ts) for ts in range(500)]
@@ -205,8 +195,6 @@ def test_retrieve_range_corrupt_middle(removeFile):
 
 
 def test_retrieve_range_corrupt_end(removeFile):
-    sol = Sol.Sol()
-
     # prepare dicts to dump
     sol_jsonl_toDump = [random_sol_json(timestamp=ts) for ts in range(1000)]
 
@@ -227,8 +215,6 @@ def test_retrieve_range_corrupt_end(removeFile):
 
 
 def test_retrieve_range_corrupt_all(removeFile):
-    sol = Sol.Sol()
-
     # dump
     with open(FILENAME, 'ab') as f:
         for _ in range(100):

@@ -70,7 +70,7 @@ class AppConfig(object):
         config.read(self.config_file)
 
         with self.dataLock:
-            for (k,v) in config.items('config'):
+            for (k, v) in config.items('config'):
                 try:
                     self.config[k] = float(v)
                 except ValueError:
@@ -150,14 +150,14 @@ class AppStats(object):
     # ======================= private =========================================
 
     def _validateStatName(self, statName):
-        if statName.startswith("NUMRX_")==False:
+        if statName.startswith("NUMRX_") is False:
             if statName not in self.stats_list:
                 print statName
             assert statName in self.stats_list
 
     def _backup(self):
         with self.dataLock:
-            output = ['{0} = {1}'.format(k,v) for (k,v) in self.stats.items()]
+            output = ['{0} = {1}'.format(k, v) for (k, v) in self.stats.items()]
             output = '\n'.join(output)
             with open(self.stats_file, 'w') as f:
                 f.write(output)
