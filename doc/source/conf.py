@@ -60,7 +60,7 @@ author = u'Thomas Watteyne, Sami Malek, Ziran Zhang, Keoma Brun'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.5'
+version = u'1.6'
 # The full version, including alpha/beta/rc tags.
 release = u'1'
 
