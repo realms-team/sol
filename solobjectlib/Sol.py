@@ -342,6 +342,9 @@ def json_to_influxdb(sol_json, tags):
     except ValueError as err:
         log.warning(err)
 
+    # get SOL type
+    measurement = SolDefines.sol_type_to_type_name(sol_json['type'])
+
     # convert SOL timestamp to UTC
     utc_time = sol_json["timestamp"]*1000000000
 
@@ -353,7 +356,7 @@ def json_to_influxdb(sol_json, tags):
     sol_influxdb = {
             "time": utc_time,
             "tags": obj_tags,
-            "measurement": sol_json['type'],
+            "measurement": measurement,
             "fields": fields,
             }
 
@@ -386,7 +389,7 @@ def influxdb_to_json(sol_influxdb):
             obj_value = flatdict.FlatDict(d_influxdb).as_dict()
 
             # parse specific HR_NEIGHBORS
-            hr_nghb_name    = SolDefines.sol_type_to_name(
+            hr_nghb_name    = SolDefines.sol_type_to_type_name(
                                 SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
             if serie['name'] == hr_nghb_name:
                 for i in range(0, len(obj_value["neighbors"])+1):

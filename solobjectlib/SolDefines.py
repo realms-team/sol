@@ -67,7 +67,7 @@ SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
 SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE    = 0x48
 SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE    = 0x49
 
-def sol_type_to_name(type_id):
+def sol_type_to_type_name(type_id):
     SolDefines = sys.modules[__name__]
     for n in dir(SolDefines):
         if n.startswith('SOL_TYPE_') and getattr(SolDefines, n) == type_id:
@@ -572,12 +572,12 @@ sol_types = [
                 },
                 {
                     'field':     "temp_phys",
-                    'function': lambda x:  (x*175.0/0xffff)-45,
+                    'function': lambda x:  (x*175/0xffff)-45,
                     'args':     ['temp_raw'],
                 },
                 {
                     'field':     "rh_phys",
-                    'function': lambda x:  x*100.0/0xffff,
+                    'function': lambda x:  x*100/0xffff,
                     'args':     ['rh_raw'],
                 },
             ],
