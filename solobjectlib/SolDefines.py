@@ -1,4 +1,6 @@
 from math import sqrt as sqrt
+import sys
+
 SOL_PORT                                    = 0xf0ba
 
 # type names
@@ -65,21 +67,31 @@ SOL_TYPE_SENS_MICROWAVE_MOTION              = 0x47
 SOL_TYPE_SENS_INDUCTION_CURRENT_C_SOURCE    = 0x48
 SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE    = 0x49
 
-def solTypeToTypeName(solDefinesClass, type_id):
-    for n in dir(solDefinesClass):
-        if n.startswith('SOL_TYPE_') and getattr(solDefinesClass, n) == type_id:
+def sol_type_to_type_name(type_id):
+    SolDefines = sys.modules[__name__]
+    for n in dir(SolDefines):
+        if n.startswith('SOL_TYPE_') and getattr(SolDefines, n) == type_id:
             return n
     raise ValueError("SOL type %s does not exist" % type_id)
 
+def sol_name_to_type(type_name):
+    SolDefines = sys.modules[__name__]
+    if type_name in dir(SolDefines):
+        return getattr(SolDefines, type_name)
+    raise ValueError("SOL object name %s does not exist" % type_name)
 
 def solStructure(type_id):
     """
     Return the SOL structure according to the given type id
     If the element is not found, it raises a ValueError.
 
+    :param int|str type_id:
     :return: a dictionary that contains the following keys:
         type, description, structure, fields
     """
+    if isinstance(type_id, basestring):
+        type_id = sol_name_to_type(type_id)
+
     sol_item = {}
     for item in sol_types:
         if item['type'] == type_id:
@@ -607,7 +619,7 @@ sol_types = [
                 },
                 {
                     'field':     "soil_moist",
-                    'function': lambda x:  (0.000494 * x -  0.554),
+                    'function': lambda x:  (0.000494 * x -0.554),
                     'args':     ['NmVolts'],
                 },
             ],
@@ -663,7 +675,7 @@ sol_types = [
             },
             {
                 'field': "current_A",
-                'function': lambda x,y,z: sqrt(y/z-x*x/z/z)*0.001*98.464318,
+                'function': lambda x,y,z: sqrt(y/float(z)-x*x/float(z)/float(z))*0.001*98.464318,
                 'args': ['accu_sum', 'accu_sum_of_squares', 'sample_count'],
             },
         ],

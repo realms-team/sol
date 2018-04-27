@@ -1,16 +1,9 @@
 #!/usr/bin/python
 
-# =========================== adjust path =====================================
-
-import sys
-import os
-
-here = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(here, '..', '..', 'smartmeshsdk', 'libs'))
-
 # =========================== imports =========================================
 
 # from default Python
+import os
 import json
 import struct
 import base64
@@ -22,17 +15,14 @@ import ast
 # third-party packages
 import flatdict
 
-# project-specific
-from SmartMeshSDK.utils                 import FormatUtils
-from SmartMeshSDK.protocols.Hr.HrParser import HrParser
-from SmartMeshSDK.protocols.oap         import OAPMessage
-
 import SolDefines
 import openhdlc as hdlc
+import hr_parser
 
 # =========================== defines =========================================
 
-VERSION = (1, 5, 0, 0)
+VERSION = (1, 6, 0, 0)
+OAP_PORT = 0xF0B9
 
 # =========================== logging =========================================
 
@@ -122,7 +112,7 @@ def json_to_bin(sol_json):
 
     # mac
     if isinstance(sol_json['mac'], basestring):
-        sol_bin += FormatUtils.format_mac_string_to_bytes(sol_json['mac'])
+        sol_bin += _format_mac_string_to_bytes(sol_json['mac'])
     else:
         sol_bin += sol_json['mac']
 
@@ -210,7 +200,6 @@ def bin_to_json(sol_bin, mac=None):
     """
 
     sol_json = {}
-    hr_parser = HrParser()
 
     # header
 
@@ -230,10 +219,10 @@ def bin_to_json(sol_bin, mac=None):
 
     if h_M == SolDefines.SOL_HDR_M_NOMAC:
         assert mac is not None
-        sol_json['mac']  = FormatUtils.formatBuffer(mac)
+        sol_json['mac']  = _format_buffer(mac)
     else:
         assert len(sol_bin) >= 8
-        sol_json['mac']  = FormatUtils.formatBuffer(sol_bin[:8])
+        sol_json['mac']  = _format_buffer(sol_bin[:8])
         sol_bin          = sol_bin[8:]
 
     # timestamp
@@ -320,9 +309,9 @@ def json_to_influxdb(sol_json, tags):
     elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_SNAPSHOT:
         fields = {"mote": []}
         for mote in sol_json["value"]:
-            mote["macAddress"] = FormatUtils.formatBuffer(mote["macAddress"])
+            mote["macAddress"] = _format_buffer(mote["macAddress"])
             for path in mote["paths"]:
-                path["macAddress"] = FormatUtils.formatBuffer(path["macAddress"])
+                path["macAddress"] = _format_buffer(path["macAddress"])
             fields["mote"].append(mote)
     elif sol_json['type'] == SolDefines.SOL_TYPE_DUST_EVENTNETWORKRESET:
         fields = {'value': 'dummy'}
@@ -331,7 +320,7 @@ def json_to_influxdb(sol_json, tags):
         for (k, v) in fields.items():
             if type(v) == list:  # mac
                 if k in ['macAddress', 'source', 'dest']:
-                    fields[k] = FormatUtils.formatBuffer(v)
+                    fields[k] = _format_buffer(v)
                 elif k in ['sol_version', 'sdk_version', 'solmanager_version']:
                     fields[k] = ".".join(str(i) for i in v)
 
@@ -350,14 +339,19 @@ def json_to_influxdb(sol_json, tags):
                     fields[ap["field"]] = ap["function"](*arg_list)
                 if "tag" in ap:
                     obj_tags[ap["tag"]] = ap["function"](*arg_list)
-    except ValueError:
-        pass
+    except ValueError as err:
+        log.warning(err)
 
     # get SOL type
-    measurement = SolDefines.solTypeToTypeName(SolDefines, sol_json['type'])
+    measurement = SolDefines.sol_type_to_type_name(sol_json['type'])
 
     # convert SOL timestamp to UTC
     utc_time = sol_json["timestamp"]*1000000000
+
+    # fill "fields" if empty
+    if not fields:
+        fields = {'dummy': 'dummy'}
+        log.warning("'fields' empty for object {0}".format(sol_json))
 
     sol_influxdb = {
             "time": utc_time,
@@ -395,8 +389,7 @@ def influxdb_to_json(sol_influxdb):
             obj_value = flatdict.FlatDict(d_influxdb).as_dict()
 
             # parse specific HR_NEIGHBORS
-            hr_nghb_name    = SolDefines.solTypeToTypeName(
-                                SolDefines,
+            hr_nghb_name    = SolDefines.sol_type_to_type_name(
                                 SolDefines.SOL_TYPE_DUST_NOTIF_HRNEIGHBORS)
             if serie['name'] == hr_nghb_name:
                 for i in range(0, len(obj_value["neighbors"])+1):
@@ -613,7 +606,7 @@ def _split_dust_notif(dust_notif):
 
     elif dust_notif['name'] == 'hr':
         hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
-        notif_keys =  dust_notif['hr'].keys()
+        notif_keys = dust_notif['hr'].keys()
         for hrName in notif_keys:
             assert hrName in hr_type_list
         for hrName in notif_keys:
@@ -654,7 +647,7 @@ def _dust_notifData_to_sol_json(dust_notif):
     sol_ts     = None
     sol_value  = None
 
-    if   dust_notif['fields']['dstPort'] == OAPMessage.OAP_PORT:
+    if   dust_notif['fields']['dstPort'] == OAP_PORT:
         # notifData contains OAP message
 
         # this notification will already appear as an oap notification
@@ -771,7 +764,7 @@ def _fields_to_json_with_structure(sol_type, dust_notif):
     for name in sol_struct['fields']:
         returnVal[name] = dust_notif['fields'][name]
         if name in ['source', 'dest', 'macAddress']:
-            returnVal[name] = FormatUtils.format_mac_string_to_bytes(returnVal[name])
+            returnVal[name] = _format_mac_string_to_bytes(returnVal[name])
     if 'extrafields' in sol_struct:
         returnVal[sol_struct['extrafields']] = dust_notif['fields'][sol_struct['extrafields']]
 
@@ -928,13 +921,18 @@ def _get_sol_binary_value_dust_hr_discovered(hr):
     return return_val
 
 def _get_sol_binary_value_dust_hr_extended(hr):
-    hr_parser = HrParser()
-    HR_ID_EXTENDED_RSSI_STRUCT = ">" + "".join([i[1] for i in hr_parser.HR_DESC_EXTENDED_RSSI_DATA])
+    HR_DESC_EXTENDED_RSSI_DATA = [
+        ('idleRssi', 'b'),
+        ('txUnicastAttempts', 'H'),
+        ('txUnicastFailures', 'H'),
+    ]
+    HR_ID_EXTENDED_RSSI = 1
+    HR_ID_EXTENDED_RSSI_STRUCT = ">" + "".join([i[1] for i in HR_DESC_EXTENDED_RSSI_DATA])
     HR_ID_EXTENDED_RSSI_SIZE = struct.calcsize(HR_ID_EXTENDED_RSSI_STRUCT) * 15 # 15 channels
     return_val = []
     if "RSSI" in hr.keys():
         return_val += [struct.pack("<BB",
-                                   hr_parser.HR_ID_EXTENDED_RSSI, # extType
+                                   HR_ID_EXTENDED_RSSI, # extType
                                    HR_ID_EXTENDED_RSSI_SIZE)] # extLength
         for n in hr['RSSI']:
             return_val += [struct.pack(
@@ -1013,16 +1011,44 @@ def _fileBackUpUntilStartFrame(file_name, curOffset):
 # ==== miscellaneous helpers
 
 def _num_to_list(num, length):
+    """
+    258, 2 -> [1,2]
+    :param int num:
+    :param int length:
+    :rtype: list
+    """
     output = []
     for l in range(length):
         output = [int((num >> 8*l) & 0xff)]+output
     return output
 
 def _list_to_num(l):
+    """
+    [0x01, 0x02] -> 258
+    :param list l:
+    :rtype: int
+    """
     output = 0
     for i in range(len(l)):
         output += l[i] << (8*(len(l)-i-1))
     return output
+
+def _format_mac_string_to_bytes(mac_string):
+    """
+    "00-11-22-33-44-55-66-77" -> [0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77]
+    :param str mac_string:
+    :return: the mac address as list of bytes
+    :rtype: list
+    """
+    return [int(b,16) for b in mac_string.split('-')]
+
+def _format_buffer(buf):
+    """
+    example: [0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88] -> "11-22-33-44-55-66-77-88"
+    :param list buf:
+    :rtype: str
+    """
+    return '-'.join(["%.2x"%i for i in buf])
 
 # =========================== main ============================================
 
