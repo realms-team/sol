@@ -1,5 +1,5 @@
-from distutils.core import setup
 import os
+from setuptools import setup
 
 import sensorobjectlibrary.Sol as sol
 
@@ -19,9 +19,11 @@ setup(
     version = '.'.join(str(i) for i in sol.VERSION),
     description = 'The Sensor Object Library',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     author = 'Thomas Watteyne, Keoma Brun, Sami Malek, Ziran Zhang',
     author_email = 'keoma.brun@inria.fr',
     url = 'https://github.com/realms-team/sol',
     keywords = ['wireless', 'sensor', 'network'],
-    licence=license
+    package_data = {'': ['license.txt']},
+    license=license
 )
