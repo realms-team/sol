@@ -1,5 +1,7 @@
-### This file is used to generate the registry.md file
-### It reads the SolDefines.py file to generate a readable list of SOL Types
+"""
+This file is used to generate the registry.md file
+It reads the SolDefines.py file to generate a readable list of SOL Types
+"""
 
 import sys
 import os
@@ -7,7 +9,7 @@ import os
 # =========================== adjust path =====================================
 
 sys.path.insert(0, os.getcwd())
-from solobjectlib import SolDefines
+from sensorobjectlibrary import SolDefines
 
 # =========================== output file constants ===========================
 
@@ -113,7 +115,7 @@ with open(REGISTRY_FILE, 'w') as reg_file:
         # write columns
 
         reg_file.write("\n#### {0}\n\n{1}|\n{2}|\n{3}|\n".format(
-            SolDefines.solTypeToTypeName(SolDefines,item["type"])[len("SOL_TYPE_"):],
+            SolDefines.sol_type_to_type_name(item["type"])[len("SOL_TYPE_"):],
             fields_lines,
             scores_lines,
             struct_lines,

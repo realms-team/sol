@@ -1,22 +1,27 @@
 from distutils.core import setup
+import os
 
-import solobjectlib.SolVersion as ver
+import sensorobjectlibrary.Sol as sol
 
-with open('README.md') as f:
-    readme = f.read()
+HERE = os.path.abspath(os.path.dirname(__file__))
 
-with open('license.txt') as f:
+# Get the long description from the README file
+with open(os.path.join(HERE, 'README.md'), 'r') as f:
+    long_description = f.read()
+
+# Get the long description from the README file
+with open(os.path.join(HERE, 'license.txt'), 'r') as f:
     license = f.read()
 
 setup(
-  name = 'solobjectlib',
-  packages = ['solobjectlib'],
-  version = '.'.join(str(i) for i in ver.VERSION),
-  description = 'The Sensor Object Library',
-  long_description=readme,
-  author = 'Thomas Watteyne, Keoma Brun, Sami Malek, Ziran Zhang',
-  author_email = 'keoma.brun@inria.fr',
-  url = 'https://github.com/realms-team/sol',
-  keywords = ['wireless', 'sensor', 'network'],
-  licence=license
+    name = 'sensorobjectlibrary',
+    packages = ['sensorobjectlibrary'],
+    version = '.'.join(str(i) for i in sol.VERSION),
+    description = 'The Sensor Object Library',
+    long_description=long_description,
+    author = 'Thomas Watteyne, Keoma Brun, Sami Malek, Ziran Zhang',
+    author_email = 'keoma.brun@inria.fr',
+    url = 'https://github.com/realms-team/sol',
+    keywords = ['wireless', 'sensor', 'network'],
+    licence=license
 )

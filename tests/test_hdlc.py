@@ -1,6 +1,6 @@
 import os
-from solobjectlib import openhdlc as hdlc
-from solobjectlib import Sol as sol
+from sensorobjectlibrary import openhdlc as hdlc
+from sensorobjectlibrary import Sol as sol
 
 JSON = {
     'timestamp': 1521645792,
