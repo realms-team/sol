@@ -9,5 +9,5 @@ from .context import sol
 #============================ tests =================================
 
 def test_version():
-    assert type(sol.version()) == tuple
+    assert type(sol.version()) == list
     assert len(sol.version()) == 4
