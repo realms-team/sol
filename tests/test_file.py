@@ -4,8 +4,6 @@ import random
 
 import pytest
 
-from   SmartMeshSDK.utils    import FormatUtils
-
 # ============================ defines ===============================
 
 FILENAME = 'temp_test_file.sol'
@@ -14,19 +12,14 @@ EXAMPLE_MAC = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
 
 # ============================ fixtures ==============================
 
-def removeFileFunc():
-    os.remove(FILENAME)
-
-
-@pytest.fixture(scope='function')
-def removeFile(request):
-    # request.addfinalizer(removeFileFunc)
+@pytest.fixture
+def removeFile():
+    yield
     try:
         os.remove(FILENAME)
     except OSError:
         # if file does not exist. NOT an error.
         pass
-
 
 EXPECTEDRANGE = [
     (
@@ -78,7 +71,7 @@ def expectedRange(request):
 def random_sol_json(timestamp=0):
     returnVal = {
         "timestamp": timestamp,
-        "mac": FormatUtils.formatBuffer([random.randint(0x00, 0xff)] * 8),
+        "mac": sol._format_buffer([random.randint(0x00, 0xff)] * 8),
         "type": 0x0e,
         "value": {
             'srcPort': random.randint(0x0000, 0xffff),

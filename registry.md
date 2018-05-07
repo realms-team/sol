@@ -54,6 +54,7 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 |   `0x38` | [`SENS_MPS1`](#sens_mps1)                                                   |
 |   `0x39` | [`ADXL362_FFT_Z`](#adxl362_fft_z)                                           |
 |   `0x3a` | [`DUST_EVENTJOINFAILED`](#dust_eventjoinfailed)                             |
+|   `0x3b` | [`SOLMANAGER_STATS_2`](#solmanager_stats_2)                                 |
 |   `0x40` | [`TEMPRH_SHT31`](#temprh_sht31)                                             |
 |   `0x41` | [`DUST_OAP_ANALOG`](#dust_oap_analog)                                       |
 |   `0x42` | [`DUST_OAP_DIGITAL_IN`](#dust_oap_digital_in)                               |
@@ -330,6 +331,12 @@ When the well-known length is the table below is "None", the `L` (length) MUST b
 | macAddress | reason |
 |------------|--------|
 |     INT64U |  INT8U |
+
+#### SOLMANAGER_STATS_2
+
+| sol_version | solmanager_version | sdk_version | ram_usage | disk_usage |
+|-------------|--------------------|-------------|-----------|------------|
+|      INT32U |             INT32U |      INT32U |    INT32U |     INT32U |
 
 #### TEMPRH_SHT31
 

@@ -21,7 +21,6 @@ import hr_parser
 
 # =========================== defines =========================================
 
-VERSION = (1, 6, 0, 0)
 OAP_PORT = 0xF0B9
 
 # =========================== logging =========================================
@@ -36,7 +35,8 @@ class SolDuplicateOapNotificationException(Exception):
     pass
 
 def version():
-    return VERSION
+    import __version__
+    return [int(v) for v in __version__.__version__.split('.')]
 
 # ==== "chain" of communication from the Dust manager to the server
 

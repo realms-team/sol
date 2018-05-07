@@ -5,8 +5,7 @@ python:
 before_install:
 
 install:
-  - git clone --branch=master https://github.com/twatteyne/smartmeshsdk.git /home/travis/build/realms-team/smartmeshsdk
-  - pip install -r requirements.txt
+  - pip install flatdict==1.2.0
 
 script:
-  - python -m pytest tests/
+  - python -m pytest tests
