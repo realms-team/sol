@@ -24,6 +24,9 @@ setup(
     author_email = 'keoma.brun@inria.fr',
     url = 'https://github.com/realms-team/sol',
     keywords = ['wireless', 'sensor', 'network'],
+    install_requires=[
+        'flatdict==1.2.0',
+        'pyserial>=3.4'],
     package_data = {'': ['license.txt']},
     license=license
 )
