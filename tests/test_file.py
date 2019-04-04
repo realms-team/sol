@@ -96,8 +96,8 @@ def test_dump_load(removeFile):
     sol_jsonl_loaded = sol.loadFromFile(FILENAME)
 
     # compare
-    print sol_jsonl_loaded
-    print sol_jsonl_toDump
+    print(sol_jsonl_loaded)
+    print(sol_jsonl_toDump)
     assert sol_jsonl_loaded == sol_jsonl_toDump
 
 
@@ -211,7 +211,7 @@ def test_retrieve_range_corrupt_all(removeFile):
     # dump
     with open(FILENAME, 'ab') as f:
         for _ in range(100):
-            f.write("garbage")
+            f.write("garbage".encode())
 
     # load
     sol_jsonl_loaded = sol.loadFromFile(

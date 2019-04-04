@@ -229,6 +229,6 @@ def test_influx_to_json(sol_influxjson_example):
 
     # influxdb->json
     sol_json  = sol.influxdb_to_json(sol_influxjson_example["influxdb_dump"])
-    print '=====\ninfluxdb->json'
-    print sol_influxjson_example["json"]
+    print('=====\ninfluxdb->json')
+    print(sol_influxjson_example["json"])
     assert sol_json==sol_influxjson_example["json"]

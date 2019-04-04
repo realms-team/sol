@@ -10,4 +10,4 @@ from .context import sol
 
 def test_import():
     import sys
-    print sys.path
+    print(sys.path)

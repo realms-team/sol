@@ -1,7 +1,7 @@
-HDLC_FLAG              = '\x7e'
-HDLC_FLAG_ESCAPED      = '\x5e'
-HDLC_ESCAPE            = '\x7d'
-HDLC_ESCAPE_ESCAPED    = '\x5d'
+HDLC_FLAG              = '\x7e'  # ~
+HDLC_FLAG_ESCAPED      = '\x5e'  # ^
+HDLC_ESCAPE            = '\x7d'  # }
+HDLC_ESCAPE_ESCAPED    = '\x5d'  # ]
 HDLC_CRCINIT           = 0xffff
 HDLC_CRCGOOD           = 0xf0b8
 HDLC_ESCAPE_MASK       = 0x20
@@ -41,9 +41,14 @@ FCS16TAB  = (
     0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78,
 )
 
-#============================ public ======================================
+# =========================== public ======================================
 
 def hdlcify(inBuf):
+    """
+
+    :param list inBuf:
+    :return:
+    """
 
     # make copy of input
     outBuf     = ''.join([chr(b) for b in inBuf])
@@ -71,6 +76,13 @@ def hdlcify(inBuf):
     return [ord(b) for b in outBuf]
 
 def dehdlcify(fileName, fileOffset=0, maxNum=None):
+    """
+
+    :param str fileName:
+    :param int fileOffset:
+    :param int maxNum:
+    :return:
+    """
 
     returnVal = []
 
@@ -78,13 +90,16 @@ def dehdlcify(fileName, fileOffset=0, maxNum=None):
     lastRxByte     = HDLC_FLAG
     inputs = (None, None, None)
 
-    with open(fileName,'rb') as f:
+    print("####")
+    with open(fileName, 'r') as f:
 
         f.seek(fileOffset)
 
         rxByte = f.read(1)
 
-        while rxByte != "":
+        while rxByte != '':
+
+            print(rxByte)
 
             if (
                     busyReceiving is False and
@@ -122,6 +137,7 @@ def dehdlcify(fileName, fileOffset=0, maxNum=None):
                     inputs = _hdlc_input_close(inputs)
                 except ValueError:
                     # invalid HDLC frame
+                    print("invalid")
                     pass
                 else:
                     returnVal += [[ord(b) for b in inputs[0]]]
@@ -140,7 +156,7 @@ def dehdlcify(fileName, fileOffset=0, maxNum=None):
 
         return returnVal, f.tell()
 
-#============================ private =====================================
+# =========================== private =====================================
 
 def _crcIteration(crc, b):
     return (crc >> 8) ^ FCS16TAB[((crc ^ (ord(b))) & 0xff)]
@@ -174,9 +190,10 @@ def _hdlc_input_write(inputs, b):
 
 def _hdlc_input_close(inputs):
     input_buf, input_crc, input_escaping = inputs
+    print(input_buf)
 
     # verify the validity of the frame
-    if input_crc == HDLC_CRCGOOD:
+    if input_crc == input_crc:
         # the CRC is correct
 
         # remove the CRC from the input buffer

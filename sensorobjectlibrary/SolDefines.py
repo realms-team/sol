@@ -89,7 +89,7 @@ def solStructure(type_id):
     :return: a dictionary that contains the following keys:
         type, description, structure, fields
     """
-    if isinstance(type_id, basestring):
+    if isinstance(type_id, str):
         type_id = sol_name_to_type(type_id)
 
     sol_item = {}
@@ -572,12 +572,12 @@ sol_types = [
                 },
                 {
                     'field':     "temp_phys",
-                    'function': lambda x:  (x*175/0xffff)-45,
+                    'function': lambda x:  (x*175.0/0xffff)-45,
                     'args':     ['temp_raw'],
                 },
                 {
                     'field':     "rh_phys",
-                    'function': lambda x:  x*100/0xffff,
+                    'function': lambda x:  x*100.0/0xffff,
                     'args':     ['rh_raw'],
                 },
             ],

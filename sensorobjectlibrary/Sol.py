@@ -15,9 +15,11 @@ import ast
 # third-party packages
 import flatdict
 
-import SolDefines
-import openhdlc as hdlc
-import hr_parser
+# local package
+from sensorobjectlibrary import SolDefines
+from sensorobjectlibrary import openhdlc as hdlc
+from sensorobjectlibrary import hr_parser
+from sensorobjectlibrary import __version__
 
 # =========================== defines =========================================
 
@@ -35,7 +37,6 @@ class SolDuplicateOapNotificationException(Exception):
     pass
 
 def version():
-    import __version__
     return [int(v) for v in __version__.__version__.split('.')]
 
 # ==== "chain" of communication from the Dust manager to the server
@@ -111,7 +112,7 @@ def json_to_bin(sol_json):
     sol_bin        += [h]
 
     # mac
-    if isinstance(sol_json['mac'], basestring):
+    if isinstance(sol_json['mac'], str):
         sol_bin += _format_mac_string_to_bytes(sol_json['mac'])
     else:
         sol_bin += sol_json['mac']
@@ -162,10 +163,10 @@ def bin_to_http(sol_binl):
     try:
         return_val = {
             "v": SolDefines.SOL_HDR_V,
-            "o": [base64.b64encode(s) for s in ("".join(chr(b) for b in sol_bin) for sol_bin in sol_binl)]
+            "o": [base64.b64encode(s).decode() for s in (bytes(sol_bin) for sol_bin in sol_binl)]
         }
     except:
-        print sol_binl
+        print(sol_binl)
         raise
 
     return_val = json.dumps(return_val)
@@ -185,7 +186,7 @@ def http_to_bin(sol_http):
     sol_http = json.loads(sol_http)
 
     assert sol_http['v'] == SolDefines.SOL_HDR_V
-    sol_binl = [[ord(b) for b in base64.b64decode(o)] for o in sol_http['o']]
+    sol_binl = [[b for b in base64.b64decode(o)] for o in sol_http['o']]
 
     return sol_binl
 
@@ -427,7 +428,7 @@ def dumpToFile(sol_jsonl, file_name):
         for sol_json in sol_jsonl:
             sol_bin = json_to_bin(sol_json)
             sol_bin = hdlc.hdlcify(sol_bin)
-            sol_bin = ''.join([chr(b) for b in sol_bin])
+            sol_bin = bytes(sol_bin)
             f.write(sol_bin)
 
 def loadFromFile(file_name, start_timestamp=None, end_timestamp=None):
@@ -704,7 +705,7 @@ def _dust_hr_to_sol_json(dust_notif):
     hr_type_list = ['Device', 'Discovered', 'Neighbors', 'Extended']
     for hr_type in hr_type_list:
         if hr_type in dust_notif['hr']:
-            assert dust_notif['hr'].keys() == [hr_type]
+            assert list(dust_notif['hr'].keys()) == [hr_type]
             sol_type = getattr(SolDefines, "SOL_TYPE_DUST_NOTIF_HR{0}".format(hr_type.upper()))
             sol_value = dust_notif['hr'][hr_type]
     return sol_type, sol_value
@@ -789,7 +790,7 @@ def _fields_to_binary_with_structure(sol_type, fields):
     # unpacking field by field
     returnVal = []
     for id, val in enumerate(pack_values):
-        returnVal += [ord(b) for b in struct.pack(pack_format[0] + pack_format[id+1], val)]
+        returnVal += [b for b in struct.pack(pack_format[0] + pack_format[id+1], val)]
 
     if 'extrafields' in sol_struct:
         returnVal  += fields[sol_struct['extrafields']]
@@ -809,8 +810,7 @@ def _binary_to_fields_with_structure(sol_type, binary):
     for frmt in pack_format[1:]:
         size = struct.calcsize(pack_format[0] + frmt)
         if len(binary[ptr:ptr+size]) > 0:
-            t.append(struct.unpack(pack_format[0] + frmt,
-                                   "".join(chr(b) for b in binary[ptr:ptr+size]))[0])
+            t.append(struct.unpack(pack_format[0] + frmt, bytes(binary[ptr:ptr+size]))[0])
         ptr += size
 
     returnVal = {}
@@ -915,8 +915,7 @@ def _get_sol_binary_value_dust_hr_discovered(hr):
             n['rssi'],             # INT8    b
             n['numRx'],            # INT8U   B
         )]
-    return_val  = ''.join(return_val)
-    return_val  = [ord(c) for c in return_val]
+    return_val  = bytes(return_val)
 
     return return_val
 
@@ -956,7 +955,7 @@ def _get_sol_binary_value_snapshot(snapshot):
 
     # converting json to bytes
     for mote in snapshot:
-        if isinstance(mote['macAddress'], (str, unicode)):
+        if isinstance(mote['macAddress'], str):
             mote['macAddress'] = [int(c, 16) for c in mote['macAddress'].split("-")]
         m = struct.pack(
             '>QHBBBBBIIIIII',

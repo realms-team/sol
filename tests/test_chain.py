@@ -1,13 +1,13 @@
-from .context import sol
+from sensorobjectlibrary import Sol as sol
 import pytest
 import json
 import pprint
 
-#============================ defines ===============================
+# =========================== defines ===============================
 
 MACMANAGER   = "03-03-03-03-03-03-03-03"
 TIMESTAMP    = 0x12131415
-TAGS_DEFAULT = { "mac" : "03-03-03-03-03-03-03-03"}
+TAGS_DEFAULT = {"mac": "03-03-03-03-03-03-03-03"}
 TAGS         = {
     "mac"       : "01-02-03-04-05-06-07-08",
     "site"      : "super_site",
@@ -15,7 +15,7 @@ TAGS         = {
     "longitude" : -44.4444,
 }
 
-#============================ fixtures ==============================
+# =========================== fixtures ==============================
 
 SOL_CHAIN_EXAMPLE = [
     # SOL_TYPE_DUST_NOTIF_DATA_NOT_OAP
@@ -1167,7 +1167,7 @@ SOL_CHAIN_EXAMPLE = [
                 'channel': [5],
                 'channel_str': u'temperature',
                 'num_samples': 1,
-                'packet_timestamp': [262570839552L, 116116480],
+                'packet_timestamp': [262570839552, 116116480],
                 'rate': 30000,
                 'received_timestamp': u'2017-05-07 14:53:44.753000',
                 'sample_size': 16,
@@ -1223,7 +1223,7 @@ SOL_CHAIN_EXAMPLE = [
                 'channel': [5],
                 'channel_str': u'temperature',
                 'num_samples': 1,
-                'packet_timestamp': [262570839552L, 116116480],
+                'packet_timestamp': [262570839552, 116116480],
                 'rate': 30000,
                 'received_timestamp': u'2017-05-07 14:53:44.753000',
                 'sample_size': 16,
@@ -2103,11 +2103,11 @@ SOL_CHAIN_EXAMPLE = [
 def sol_chain_example(request):
     return json.dumps(request.param)
 
-#============================ helpers ===============================
+# =========================== helpers ===============================
 
 pp = pprint.PrettyPrinter(indent=4)
 
-#============================ tests =================================
+# =========================== tests =================================
 
 def test_chain(sol_chain_example):
     sol_chain_example = json.loads(sol_chain_example)
@@ -2122,47 +2122,47 @@ def test_chain(sol_chain_example):
     else:
         sol_jsonl = [sol_chain_example["objects"][0]["json"]]
 
-    print sol_chain_example["objects"]
-    print sol_jsonl
+    print(sol_chain_example["objects"])
+    print(sol_jsonl)
 
     # same number of objects? (for HR)
     assert len(sol_jsonl) == len(sol_chain_example["objects"])
 
     for (sol_json, example) in zip(sol_jsonl,sol_chain_example["objects"]):
         # dust->json
-        print '=====\ndust->json'
-        print sol_json
-        print example["json"]
+        print('=====\ndust->json')
+        print(sol_json)
+        print(example["json"])
         assert sol_json==example["json"]
 
         # json->bin
         sol_bin   = sol.json_to_bin(sol_json)
-        print '=====\njson->bin'
-        print sol_bin
-        print example["bin"]
+        print('=====\njson->bin')
+        print(sol_bin)
+        print(example["bin"])
         assert sol_bin==example["bin"]
 
         # bin->http
         sol_http  = sol.bin_to_http([sol_bin])
-        print '=====\nbin->http'
-        print sol_http
-        print example["http"]
+        print('=====\nbin->http')
+        print(sol_http)
+        print(example["http"])
         assert json.loads(sol_http)==example["http"]
 
         # http->bin
         sol_binl  = sol.http_to_bin(sol_http)
         assert len(sol_binl)==1
         sol_bin   = sol_binl[0]
-        print '=====\nhttp->bin'
-        print sol_bin
-        print example["bin"]
+        print('=====\nhttp->bin')
+        print(sol_bin)
+        print(example["bin"])
         assert sol_bin==example["bin"]
 
         # bin->json
         sol_json  = sol.bin_to_json(sol_bin)
-        print '=====\nbin->json'
-        print sol_json
-        print example["json"]
+        print('=====\nbin->json')
+        print(sol_json)
+        print(example["json"])
         assert sol_json==example["json"]
 
         # json->influxdb
@@ -2171,7 +2171,7 @@ def test_chain(sol_chain_example):
             sol_influxdb = sol.json_to_influxdb(sol_json,TAGS_DEFAULT)
         else:
             sol_influxdb = sol.json_to_influxdb(sol_json,TAGS)
-        print '=====\njson->influxdb'
+        print('=====\njson->influxdb')
         pp.pprint(sol_influxdb)
-        print example["influxdb"]
+        print(example["influxdb"])
         assert sol_influxdb==example["influxdb"]

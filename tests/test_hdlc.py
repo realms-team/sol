@@ -85,14 +85,33 @@ JSON2 = {
         'SmartMesh SDK': [1, 1, 2, 4]}
 }
 
+def test_hdlcify():
+    input = [126, 127, 129, 13]
+    output = hdlc.hdlcify(input)
+    assert output == [126, 125, 94, 127, 129, 13, 55, 140, 126]
+
+def test_dehdlcify():
+    input = [126, 127, 129, 30]
+    file_name = "test_hdlc.backup"
+    input_str = "".join(chr(c) for c in hdlc.hdlcify(input))
+    with open(file_name, 'w') as f:
+        f.write(input_str)
+
+    output = hdlc.dehdlcify(file_name, 0)
+    assert input == output[0][0]
+
 def test_hdlc():
     file_name = "test_hdlc.backup"
 
-    h = hdlc.hdlcify(sol.json_to_bin(JSON))
+    obj_bin = sol.json_to_bin(JSON2)
+    h = hdlc.hdlcify(obj_bin)
+    print(bytes(h))
     s = "".join(chr(c) for c in h)
-    with open(file_name, 'ab') as f:
+    print('####')
+    print(s)
+    with open(file_name, 'w') as f:
         f.write(s)
-    (d,o) = hdlc.dehdlcify(file_name)
-    assert d[0] == sol.json_to_bin(JSON)
-    assert sol.bin_to_json(d[0]) == JSON
+    (d, o) = hdlc.dehdlcify(file_name)
+    assert d[0] == sol.json_to_bin(JSON2)
+    assert sol.bin_to_json(d[0]) == JSON2
     os.remove(file_name)

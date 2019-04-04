@@ -2,13 +2,13 @@ import time
 import logging
 import traceback
 import threading
-import ConfigParser
+import configparser
 
-#============================ logging =========================================
+# =========================== logging =========================================
 
 log = logging.getLogger(__name__)
 
-#============================ helpers =========================================
+# =========================== helpers =========================================
 
 
 def currentUtcTime():
@@ -35,11 +35,11 @@ def logCrash(err, appstats, threadName=None):
     # update stats
     appstats.increment('ADM_NUM_CRASHES')
     log.critical(output)
-    print output
+    print(output)
     return output
 
 
-#============================ singletons ======================================
+# =========================== singletons ======================================
 
 
 class AppConfig(object):
@@ -66,7 +66,7 @@ class AppConfig(object):
         self.config     = {}
         self.config_file = config_file
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(self.config_file)
 
         with self.dataLock:
@@ -152,7 +152,7 @@ class AppStats(object):
     def _validateStatName(self, statName):
         if statName.startswith("NUMRX_") is False:
             if statName not in self.stats_list:
-                print statName
+                print(statName)
             assert statName in self.stats_list
 
     def _backup(self):

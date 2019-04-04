@@ -7,8 +7,8 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(HERE, 'README.md'), 'r') as f:
     long_description = f.read()
 
-# Get the long description from the README file
-with open(os.path.join(HERE, 'license.txt'), 'r') as f:
+# Get the license from the LICENSE file
+with open(os.path.join(HERE, 'LICENSE'), 'r') as f:
     license = f.read()
 
 # Get the long description from the README file
@@ -31,6 +31,6 @@ setup(
         'flatdict==1.2.0',
         'pyserial>=3.4'
     ],
-    package_data={'': ['license.txt']},
+    package_data={'': ['LICENSE']},
     license=license
 )
