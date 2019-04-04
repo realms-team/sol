@@ -303,7 +303,7 @@ def _parseAs(desc, payload):
         raise ValueError("not enough bytes for HR")
 
     # separate string to parse from remainder
-    hrstring             = ''.join([chr(b) for b in payload[:numBytes]])
+    hrstring             = bytes(payload[:numBytes])
     remainder            = payload[numBytes:]
 
     # apply the format string

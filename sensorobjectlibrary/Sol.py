@@ -23,7 +23,9 @@ OAP_PORT = 0xF0B9
 
 # =========================== logging =========================================
 
-log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 # =========================== helpers =========================================
 
@@ -65,6 +67,7 @@ def dust_to_json(dust_notif, mac_manager=None, timestamp=None):
         try:
             sol_type, sol_ts, sol_value = _dust_notif_to_sol_json(d_n)
         except SolDuplicateOapNotificationException:
+            logger.debug("SolDuplicateOapNotificationException")
             continue
 
         # get sol_ts
@@ -488,7 +491,7 @@ def _dust_oap_to_sol_json(dust_notif):
                 'state': dust_notif['fields']['new_val'],
             }
         else:
-            log.debug("Unknow format for sol type {0}. dust_notif={1}".format(sol_type, dust_notif))
+            logger.debug("Unknow format for sol type {0}. dust_notif={1}".format(sol_type, dust_notif))
     else:
         raise NotImplementedError()
     return sol_type, sol_value
@@ -598,14 +601,19 @@ def _binary_to_fields_snapshot(binary):
     path_size       = struct.calcsize(path_structure)
 
     # get number of motes in snapshot
-    num_motes       = struct.unpack('>B', chr(binary[0]))[0]
+    num_motes       = struct.unpack('>B', bytes([binary[0]]))[0]
+    assert isinstance(num_motes, int)
     binary          = binary[1:]
 
     # parse SNAPSHOT
     for i in range(0, num_motes):
         # create mote dict
         mote = {}
-        m = struct.unpack(mote_structure, ''.join(chr(b) for b in binary[:mote_size]))
+        if isinstance(binary[:mote_size], list):
+            bins = bytes(binary[:mote_size])
+        else:
+            bins = bytes([binary[:mote_size]])
+        m = struct.unpack(mote_structure, bins)
         binary          = binary[mote_size:]
         for (k, v) in zip(mote_fields, m):
             mote[k] = v
@@ -614,14 +622,18 @@ def _binary_to_fields_snapshot(binary):
         mote["macAddress"] = _num_to_list(mote["macAddress"], 8)
 
         # get number of paths in mote
-        num_paths       = struct.unpack('>B', chr(binary[0]))[0]
+        num_paths       = struct.unpack('>B', bytes([binary[0]]))[0]
         binary          = binary[1:]
 
         # create path dict
         path_list       = []
         for j in range(0, num_paths):
             path = {}
-            p = struct.unpack('>QBBBbb', ''.join(chr(b) for b in binary[:path_size]))
+            if isinstance(binary[:path_size], list):
+                bins = bytes(binary[:path_size])
+            else:
+                bins = bytes([binary[:path_size]])
+            p = struct.unpack('>QBBBbb', bins)
             binary = binary[path_size:]
             for (k, v) in zip(path_fields, p):
                 path[k] = v
@@ -638,10 +650,15 @@ def _binary_to_fields_snapshot(binary):
     return return_val
 
 def _get_sol_binary_value_dust_hr_neighbors(hr):
-    return_val  = []
-    return_val += [chr(hr['numItems'])]
+    """
+
+    :param hr:
+    :return:
+    :rtype: list
+    """
+    return_val  = bytes([hr['numItems']])
     for n in hr['neighbors']:
-        return_val += [struct.pack(
+        return_val += struct.pack(
             '>HBbHHH',
             n['neighborId'],       # INT16U  H
             n['neighborFlag'],     # INT8U   B
@@ -649,24 +666,28 @@ def _get_sol_binary_value_dust_hr_neighbors(hr):
             n['numTxPackets'],     # INT16U  H
             n['numTxFailures'],    # INT16U  H
             n['numRxPackets'],     # INT16U  H
-        )]
-    return_val = ''.join(return_val)
-    return_val = [ord(c) for c in return_val]
+        )
+    return_val = list(return_val)
 
     return return_val
 
 def _get_sol_binary_value_dust_hr_discovered(hr):
-    return_val  = []
-    return_val += [chr(hr['numJoinParents'])]
-    return_val += [chr(hr['numItems'])]
+    """
+
+    :param hr:
+    :return:
+    :rtype: list
+    """
+    return_val  = bytes([hr['numJoinParents']])
+    return_val += bytes([hr['numItems']])
     for n in hr['discoveredNeighbors']:
-        return_val += [struct.pack(
+        return_val += struct.pack(
             '>HbB',
             n['neighborId'],       # INT16U  H
             n['rssi'],             # INT8    b
             n['numRx'],            # INT8U   B
-        )]
-    return_val  = bytes(return_val)
+        )
+    return_val  = list(return_val)
 
     return return_val
 
@@ -679,27 +700,26 @@ def _get_sol_binary_value_dust_hr_extended(hr):
     HR_ID_EXTENDED_RSSI = 1
     HR_ID_EXTENDED_RSSI_STRUCT = ">" + "".join([i[1] for i in HR_DESC_EXTENDED_RSSI_DATA])
     HR_ID_EXTENDED_RSSI_SIZE = struct.calcsize(HR_ID_EXTENDED_RSSI_STRUCT) * 15 # 15 channels
-    return_val = []
+    return_val = bytes()
     if "RSSI" in hr.keys():
-        return_val += [struct.pack("<BB",
+        return_val += struct.pack("<BB",
                                    HR_ID_EXTENDED_RSSI, # extType
-                                   HR_ID_EXTENDED_RSSI_SIZE)] # extLength
+                                   HR_ID_EXTENDED_RSSI_SIZE) # extLength
         for n in hr['RSSI']:
-            return_val += [struct.pack(
+            return_val += struct.pack(
                 HR_ID_EXTENDED_RSSI_STRUCT,
                 n['idleRssi'],          # INT8    b
                 n['txUnicastAttempts'], # INT16U  H
                 n['txUnicastFailures'], # INT16U  H
-            )]
-        return_val  = ''.join(return_val)
-        return_val  = [ord(c) for c in return_val]
+            )
+        return_val  = list(return_val)
     else:
         raise NotImplementedError
 
     return return_val
 
 def _get_sol_binary_value_snapshot(snapshot):
-    return_val  = ""
+    return_val  = b""
 
     # adding number of items
     return_val  += struct.pack('>B', len(snapshot))
@@ -729,9 +749,9 @@ def _get_sol_binary_value_snapshot(snapshot):
         # adding paths list size
         return_val  += struct.pack('B', len(mote['paths']))
 
-        p = ""
+        p = b""
         for path in mote['paths']:
-            if isinstance(path['macAddress'], (str, unicode)):
+            if isinstance(path['macAddress'], str):
                 path['macAddress'] = [int(c, 16) for c in path['macAddress'].split("-")]
             p += struct.pack(
                 '>QBBBbb',
@@ -743,8 +763,7 @@ def _get_sol_binary_value_snapshot(snapshot):
                 path['rssiDestSrc'],                    # INT8    b
             )
         return_val += p
-    return_val  = ''.join(return_val)
-    return_val  = [ord(c) for c in return_val]
+    return_val  = list(return_val)
     return return_val
 
 # ==== miscellaneous helpers

@@ -2,6 +2,7 @@ from sensorobjectlibrary import Sol as sol
 import pytest
 import json
 import pprint
+from collections import OrderedDict
 
 # =========================== defines ===============================
 
@@ -14,6 +15,10 @@ TAGS         = {
     "latitude"  : 55.5555,
     "longitude" : -44.4444,
 }
+
+# =========================== helpers ===============================
+
+pp = pprint.PrettyPrinter(indent=4)
 
 # =========================== fixtures ==============================
 
@@ -1535,14 +1540,11 @@ SOL_CHAIN_EXAMPLE = [
 def sol_chain_example(request):
     return json.dumps(request.param)
 
-# =========================== helpers ===============================
-
-pp = pprint.PrettyPrinter(indent=4)
-
 # =========================== tests =================================
 
 def test_chain(sol_chain_example):
     sol_chain_example = json.loads(sol_chain_example)
+
 
     if "dust" in sol_chain_example:
         # dust->json
@@ -1560,39 +1562,39 @@ def test_chain(sol_chain_example):
     # same number of objects? (for HR)
     assert len(sol_jsonl) == len(sol_chain_example["objects"])
 
-    for (sol_json, example) in zip(sol_jsonl,sol_chain_example["objects"]):
+    for (sol_json, example) in zip(sol_jsonl, sol_chain_example["objects"]):
         # dust->json
         print('=====\ndust->json')
         print(sol_json)
         print(example["json"])
-        assert sol_json==example["json"]
+        assert sol_json == example["json"]
 
         # json->bin
         sol_bin   = sol.json_to_bin(sol_json)
         print('=====\njson->bin')
         print(sol_bin)
         print(example["bin"])
-        assert sol_bin==example["bin"]
+        assert sol_bin == example["bin"]
 
         # bin->http
         sol_http  = sol.bin_to_http([sol_bin])
         print('=====\nbin->http')
         print(sol_http)
         print(example["http"])
-        assert json.loads(sol_http)==example["http"]
+        assert json.loads(sol_http) == example["http"]
 
         # http->bin
         sol_binl  = sol.http_to_bin(sol_http)
-        assert len(sol_binl)==1
+        assert len(sol_binl) == 1
         sol_bin   = sol_binl[0]
         print('=====\nhttp->bin')
         print(sol_bin)
         print(example["bin"])
-        assert sol_bin==example["bin"]
+        assert sol_bin == example["bin"]
 
         # bin->json
         sol_json  = sol.bin_to_json(sol_bin)
         print('=====\nbin->json')
         print(sol_json)
         print(example["json"])
-        assert sol_json==example["json"]
+        assert sol_json == example["json"]
