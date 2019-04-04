@@ -60,26 +60,7 @@ SOL_CHAIN_EXAMPLE = [
                         "o" : [
                             "EwECAwQFBgcIEhMUFQ4BAgMEBQYHCA=="
                         ]
-                    },
-                "influxdb":
-                    {
-                        "time"          : TIMESTAMP*1000000000,
-                        "tags"          : {
-                            'mac'       : '01-02-03-04-05-06-07-08',
-                            'site'      : 'super_site',
-                            'latitude'  : 55.5555,
-                            'longitude' : -44.4444,
-                        },
-                        "measurement"   : 'SOL_TYPE_DUST_NOTIFDATA',
-                        "fields"        : {
-                            'srcPort'   : 0x0102,
-                            'dstPort'   : 0x0304,
-                            'data:0'    : 0x05,
-                            'data:1'    : 0x06,
-                            'data:2'    : 0x07,
-                            'data:3'    : 0x08,
-                        },
-                    },
+                    }
             },
         ],
     },
@@ -158,32 +139,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAA="
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
-                    "fields"     : {
-                        'badLinkFrameId':  0,
-                        'badLinkOffset':   0,
-                        'badLinkSlot':     0,
-                        'batteryVoltage':  2949,
-                        'charge':          377,
-                        'numMacDropped':   0,
-                        'numRxLost':       0,
-                        'numRxOk':         5,
-                        'numTxBad':        0,
-                        'numTxFail':       0,
-                        'numTxOk':         58,
-                        'queueOcc':        49,
-                        'temperature':     21,
-                    },
-                },
+                }
             },
         ],
     },
@@ -252,35 +208,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o": [
                         "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
                     ]
-                },
-                "influxdb": {
-                    "time": TIMESTAMP * 1000000000,
-                    "tags": {
-                        'mac': '01-02-03-04-05-06-07-08',
-                        'site': 'super_site',
-                        'latitude': 55.5555,
-                        'longitude': -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
-                    "fields": {
-                        'badLinkFrameId': 0,
-                        'badLinkOffset': 0,
-                        'badLinkSlot': 0,
-                        'batteryVoltage': 2949,
-                        'charge': 377,
-                        'numMacCrcErr': 1,
-                        'numMacDropped': 0,
-                        'numMacMicErr': 0,
-                        'numNetMicErr': 0,
-                        'numRxLost': 0,
-                        'numRxOk': 5,
-                        'numTxBad': 0,
-                        'numTxFail': 0,
-                        'numTxOk': 58,
-                        'queueOcc': 49,
-                        'temperature': 21,
-                    },
-                },
+                }
             },
         ],
     },
@@ -394,35 +322,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFRAAAAF5MRULhQA6AAAABQAAAAAAAAAAAAAAAAE="
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDEVICE',
-                    "fields"     : {
-                        'badLinkFrameId':  0,
-                        'badLinkOffset':   0,
-                        'badLinkSlot':     0,
-                        'batteryVoltage':  2949,
-                        'charge':          377,
-                        'numMacCrcErr':    1,
-                        'numMacDropped':   0,
-                        'numMacMicErr':    0,
-                        'numNetMicErr':    0,
-                        'numRxLost':       0,
-                        'numRxOk':         5,
-                        'numTxBad':        0,
-                        'numTxFail':       0,
-                        'numTxOk':         58,
-                        'queueOcc':        49,
-                        'temperature':     21,
-                    },
-                },
+                }
             },
             {
                 "json": {
@@ -489,45 +389,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFRIICAAD2wIAB8IBAAraAwAM3AEABd0BAAjZAQAJ1AEAC88B"
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'       : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRDISCOVERED',
-                    "fields"     : {
-                        'discoveredNeighbors:0:neighborId': 3,
-                        'discoveredNeighbors:0:numRx': 2,
-                        'discoveredNeighbors:0:rssi': -37,
-                        'discoveredNeighbors:1:neighborId': 7,
-                        'discoveredNeighbors:1:numRx': 1,
-                        'discoveredNeighbors:1:rssi': -62,
-                        'discoveredNeighbors:2:neighborId': 10,
-                        'discoveredNeighbors:2:numRx': 3,
-                        'discoveredNeighbors:2:rssi': -38,
-                        'discoveredNeighbors:3:neighborId': 12,
-                        'discoveredNeighbors:3:numRx': 1,
-                        'discoveredNeighbors:3:rssi': -36,
-                        'discoveredNeighbors:4:neighborId': 5,
-                        'discoveredNeighbors:4:numRx': 1,
-                        'discoveredNeighbors:4:rssi': -35,
-                        'discoveredNeighbors:5:neighborId': 8,
-                        'discoveredNeighbors:5:numRx': 1,
-                        'discoveredNeighbors:5:rssi': -39,
-                        'discoveredNeighbors:6:neighborId': 9,
-                        'discoveredNeighbors:6:numRx': 1,
-                        'discoveredNeighbors:6:rssi': -44,
-                        'discoveredNeighbors:7:neighborId': 11,
-                        'discoveredNeighbors:7:numRx': 1,
-                        'discoveredNeighbors:7:rssi': -49,
-                        'numItems': 8,
-                        'numJoinParents': 8,
-                    },
-                },
+                }
             },
         ],
     },
@@ -649,50 +511,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFREFAAQA3wBnAAAAAgABAMQAwQAOAAQABgDkAAAAAAAoAAcAxgAAAAAAYgAMANwAAAAAAGE=",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HRNEIGHBORS',
-                    "fields"     : {
-                        'neighbors:4:neighborFlag': 0,
-                        'neighbors:4:neighborId': 4,
-                        'neighbors:4:numRxPackets': 2,
-                        'neighbors:4:numTxFailures': 0,
-                        'neighbors:4:numTxPackets': 103,
-                        'neighbors:4:rssi': -33,
-                        'neighbors:1:neighborFlag': 0,
-                        'neighbors:1:neighborId': 1,
-                        'neighbors:1:numRxPackets': 4,
-                        'neighbors:1:numTxFailures': 14,
-                        'neighbors:1:numTxPackets': 193,
-                        'neighbors:1:rssi': -60,
-                        'neighbors:6:neighborFlag': 0,
-                        'neighbors:6:neighborId': 6,
-                        'neighbors:6:numRxPackets': 40,
-                        'neighbors:6:numTxFailures': 0,
-                        'neighbors:6:numTxPackets': 0,
-                        'neighbors:6:rssi': -28,
-                        'neighbors:7:neighborFlag': 0,
-                        'neighbors:7:neighborId': 7,
-                        'neighbors:7:numRxPackets': 98,
-                        'neighbors:7:numTxFailures': 0,
-                        'neighbors:7:numTxPackets': 0,
-                        'neighbors:7:rssi': -58,
-                        'neighbors:12:neighborFlag': 0,
-                        'neighbors:12:neighborId': 12,
-                        'neighbors:12:numRxPackets': 97,
-                        'neighbors:12:numTxFailures': 0,
-                        'neighbors:12:numTxPackets': 0,
-                        'neighbors:12:rssi': -36,
-                        'numItems': 5,
-                    },
-                },
+                }
             }
         ]
     },
@@ -773,34 +592,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o": [
                         "EwECAwQFBgcIEhMUFUQBS6MADAAAowANAAGnAAgAAaQACwAAowAJAACmAA0AAKMACgAAowAPAACjAAsAAaMADgAApgAMAACkAA8AAKwADgAAowANAACjAA8AAA==",
                     ]
-                },
-                "influxdb": {
-                    "time": TIMESTAMP * 1000000000,
-                    "tags": {
-                        'mac': '01-02-03-04-05-06-07-08',
-                        'site': 'super_site',
-                        'latitude': 55.5555,
-                        'longitude': -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_NOTIF_HREXTENDED',
-                    "fields": {
-                        '11:txUnicastAttempts': 12, '11:idleRssi': -93, '11:txUnicastFailures': 0,
-                        '12:txUnicastAttempts': 13, '12:idleRssi': -93, '12:txUnicastFailures': 1,
-                        '13:txUnicastAttempts': 8,  '13:idleRssi': -89, '13:txUnicastFailures': 1,
-                        '14:txUnicastAttempts': 11, '14:idleRssi': -92, '14:txUnicastFailures': 0,
-                        '15:txUnicastAttempts': 9,  '15:idleRssi': -93, '15:txUnicastFailures': 0,
-                        '16:txUnicastAttempts': 13, '16:idleRssi': -90, '16:txUnicastFailures': 0,
-                        '17:txUnicastAttempts': 10, '17:idleRssi': -93, '17:txUnicastFailures': 0,
-                        '18:txUnicastAttempts': 15, '18:idleRssi': -93, '18:txUnicastFailures': 0,
-                        '19:txUnicastAttempts': 11, '19:idleRssi': -93, '19:txUnicastFailures': 1,
-                        '20:txUnicastAttempts': 14, '20:idleRssi': -93, '20:txUnicastFailures': 0,
-                        '21:txUnicastAttempts': 12, '21:idleRssi': -90, '21:txUnicastFailures': 0,
-                        '22:txUnicastAttempts': 15, '22:idleRssi': -92, '22:txUnicastFailures': 0,
-                        '23:txUnicastAttempts': 14, '23:idleRssi': -84, '23:txUnicastFailures': 0,
-                        '24:txUnicastAttempts': 13, '24:idleRssi': -93, '24:txUnicastFailures': 0,
-                        '25:txUnicastAttempts': 15, '25:idleRssi': -93, '25:txUnicastFailures': 0
-                    },
-                },
+                }
             }
         ]
     },
@@ -843,19 +635,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRQBAQEBAQEBAQICAgICAgICAw=="
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTPATHCREATE',
-                    "fields"     : {
-                        'source'      : '01-01-01-01-01-01-01-01',
-                        'dest'        : '02-02-02-02-02-02-02-02',
-                        'direction'   : 3,
-                    },
-                },
+                }
             }
         ]
     },
@@ -898,19 +678,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRUBAQEBAQEBAQICAgICAgICAw==",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTPATHDELETE',
-                    "fields"     : {
-                        'source'      : '01-01-01-01-01-01-01-01',
-                        'dest'        : '02-02-02-02-02-02-02-02',
-                        'direction'   : 3,
-                    },
-                },
+                }
             }
         ]
     },
@@ -947,17 +715,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRkBAQEBAQEBAQ==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTMOTEJOIN',
-                    "fields"     : {
-                        'macAddress'  : '01-01-01-01-01-01-01-01',
-                    },
-                },
+                }
             }
         ]
     },
@@ -997,18 +755,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRoBAQEBAQEBAQIC",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTMOTECREATE',
-                    "fields"     : {
-                        'macAddress'  : '01-01-01-01-01-01-01-01',
-                        'moteId'      : 0x0202,
-                    },
-                },
+                }
             }
         ]
     },
@@ -1048,19 +795,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRsBAQEBAQEBAQIC",
                     ],
-                },
-                "influxdb":
-                    {
-                        "time"       : TIMESTAMP*1000000000,
-                        "tags"       : {
-                            'mac'    : '03-03-03-03-03-03-03-03',
-                        },
-                        "measurement": 'SOL_TYPE_DUST_EVENTMOTEDELETE',
-                        "fields"     : {
-                            'macAddress'  : '01-01-01-01-01-01-01-01',
-                            'moteId'      : 0x0202,
-                        },
-                    },
+                }
             }
         ]
     },
@@ -1097,17 +832,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFRwBAQEBAQEBAQ==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTMOTELOST',
-                    "fields"     : {
-                        'macAddress'  : '01-01-01-01-01-01-01-01',
-                    },
-                },
+                }
             },
         ],
     },
@@ -1144,17 +869,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFR0BAQEBAQEBAQ==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTMOTEOPERATIONAL',
-                    "fields"     : {
-                        'macAddress'  : '01-01-01-01-01-01-01-01',
-                    },
-                },
+                }
             }
         ]
     },
@@ -1197,20 +912,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFScKMw==",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
-                    "fields"     : {
-                        'temperature': 0x0a33,
-                    },
-                },
+                }
             },
         ],
     },
@@ -1253,20 +955,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFSf/hQ==",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_DUST_OAP_TEMPSAMPLE',
-                    "fields"     : {
-                        'temperature': -123,
-                    },
-                },
+                }
             },
         ],
     },
@@ -1305,18 +994,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFToBAQEBAQEBAQE="
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_EVENTJOINFAILED',
-                    "fields"     : {
-                        'macAddress'    : '01-01-01-01-01-01-01-01',
-                        'reason'        : 1
-                    },
-                },
+                }
             }
         ]
     },
@@ -1351,23 +1029,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFSIKMwtEAQQ=",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_JUDD_T2D2R1N1',
-                    "fields"     : {
-                        'temperature': 0x0a33,
-                        'depth': 0x0b44,
-                        'numReadings': 0x01,
-                        'retries': 0x04,
-                    },
-                },
+                }
             },
         ],
     },
@@ -1480,60 +1142,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwMDAwMDAwMDEhMUFSACAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAhESExQVFhcYLC0u//4hIiMkJSYnKCwtLv/+MTIzNDU2NzgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnAUFCQ0RFRkdILC0u//4=",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '03-03-03-03-03-03-03-03',
-                    },
-                    "measurement": 'SOL_TYPE_DUST_SNAPSHOT',
-                    "fields"     : {
-                        'mote:0:macAddress':            '01-02-03-04-05-06-07-08',
-                        'mote:0:moteId':                0x090a,      # INT16U  H
-                        'mote:0:isAP':                  0x0b,        # BOOL    B
-                        'mote:0:state':                 0x0c,        # INT8U   B
-                        'mote:0:isRouting':             0x0d,        # BOOL    B
-                        'mote:0:numNbrs':               0x0e,        # INT8U   B
-                        'mote:0:numGoodNbrs':           0x0f,        # INT8U   B
-                        'mote:0:requestedBw':           0x10111213,  # INT32U  I
-                        'mote:0:totalNeededBw':         0x14151617,  # INT32U  I
-                        'mote:0:assignedBw':            0x18191a1b,  # INT32U  I
-                        'mote:0:packetsReceived':       0x1c1d1e1f,  # INT32U  I
-                        'mote:0:packetsLost':           0x20212223,  # INT32U  I
-                        'mote:0:avgLatency':            0x24252627,  # INT32U  I
-                        'mote:0:paths:0:macAddress':    '11-12-13-14-15-16-17-18',
-                        'mote:0:paths:0:direction':     0x2c,       # INT8U   B
-                        'mote:0:paths:0:numLinks':      0x2d,       # INT8U   B
-                        'mote:0:paths:0:quality':       0x2e,       # INT8U   B
-                        'mote:0:paths:0:rssiSrcDest':   -1,         # INT8    b
-                        'mote:0:paths:0:rssiDestSrc':   -2,         # INT8    b
-                        'mote:0:paths:1:macAddress':    '21-22-23-24-25-26-27-28',
-                        'mote:0:paths:1:direction':     0x2c,       # INT8U  B
-                        'mote:0:paths:1:numLinks':      0x2d,       # INT8U  B
-                        'mote:0:paths:1:quality':       0x2e,       # INT8U  B
-                        'mote:0:paths:1:rssiSrcDest':   -1,         # INT8   b
-                        'mote:0:paths:1:rssiDestSrc':   -2,         # INT8   b
-                        'mote:1:macAddress':            '31-32-33-34-35-36-37-38',
-                        'mote:1:moteId':                0x090a,     # INT16U
-                        'mote:1:isAP':                  0x0b,       # BOOL
-                        'mote:1:state':                 0x0c,       # INT8U
-                        'mote:1:isRouting':             0x0d,       # BOOL
-                        'mote:1:numNbrs':               0x0e,       # INT8U
-                        'mote:1:numGoodNbrs':           0x0f,       # INT8U
-                        'mote:1:requestedBw':           0x10111213, # INT32U
-                        'mote:1:totalNeededBw':         0x14151617, # INT32U
-                        'mote:1:assignedBw':            0x18191a1b, # INT32U
-                        'mote:1:packetsReceived':       0x1c1d1e1f, # INT32U
-                        'mote:1:packetsLost':           0x20212223, # INT32U
-                        'mote:1:avgLatency':            0x24252627, # INT32U
-                        'mote:1:paths:0:macAddress':    '41-42-43-44-45-46-47-48',
-                        'mote:1:paths:0:direction':     0x2c,       # INT8U
-                        'mote:1:paths:0:numLinks':      0x2d,       # INT8U
-                        'mote:1:paths:0:quality':       0x2e,       # INT8U
-                        'mote:1:paths:0:rssiSrcDest':   -1,         # INT8
-                        'mote:1:paths:0:rssiDestSrc':   -2,         # INT8
-                    },
-                },
+                }
             },
         ],
     },
@@ -1566,22 +1175,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFSgBAgMEBQYHCAkBAgM="
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                    },
-                    "measurement": 'SOL_TYPE_SOLMANAGER_STATS',
-                    "fields"     : {
-                        "sol_version"           : "1.2.3.4",
-                        "solmanager_version"    : "5.6.7.8",
-                        "sdk_version"           : "9.1.2.3",
-                    },
-                },
+                }
             },
         ],
     },
@@ -1632,27 +1226,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFTE8ZQGZiAE=",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        't_Nval'    : 0x01,
-                        'rh_Nval'   : 0x01,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
-                    "fields"     : {
-                        "temp_raw"      : 0x653c,
-                        "t_Nval"        : 0x01,
-                        "rh_raw"        : 0x8899,
-                        "rh_Nval"       : 0x01,
-                        'rh_phys': 60.69807434082031,
-                        'temp_phys': 22.63790771484374,
-                    },
-                },
+                }
             },
         ],
     },
@@ -1683,22 +1257,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIV5oOADiamSFBzcx0QQ==",
                     ],
-                },
-                "influxdb": {
-                    "time"       : 0x579a0e00*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'depth'     : 15.300000190734863,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_MPS1',
-                    "fields"     : {
-                        "die_raw"       : 10.100000381469727,
-                        "depth"         : 15.300000190734863,
-                    },
-                },
+                }
             },
         ],
     },
@@ -1753,23 +1312,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFTIAAAE=",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        "N"         : 1,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_NEOVBAT_V2N1',
-                    "fields"     : {
-                        "voltage"       : 0,
-                        "vol_phys"      : 0,
-                        "N"             : 1,
-                    },
-                },
+                }
             },
             # SOL_TYPE_SENS_SHT25_T2N1H2N1
             {
@@ -1800,27 +1343,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFTE8ZQGiZwE=",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        't_Nval'    : 0x01,
-                        'rh_Nval'   : 0x01,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_SHT25_T2N1H2N1',
-                    "fields"     : {
-                        "temp_raw"      : 0x653c,
-                        "t_Nval"        : 0x01,
-                        "rh_raw"        : 0x67a2,
-                        "rh_Nval"       : 0x01,
-                        "rh_phys"       : 44.601959228515625,
-                        "temp_phys"     : 22.63790771484374,
-                    },
-                },
+                }
             },
             # SOL_TYPE_SENS_GS3_I1D4T4E4N1
             {
@@ -1853,26 +1376,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFTAACtcjQGZmskEAAIA/AQ==",
                     ],
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'sub_id'    : 0x00,
-                        'Nval'      : 0x01,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_GS3_I1D4T4E4N1',
-                    "fields"     : {
-                        "sub_id"        : 0x00,
-                        "dielect"       : 2.559999942779541,
-                        "temp"          : 22.299999237060547,
-                        "eleCond"       : 1.0,
-                        "Nval"          : 0x01,
-                    },
-                },
+                }
             },
             # SOL_TYPE_SENS_MB7363_D2S2N1L1G1
             {
@@ -1905,27 +1409,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFSkbAgEAG1RV",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'mean_d2g'  : 0x021b,
-                        'stdev'     : 0x0001,
-                        'Nval'      : 0x1b,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_MB7363_D2S2N1L1G1',
-                    "fields"     : {
-                        "mean_d2g"      : 0x021b,
-                        "stdev"         : 0x0001,
-                        "Nval"          : 0x1b,
-                        "Nltm"          : 0x54,
-                        "NgtM"          : 0x55,
-                    },
-                },
+                }
             }
         ]
     },
@@ -1981,25 +1465,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFUBjh50nAw==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'id'        : 3,
-                    },
-                    "measurement": 'SOL_TYPE_TEMPRH_SHT31',
-                    "fields"     : {
-                        "temp_raw"      : 0x6387,
-                        "rh_raw"        : 0x9d27,
-                        "temp_phys"     : 23,
-                        "rh_phys"       : 61,
-                        "id"            : 3,
-                    },
-                },
+                }
             },
             {
                 "json" : {
@@ -2027,25 +1493,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFUBjh50nAw==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'id'        : 3,
-                    },
-                    "measurement": 'SOL_TYPE_TEMPRH_SHT31',
-                    "fields"     : {
-                        "temp_raw"      : 0x6387,
-                        "rh_raw"        : 0x9d27,
-                        "temp_phys"     : 23,
-                        "rh_phys"       : 61,
-                        "id"            : 3,
-                    },
-                },
+                }
             },
         ],
     },
@@ -2077,23 +1525,7 @@ SOL_CHAIN_EXAMPLE = [
                     "o" : [
                         "EwECAwQFBgcIEhMUFUmMWwAA3EEhAPwABA==",
                     ]
-                },
-                "influxdb": {
-                    "time"       : TIMESTAMP*1000000000,
-                    "tags"       : {
-                        'mac'    : '01-02-03-04-05-06-07-08',
-                        'site'      : 'super_site',
-                        'latitude'  : 55.5555,
-                        'longitude' : -44.4444,
-                        'id'        : 4,
-                    },
-                    "measurement": 'SOL_TYPE_SENS_INDUCTION_CURRENT_V_SOURCE',
-                    "fields"     : {'accu_sum_of_squares': 2179548,
-                                    'sensor_id': 4,
-                                    'accu_sum': 23436,
-                                    'sample_count': 252,
-                                    'current_A': 0.0},
-                },
+                }
             },
         ],
     },
@@ -2164,14 +1596,3 @@ def test_chain(sol_chain_example):
         print(sol_json)
         print(example["json"])
         assert sol_json==example["json"]
-
-        # json->influxdb
-        sol_influxdb = None
-        if MACMANAGER == sol_json['mac']:
-            sol_influxdb = sol.json_to_influxdb(sol_json,TAGS_DEFAULT)
-        else:
-            sol_influxdb = sol.json_to_influxdb(sol_json,TAGS)
-        print('=====\njson->influxdb')
-        pp.pprint(sol_influxdb)
-        print(example["influxdb"])
-        assert sol_influxdb==example["influxdb"]
